@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mamourart | Développement logiciel & Automatisation IA</title>
+
+<meta
+    name="description"
+    content="Mamourart développe des logiciels, des solutions d'automatisation IA et des outils numériques pour les entreprises."
+>
+
+<link rel="icon" href="logo.png">
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background: #07111f;
+    color: #ffffff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* HERO */
+
+.hero-header {
+    min-height: 100vh;
+    position: relative;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(3,16,31,.98) 0%,
+            rgba(4,24,47,.92) 28%,
+            rgba(4,25,49,.64) 48%,
+            rgba(4,25,49,.18) 72%,
+            rgba(4,25,49,.05) 100%
+        ),
+        url("banner.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+.hero-header::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 90px;
+
+    background:
+        linear-gradient(
+            transparent,
+            #07111f
+        );
+
+    pointer-events: none;
+}
+
+
+/* NAVIGATION */
+
+nav {
+    position: relative;
+    z-index: 10;
+
+    width: 100%;
+
+    padding: 18px 55px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.site-logo {
+    display: flex;
+    align-items: center;
+}
+
+.site-logo img {
+    display: block;
+    width: 185px;
+    height: auto;
+}
+
+.nav-right {
+    position: absolute;
+    top: 20px;
+    right: 55px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 7px 10px;
+
+    border-radius: 12px;
+
+    background: rgba(3,17,33,.50);
+
+    border:
+        1px solid
+        rgba(120,190,255,.18);
+
+    backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 8px 24px
+        rgba(0,0,0,.22);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-shadow:
+        0 2px 6px
+        rgba(0,0,0,.8);
+}
+
+.nav-links a:hover {
+    color: #62b5ff;
+}
+
+
+/* LANGUAGE */
+
+.language-switch {
+    display: flex;
+    gap: 4px;
+
+    padding: 3px;
+
+    border:
+        1px solid
+        rgba(113,190,255,.65);
+
+    border-radius: 8px;
+
+    background: rgba(4,20,40,.50);
+}
+
+.language-switch button {
+    border: 0;
+
+    padding: 5px 9px;
+
+    border-radius: 5px;
+
+    background: transparent;
+    color: #c9e5ff;
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.language-switch button.active {
+    background: #1687ff;
+    color: #ffffff;
+}
+
+
+/* HERO CONTENT */
+
+.hero {
+    position: relative;
+    z-index: 5;
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 45px 30px 75px;
+}
+
+.hero-content {
+    max-width: 650px;
+}
+
+.badge {
+    display: inline-block;
+
+    padding: 7px 15px;
+
+    margin-bottom: 18px;
+
+    border-radius: 30px;
+
+    border:
+        1px solid
+        rgba(98,181,255,.55);
+
+    background:
+        rgba(20,89,150,.25);
+
+    color: #a4d7ff;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+h1 {
+    max-width: 650px;
+
+    font-size:
+        clamp(
+            42px,
+            5vw,
+            62px
+        );
+
+    line-height: 1.05;
+    letter-spacing: -2px;
+
+    margin-bottom: 18px;
+
+    text-shadow:
+        0 4px 20px
+        rgba(0,0,0,.38);
+}
+
+h1 span {
+    color: #57adff;
+}
+
+.hero p {
+    max-width: 650px;
+
+    font-size: 18px;
+    line-height: 1.55;
+
+    color: #edf6ff;
+
+    margin-bottom: 14px;
+
+    text-shadow:
+        0 2px 7px
+        rgba(0,0,0,.85);
+}
+
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.button {
+    display: inline-block;
+
+    padding: 12px 22px;
+
+    border-radius: 9px;
+
+    font-weight: 700;
+
+    transition: .2s;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+}
+
+.button-primary {
+    color: #ffffff;
+    background: #1687ff;
+}
+
+.button-primary:hover {
+    background: #0573df;
+}
+
+.button-secondary {
+    color: #ffffff;
+
+    border:
+        1px solid
+        #83c4ff;
+
+    background:
+        rgba(4,25,50,.52);
+}
+
+
+/* GENERAL */
+
+section {
+    padding: 90px 30px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.section-label {
+    color: #62b5ff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-size:
+        clamp(
+            32px,
+            4vw,
+            42px
+        );
+
+    margin-bottom: 15px;
+}
+
+.section-description {
+    max-width: 760px;
+
+    color: #aebfd2;
+
+    font-size: 18px;
+
+    margin-bottom: 45px;
+}
+
+
+/* SERVICES */
+
+.services {
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(22,135,255,.12),
+            transparent 30%
+        ),
+        #0a1727;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 20px;
+}
+
+.service-card {
+    position: relative;
+
+    min-height: 290px;
+
+    padding: 28px;
+
+    border-radius: 18px;
+
+    border:
+        1px solid
+        rgba(105,175,235,.20);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,36,57,.95),
+            rgba(9,23,38,.96)
+        );
+
+    transition: .25s;
+}
+
+.service-card::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #1687ff,
+            #65c5ff
+        );
+}
+
+.service-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(98,181,255,.55);
+}
+
+.service-number {
+    position: absolute;
+
+    top: 22px;
+    right: 24px;
+
+    color:
+        rgba(120,195,255,.22);
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.service-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 24px;
+
+    border-radius: 14px;
+
+    color: #67bdff;
+
+    background:
+        rgba(22,135,255,.12);
+
+    border:
+        1px solid
+        rgba(98,181,255,.25);
+}
+
+.service-icon svg {
+    width: 30px;
+    height: 30px;
+
+    stroke: currentColor;
+    fill: none;
+
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.service-card h3 {
+    font-size: 21px;
+    margin-bottom: 12px;
+}
+
+.service-card p {
+    color: #aebfd2;
+    font-size: 15px;
+}
+
+
+/* PROJECT */
+
+.project {
+    background: #07111f;
+}
+
+.project-card {
+    padding: 42px;
+
+    border: 1px solid #285a8c;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #10253d,
+            #0e3968
+        );
+}
+
+.project-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 6px 12px;
+
+    margin-bottom: 18px;
+
+    border-radius: 30px;
+
+    border:
+        1px solid
+        rgba(65,220,150,.28);
+
+    background:
+        rgba(28,160,105,.13);
+
+    color: #83efbd;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.project-status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #3be39e;
+
+    box-shadow:
+        0 0 10px
+        rgba(59,227,158,.75);
+}
+
+.project-card h3 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.project-card > p {
+    max-width: 900px;
+
+    color: #c4d6e8;
+
+    font-size: 17px;
+
+    margin-bottom: 25px;
+}
+
+.features {
+    margin-bottom: 22px;
+}
+
+.feature {
+    display: inline-block;
+
+    margin: 5px 5px 5px 0;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    color: #d6ebff;
+
+    font-size: 14px;
+}
+
+.project-action {
+    margin-bottom: 30px;
+}
+
+.project-screenshot {
+    padding: 12px;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+}
+
+.project-screenshot img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    border-radius: 10px;
+}
+
+.screenshot-caption {
+    max-width: 850px;
+
+    margin: 18px auto 0;
+
+    color: #b9d9f5;
+
+    font-size: 15px;
+
+    text-align: center;
+}
+
+
+/* WORKFLOW */
+
+.workflow {
+    background: #0a1727;
+    overflow: hidden;
+}
+
+.workflow-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap: 34px;
+}
+
+.workflow-step {
+    position: relative;
+
+    min-height: 300px;
+
+    padding: 24px;
+
+    border:
+        1px solid
+        #213750;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101f31,
+            #0c1a2a
+        );
+}
+
+.workflow-step h3 {
+    color: #72bdff;
+    margin-bottom: 10px;
+}
+
+.workflow-step p {
+    color: #b7c7d8;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #1687ff;
+
+    font-weight: 800;
+
+    margin-bottom: 15px;
+}
+
+.workflow-step:not(:last-child)::after {
+    content: "→";
+
+    position: absolute;
+
+    top: 50%;
+    right: -29px;
+
+    transform:
+        translateY(-50%);
+
+    color: #58b4ff;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+
+/* CONTACT */
+
+.contact {
+    background: #07111f;
+    text-align: center;
+}
+
+.contact p {
+    max-width: 680px;
+
+    margin:
+        0
+        auto
+        32px;
+
+    color: #bdcada;
+
+    font-size: 18px;
+}
+
+.contact .buttons {
+    justify-content: center;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding: 30px;
+
+    border-top:
+        1px solid
+        #152436;
+
+    background: #050b13;
+
+    color: #718399;
+
+    text-align: center;
+}
+
+
+/* TABLET */
+
+@media screen and (max-width:1000px) {
+
+    .service-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .workflow-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+
+        gap: 18px;
+    }
+
+    .workflow-step::after {
+        display: none;
+    }
+}
+
+
+/* MOBILE */
+
+@media screen and (max-width:760px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .hero-header {
+        min-height: 100svh;
+
+        background:
+            linear-gradient(
+                rgba(3,16,31,.74),
+                rgba(3,16,31,.92)
+            ),
+            url("banner.png");
+
+        background-size: cover;
+        background-position: 67% center;
+    }
+
+    nav {
+        width: 100%;
+
+        padding:
+            5px
+            14px
+            2px;
+
+        flex-direction: column;
+        align-items: center;
+
+        gap: 3px;
+    }
+
+    .site-logo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .site-logo img {
+        width: 112px;
+    }
+
+    .nav-right {
+        position: static;
+
+        width: 100%;
+
+        padding:
+            5px
+            7px;
+
+        gap: 4px;
+
+        flex-direction: column;
+
+        border-radius: 11px;
+    }
+
+    .nav-links {
+        width: 100%;
+
+        justify-content: center;
+        flex-wrap: wrap;
+
+        gap:
+            4px
+            11px;
+    }
+
+    .nav-links a {
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .language-switch {
+        padding: 2px;
+    }
+
+    .language-switch button {
+        padding: 3px 8px;
+        font-size: 12px;
+    }
+
+    .hero {
+        width: 100%;
+        max-width: 100%;
+
+        padding:
+            12px
+            18px
+            30px;
+
+        text-align: center;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: 100%;
+
+        margin: auto;
+    }
+
+    .badge {
+        max-width: 100%;
+
+        padding:
+            5px
+            10px;
+
+        margin-bottom: 10px;
+
+        font-size: 11px;
+
+        line-height: 1.3;
+
+        white-space: normal;
+    }
+
+    h1 {
+        width: 100%;
+        max-width: 100%;
+
+        font-size: 29px;
+
+        line-height: 1.04;
+
+        letter-spacing: -.7px;
+
+        margin-bottom: 10px;
+    }
+
+    .hero p {
+        width: 100%;
+        max-width: 100%;
+
+        font-size: 13.5px;
+
+        line-height: 1.42;
+
+        margin-bottom: 10px;
+    }
+
+    .buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .button {
+        width: 100%;
+
+        padding:
+            9px
+            14px;
+
+        font-size: 13px;
+
+        text-align: center;
+    }
+
+    section {
+        width: 100%;
+        max-width: 100%;
+
+        padding:
+            55px
+            18px;
+
+        overflow-x: hidden;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+
+        min-width: 0;
+    }
+
+    .section-title {
+        font-size: 30px;
+        line-height: 1.15;
+    }
+
+    .section-description {
+        font-size: 16px;
+
+        margin-bottom: 32px;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr;
+
+        gap: 16px;
+    }
+
+    .service-card {
+        min-width: 0;
+        min-height: auto;
+
+        padding: 24px;
+    }
+
+    .project-card {
+        width: 100%;
+        min-width: 0;
+
+        padding: 22px;
+    }
+
+    .project-card h3 {
+        font-size: 24px;
+        line-height: 1.2;
+    }
+
+    .project-card > p {
+        font-size: 15px;
+    }
+
+    .feature {
+        font-size: 12px;
+    }
+
+    .project-action {
+        width: 100%;
+    }
+
+    .project-action .button {
+        width: 100%;
+    }
+
+    .project-screenshot {
+        width:
+            calc(
+                100% + 16px
+            );
+
+        margin-left: -8px;
+        margin-right: -8px;
+
+        padding: 4px;
+    }
+
+    .project-screenshot img {
+        width: 100%;
+        height: auto;
+    }
+
+    .screenshot-caption {
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .contact p {
+        font-size: 16px;
+    }
+
+    footer {
+        width: 100%;
+
+        padding:
+            22px
+            12px;
+
+        font-size: 11.5px;
+
+        line-height: 1.5;
+    }
+}
+
+
+/* =====================================================
+   MOBILE STABILITY FIX
+   DOIT RESTER A LA FIN DU CSS
+===================================================== */
+
+@media screen and (max-width:760px) {
+
+    .workflow {
+        display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .workflow .container {
+        display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .workflow-grid {
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0,1fr) !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        gap: 16px !important;
+    }
+
+    .workflow-step {
+        display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+        min-height: auto !important;
+
+        padding: 23px !important;
+    }
+
+    .workflow-step::after {
+        content: none !important;
+
+        display: none !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header class="hero-header">
+
+<nav>
+
+<a class="site-logo" href="#">
+    <img src="logo.png" alt="Mamourart">
+</a>
+
+
+<div class="nav-right">
+
+<div class="nav-links">
+
+<a href="#services" data-i18n="navServices">
+Services
+</a>
+
+<a href="#project" data-i18n="navProject">
+Projet
+</a>
+
+<a href="#workflow" data-i18n="navWorkflow">
+Fonctionnement
+</a>
+
+<a href="#contact" data-i18n="navContact">
+Contact
+</a>
+
+</div>
+
+
+<div class="language-switch">
+
+<button
+    id="enButton"
+    onclick="changeLanguage('en')"
+>
+EN
+</button>
+
+<button
+    id="frButton"
+    class="active"
+    onclick="changeLanguage('fr')"
+>
+FR
+</button>
+
+</div>
+
+</div>
+
+</nav>
+
+
+<div class="hero">
+
+<div class="hero-content">
+
+
+<div class="badge" data-i18n="badge">
+Développement logiciel • Automatisation IA
+</div>
+
+
+<h1 data-i18n-html="heroTitle">
+
+Créons des
+
+<span>
+solutions logicielles concrètes.
+</span>
+
+</h1>
+
+
+<p data-i18n="heroText">
+
+Mamourart développe des outils d'automatisation,
+des logiciels métiers et des solutions numériques
+conçues pour simplifier les opérations,
+réduire les tâches répétitives
+et améliorer la productivité.
+
+</p>
+
+
+<div class="buttons">
+
+<a
+    class="button button-primary"
+    href="#project"
+    data-i18n="viewProject"
+>
+Voir notre projet
+</a>
+
+<a
+    class="button button-secondary"
+    href="mailto:contact@mamourart.com"
+    data-i18n="contactUs"
+>
+Nous contacter
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+
+
+<section class="services" id="services">
+
+<div class="container">
+
+<div
+    class="section-label"
+    data-i18n="servicesLabel"
+>
+Services
+</div>
+
+
+<h2
+    class="section-title"
+    data-i18n="whatWeBuild"
+>
+Nos solutions
+</h2>
+
+
+<p
+    class="section-description"
+    data-i18n="servicesText"
+>
+Des technologies pratiques conçues
+pour répondre à des besoins opérationnels réels.
+</p>
+
+
+<div class="service-grid">
+
+
+<article class="service-card">
+
+<span class="service-number">
+01
+</span>
+
+<div class="service-icon">
+
+<svg viewBox="0 0 24 24">
+
+<circle
+    cx="12"
+    cy="12"
+    r="3"
+></circle>
+
+<path
+    d="M4 12a8 8 0 0 1 8-8"
+></path>
+
+<path
+    d="M20 12a8 8 0 0 1-8 8"
+></path>
+
+<path d="M12 4v3"></path>
+<path d="M12 17v3"></path>
+
+</svg>
+
+</div>
+
+
+<h3 data-i18n="businessAutomation">
+Automatisation métier
+</h3>
+
+
+<p data-i18n="businessText">
+Automatisation des tâches répétitives,
+du traitement des informations
+et des flux opérationnels.
+</p>
+
+</article>
+
+
+
+<article class="service-card">
+
+<span class="service-number">
+02
+</span>
+
+<div class="service-icon">
+
+<svg viewBox="0 0 24 24">
+
+<rect
+    x="3"
+    y="4"
+    width="18"
+    height="14"
+    rx="2"
+></rect>
+
+<path d="M8 21h8"></path>
+<path d="M12 18v3"></path>
+<path d="M9 9l-2 2 2 2"></path>
+<path d="M15 9l2 2-2 2"></path>
+
+</svg>
+
+</div>
+
+
+<h3 data-i18n="softwareDevelopment">
+Développement logiciel
+</h3>
+
+
+<p data-i18n="softwareText">
+Création d'applications desktop,
+web et métiers adaptées aux besoins réels.
+</p>
+
+</article>
+
+
+
+<article class="service-card">
+
+<span class="service-number">
+03
+</span>
+
+<div class="service-icon">
+
+<svg viewBox="0 0 24 24">
+
+<path
+    d="M9 4a4 4 0 0 0-4 4v1a4 4 0 0 0 0 6v1a4 4 0 0 0 4 4"
+></path>
+
+<path
+    d="M15 4a4 4 0 0 1 4 4v1a4 4 0 0 1 0 6v1a4 4 0 0 1-4 4"
+></path>
+
+<path d="M9 4v16"></path>
+<path d="M15 4v16"></path>
+
+</svg>
+
+</div>
+
+
+<h3 data-i18n="aiApis">
+IA & APIs
+</h3>
+
+
+<p data-i18n="aiText">
+Intégration d'APIs modernes,
+d'intelligence artificielle
+et de workflows automatisés.
+</p>
+
+</article>
+
+
+
+<article class="service-card">
+
+<span class="service-number">
+04
+</span>
+
+<div class="service-icon">
+
+<svg viewBox="0 0 24 24">
+
+<path d="M3 6h11v10H3z"></path>
+
+<path d="M14 9h4l3 3v4h-7z"></path>
+
+<circle
+    cx="7"
+    cy="18"
+    r="2"
+></circle>
+
+<circle
+    cx="18"
+    cy="18"
+    r="2"
+></circle>
+
+</svg>
+
+</div>
+
+
+<h3 data-i18n="transportTechnology">
+Technologies transport
+</h3>
+
+
+<p data-i18n="transportText">
+Développement d'outils
+pour les missions de transport,
+l'affectation des chauffeurs
+et les opérations de flotte.
+</p>
+
+</article>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<section class="project" id="project">
+
+<div class="container">
+
+<div
+    class="section-label"
+    data-i18n="portfolio"
+>
+Portfolio
+</div>
+
+
+<h2
+    class="section-title"
+    data-i18n="featuredProject"
+>
+Projet principal
+</h2>
+
+
+<p
+    class="section-description"
+    data-i18n="projectIntro"
+>
+Un prototype d'automatisation
+conçu pour les opérations de transport.
+</p>
+
+
+<div class="project-card">
+
+
+<div class="project-status">
+
+<span class="project-status-dot"></span>
+
+<span data-i18n="projectStatus">
+Prototype fonctionnel
+</span>
+
+</div>
+
+
+<h3>
+Mamourart Transport Automation
+</h3>
+
+
+<p data-i18n="projectDescription">
+
+Un système de gestion des missions de transport
+qui traite les données,
+vérifie la disponibilité des chauffeurs,
+propose le chauffeur disponible le plus adapté
+et ajoute une validation humaine
+avant l'affectation finale.
+
+</p>
+
+
+<div class="features">
+
+<span
+    class="feature"
+    data-i18n="featureDriver"
+>
+Affectation chauffeur
+</span>
+
+<span
+    class="feature"
+    data-i18n="featureDistance"
+>
+Calcul de distance
+</span>
+
+<span
+    class="feature"
+    data-i18n="featureApproval"
+>
+Validation humaine
+</span>
+
+<span
+    class="feature"
+    data-i18n="featureReassignment"
+>
+Réaffectation automatique
+</span>
+
+<span
+    class="feature"
+    data-i18n="featureDashboard"
+>
+Tableau de bord
+</span>
+
+<span class="feature">
+Python
+</span>
+
+</div>
+
+
+<div class="project-action">
+
+<a
+    class="button button-primary"
+    href="https://github.com/kamel-hamdi-dev/mamourart-transport-automation"
+    target="_blank"
+    rel="noopener noreferrer"
+    data-i18n="githubProject"
+>
+Voir le projet sur GitHub
+</a>
+
+</div>
+
+
+<div class="project-screenshot">
+
+<img
+    src="dashboard.png"
+    alt="Mamourart Transport Automation Dashboard"
+    loading="lazy"
+>
+
+</div>
+
+
+<div
+    class="screenshot-caption"
+    data-i18n="screenshotCaption"
+>
+
+Démo réelle du prototype :
+affectation automatique,
+validation humaine
+et réaffectation des chauffeurs.
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<section class="workflow" id="workflow">
+
+<div class="container">
+
+<div
+    class="section-label"
+    data-i18n="workflow"
+>
+Fonctionnement
+</div>
+
+
+<h2
+    class="section-title"
+    data-i18n="howWorks"
+>
+Comment fonctionne l'automatisation
+</h2>
+
+
+<p
+    class="section-description"
+    data-i18n="workflowText"
+>
+
+Le prototype combine
+la sélection automatique des chauffeurs
+avec une validation humaine
+avant l'affectation finale.
+
+</p>
+
+
+<div class="workflow-grid">
+
+
+<div class="workflow-step">
+
+<div class="step-number">
+1
+</div>
+
+<h3 data-i18n="step1">
+Réception de la mission
+</h3>
+
+<p data-i18n="step1Text">
+Les informations de la mission
+sont lues et structurées automatiquement.
+</p>
+
+</div>
+
+
+
+<div class="workflow-step">
+
+<div class="step-number">
+2
+</div>
+
+<h3 data-i18n="step2">
+Recherche du chauffeur
+</h3>
+
+<p data-i18n="step2Text">
+Le système vérifie
+la disponibilité,
+la ville et la distance.
+</p>
+
+</div>
+
+
+
+<div class="workflow-step">
+
+<div class="step-number">
+3
+</div>
+
+<h3 data-i18n="step3">
+Validation humaine
+</h3>
+
+<p data-i18n="step3Text">
+Un responsable peut
+approuver ou refuser
+la proposition.
+</p>
+
+</div>
+
+
+
+<div class="workflow-step">
+
+<div class="step-number">
+4
+</div>
+
+<h3 data-i18n="step4">
+Alternative automatique
+</h3>
+
+<p data-i18n="step4Text">
+En cas de refus,
+le système propose automatiquement
+le prochain chauffeur adapté.
+</p>
+
+</div>
+
+
+
+<div class="workflow-step">
+
+<div class="step-number">
+5
+</div>
+
+<h3 data-i18n="step5">
+Affectation finale
+</h3>
+
+<p data-i18n="step5Text">
+Le chauffeur approuvé
+devient l'affectation finale
+de la mission.
+</p>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<section class="contact" id="contact">
+
+<div class="container">
+
+<div
+    class="section-label"
+    data-i18n="contactLabel"
+>
+Contact
+</div>
+
+
+<h2
+    class="section-title"
+    data-i18n="contactTitle"
+>
+Construisons quelque chose d'utile
+</h2>
+
+
+<p data-i18n="contactText">
+
+Vous êtes intéressé par Mamourart,
+l'automatisation du transport,
+l'IA ou le développement logiciel ?
+Contactez-nous.
+
+</p>
+
+
+<div class="buttons">
+
+<a
+    class="button button-primary"
+    href="mailto:contact@mamourart.com"
+>
+contact@mamourart.com
+</a>
+
+
+<a
+    class="button button-secondary"
+    href="https://www.linkedin.com/in/kamel-hamdi-dev/"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+LinkedIn
+</a>
+
+
+<a
+    class="button button-secondary"
+    href="https://github.com/kamel-hamdi-dev"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+GitHub
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<footer data-i18n="footer">
+© 2026 Mamourart. Développement logiciel & Automatisation IA.
+</footer>
+
+
+
+<script>
+
+const translations = {
+
+fr: {
+
+navServices: "Services",
+
+navProject: "Projet",
+
+navWorkflow: "Fonctionnement",
+
+navContact: "Contact",
+
+badge:
+"Développement logiciel • Automatisation IA",
+
+heroTitle:
+`Créons des <span>solutions logicielles concrètes.</span>`,
+
+heroText:
+"Mamourart développe des outils d'automatisation, des logiciels métiers et des solutions numériques conçues pour simplifier les opérations, réduire les tâches répétitives et améliorer la productivité.",
+
+viewProject:
+"Voir notre projet",
+
+contactUs:
+"Nous contacter",
+
+servicesLabel:
+"Services",
+
+whatWeBuild:
+"Nos solutions",
+
+servicesText:
+"Des technologies pratiques conçues pour répondre à des besoins opérationnels réels.",
+
+businessAutomation:
+"Automatisation métier",
+
+businessText:
+"Automatisation des tâches répétitives, du traitement des informations et des flux opérationnels.",
+
+softwareDevelopment:
+"Développement logiciel",
+
+softwareText:
+"Création d'applications desktop, web et métiers adaptées aux besoins réels.",
+
+aiApis:
+"IA & APIs",
+
+aiText:
+"Intégration d'APIs modernes, d'intelligence artificielle et de workflows automatisés.",
+
+transportTechnology:
+"Technologies transport",
+
+transportText:
+"Développement d'outils pour les missions de transport, l'affectation des chauffeurs et les opérations de flotte.",
+
+portfolio:
+"Portfolio",
+
+featuredProject:
+"Projet principal",
+
+projectIntro:
+"Un prototype d'automatisation conçu pour les opérations de transport.",
+
+projectStatus:
+"Prototype fonctionnel",
+
+projectDescription:
+"Un système de gestion des missions de transport qui traite les données, vérifie la disponibilité des chauffeurs, propose le chauffeur disponible le plus adapté et ajoute une validation humaine avant l'affectation finale.",
+
+featureDriver:
+"Affectation chauffeur",
+
+featureDistance:
+"Calcul de distance",
+
+featureApproval:
+"Validation humaine",
+
+featureReassignment:
+"Réaffectation automatique",
+
+featureDashboard:
+"Tableau de bord",
+
+screenshotCaption:
+"Démo réelle du prototype : affectation automatique, validation humaine et réaffectation des chauffeurs.",
+
+githubProject:
+"Voir le projet sur GitHub",
+
+workflow:
+"Fonctionnement",
+
+howWorks:
+"Comment fonctionne l'automatisation",
+
+workflowText:
+"Le prototype combine la sélection automatique des chauffeurs avec une validation humaine avant l'affectation finale.",
+
+step1:
+"Réception de la mission",
+
+step1Text:
+"Les informations de la mission sont lues et structurées automatiquement.",
+
+step2:
+"Recherche du chauffeur",
+
+step2Text:
+"Le système vérifie la disponibilité, la ville et la distance.",
+
+step3:
+"Validation humaine",
+
+step3Text:
+"Un responsable peut approuver ou refuser la proposition.",
+
+step4:
+"Alternative automatique",
+
+step4Text:
+"En cas de refus, le système propose automatiquement le prochain chauffeur adapté.",
+
+step5:
+"Affectation finale",
+
+step5Text:
+"Le chauffeur approuvé devient l'affectation finale de la mission.",
+
+contactLabel:
+"Contact",
+
+contactTitle:
+"Construisons quelque chose d'utile",
+
+contactText:
+"Vous êtes intéressé par Mamourart, l'automatisation du transport, l'IA ou le développement logiciel ? Contactez-nous.",
+
+footer:
+"© 2026 Mamourart. Développement logiciel & Automatisation IA."
+
+},
+
+
+en: {
+
+navServices:
+"Services",
+
+navProject:
+"Project",
+
+navWorkflow:
+"How It Works",
+
+navContact:
+"Contact",
+
+badge:
+"Software Development • AI Automation",
+
+heroTitle:
+`Building practical <span>software solutions.</span>`,
+
+heroText:
+"Mamourart develops automation tools, business software and real-world digital solutions designed to simplify operations, reduce repetitive work and improve productivity.",
+
+viewProject:
+"View Our Project",
+
+contactUs:
+"Contact Us",
+
+servicesLabel:
+"Services",
+
+whatWeBuild:
+"What We Build",
+
+servicesText:
+"Practical technology designed around real operational needs.",
+
+businessAutomation:
+"Business Automation",
+
+businessText:
+"Automating repetitive workflows, information processing and operational tasks.",
+
+softwareDevelopment:
+"Software Development",
+
+softwareText:
+"Building desktop, web and business applications based on real-world requirements.",
+
+aiApis:
+"AI & APIs",
+
+aiText:
+"Connecting software with modern APIs, intelligent automation and AI-powered workflows.",
+
+transportTechnology:
+"Transport Technology",
+
+transportText:
+"Developing tools for transport missions, driver assignment and fleet operations.",
+
+portfolio:
+"Portfolio",
+
+featuredProject:
+"Featured Project",
+
+projectIntro:
+"A real-world automation prototype designed for transport operations.",
+
+projectStatus:
+"Functional prototype",
+
+projectDescription:
+"A transport mission management system that processes mission data, checks driver availability, proposes the nearest suitable driver and includes a human approval workflow before final assignment.",
+
+featureDriver:
+"Driver Assignment",
+
+featureDistance:
+"Distance Calculation",
+
+featureApproval:
+"Human Approval",
+
+featureReassignment:
+"Automatic Reassignment",
+
+featureDashboard:
+"Mission Dashboard",
+
+screenshotCaption:
+"Live prototype demo: automatic assignment, human approval and driver reassignment.",
+
+githubProject:
+"View Project on GitHub",
+
+workflow:
+"Workflow",
+
+howWorks:
+"How The Automation Works",
+
+workflowText:
+"The prototype combines automatic driver selection with human control before the final assignment.",
+
+step1:
+"Receive Mission",
+
+step1Text:
+"Transport mission information is read and structured automatically.",
+
+step2:
+"Find Driver",
+
+step2Text:
+"The system checks availability, city and distance.",
+
+step3:
+"Human Approval",
+
+step3Text:
+"A manager can approve or reject the proposed assignment.",
+
+step4:
+"Automatic Alternative",
+
+step4Text:
+"If rejected, the next suitable driver is proposed automatically.",
+
+step5:
+"Final Assignment",
+
+step5Text:
+"The approved driver becomes the final assignment for the mission.",
+
+contactLabel:
+"Contact",
+
+contactTitle:
+"Let's Build Something Useful",
+
+contactText:
+"Interested in Mamourart, transport automation, AI automation or software development? Get in touch.",
+
+footer:
+"© 2026 Mamourart. Software Development & AI Automation."
+
+}
+
+};
+
+
+function changeLanguage(language) {
+
+document
+.querySelectorAll("[data-i18n]")
+.forEach(element => {
+
+const key =
+element.getAttribute("data-i18n");
+
+if (
+translations[language] &&
+translations[language][key]
+) {
+
+element.textContent =
+translations[language][key];
+
+}
+
+});
+
+
+document
+.querySelectorAll("[data-i18n-html]")
+.forEach(element => {
+
+const key =
+element.getAttribute("data-i18n-html");
+
+if (
+translations[language] &&
+translations[language][key]
+) {
+
+element.innerHTML =
+translations[language][key];
+
+}
+
+});
+
+
+document.documentElement.lang =
+language;
+
+
+document
+.getElementById("enButton")
+.classList
+.toggle(
+"active",
+language === "en"
+);
+
+
+document
+.getElementById("frButton")
+.classList
+.toggle(
+"active",
+language === "fr"
+);
+
+
+localStorage.setItem(
+"mamourart-language",
+language
+);
+
+}
+
+
+const savedLanguage =
+localStorage.getItem(
+"mamourart-language"
+);
+
+
+if (savedLanguage) {
+
+changeLanguage(savedLanguage);
+
+} else {
+
+const browserLanguage =
+navigator.language
+.toLowerCase();
+
+
+if (
+browserLanguage.startsWith("fr")
+) {
+
+changeLanguage("fr");
+
+} else {
+
+changeLanguage("en");
+
+}
+
+}
+
+</script>
+
+
+</body>
+</html>
