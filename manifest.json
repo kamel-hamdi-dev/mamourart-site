@@ -1,0 +1,16 @@
+{
+  "name": "Mamourart",
+  "short_name": "Mamourart",
+  "description": "Développement logiciel, automatisation IA et solutions numériques.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
