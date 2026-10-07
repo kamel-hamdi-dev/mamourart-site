@@ -1,2251 +1,588 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Mamourart | Développement logiciel & Automatisation IA</title>
-
-<meta
-    name="description"
-    content="Mamourart développe des logiciels, des solutions d'automatisation IA et des outils numériques pour les entreprises."
->
-<link rel="canonical" href="https://mamourart.com/">
-<meta property="og:title" content="Mamourart | Développement logiciel & Automatisation IA">
-<meta property="og:description" content="Mamourart développe des logiciels, des solutions d'automatisation IA et des outils numériques pour les entreprises.">
-<meta property="og:url" content="https://mamourart.com/">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://mamourart.com/banner.png">
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#07111f">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Mamourart",
-  "url": "https://mamourart.com/",
-  "logo": "https://mamourart.com/logo.png",
-  "sameAs": [
-    "https://www.linkedin.com/in/kamel-hamdi-dev/",
-    "https://github.com/kamel-hamdi-dev"
-  ],
-  "description": "Mamourart développe des logiciels, des solutions d'automatisation IA et des outils numériques pour les entreprises."
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Mamourart",
-  "alternateName": "Mamourart Software",
-  "url": "https://mamourart.com/"
-}
-</script>
-<style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-}
-
-body {
-    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-    background: #07111f;
-    color: #ffffff;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-
-a {
-    text-decoration: none;
-}
-
-
-/* HERO */
-
-.hero-header {
-    min-height: 100vh;
-    position: relative;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(3,16,31,.98) 0%,
-            rgba(4,24,47,.92) 28%,
-            rgba(4,25,49,.64) 48%,
-            rgba(4,25,49,.18) 72%,
-            rgba(4,25,49,.05) 100%
-        ),
-        url("banner.png");
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    overflow: hidden;
-}
-
-.hero-header::after {
-    content: "";
-
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 90px;
-
-    background:
-        linear-gradient(
-            transparent,
-            #07111f
-        );
-
-    pointer-events: none;
-}
-
-
-/* NAVIGATION */
-
-nav {
-    position: relative;
-    z-index: 10;
-
-    width: 100%;
-
-    padding: 18px 55px;
-
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-}
-
-.site-logo {
-    display: flex;
-    align-items: center;
-}
-
-.site-logo img {
-    display: block;
-    width: 185px;
-    height: auto;
-}
-
-.nav-right {
-    position: absolute;
-    top: 20px;
-    right: 55px;
-
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-    padding: 7px 10px;
-
-    border-radius: 12px;
-
-    background: rgba(3,17,33,.50);
-
-    border:
-        1px solid
-        rgba(120,190,255,.18);
-
-    backdrop-filter: blur(8px);
-
-    box-shadow:
-        0 8px 24px
-        rgba(0,0,0,.22);
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.nav-links a {
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-
-    text-shadow:
-        0 2px 6px
-        rgba(0,0,0,.8);
-}
-
-.nav-links a:hover {
-    color: #62b5ff;
-}
-
-
-/* LANGUAGE */
-
-.language-switch {
-    display: flex;
-    gap: 4px;
-
-    padding: 3px;
-
-    border:
-        1px solid
-        rgba(113,190,255,.65);
-
-    border-radius: 8px;
-
-    background: rgba(4,20,40,.50);
-}
-
-.language-switch button {
-    border: 0;
-
-    padding: 5px 9px;
-
-    border-radius: 5px;
-
-    background: transparent;
-    color: #c9e5ff;
-
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.language-switch button.active {
-    background: #1687ff;
-    color: #ffffff;
-}
-
-
-/* HERO CONTENT */
-
-.hero {
-    position: relative;
-    z-index: 5;
-
-    max-width: 1200px;
-
-    margin: auto;
-
-    padding: 45px 30px 75px;
-}
-
-.hero-content {
-    max-width: 650px;
-}
-
-.badge {
-    display: inline-block;
-
-    padding: 7px 15px;
-
-    margin-bottom: 18px;
-
-    border-radius: 30px;
-
-    border:
-        1px solid
-        rgba(98,181,255,.55);
-
-    background:
-        rgba(20,89,150,.25);
-
-    color: #a4d7ff;
-
-    font-size: 15px;
-    font-weight: 700;
-}
-
-h1 {
-    max-width: 650px;
-
-    font-size:
-        clamp(
-            42px,
-            5vw,
-            62px
-        );
-
-    line-height: 1.05;
-    letter-spacing: -2px;
-
-    margin-bottom: 18px;
-
-    text-shadow:
-        0 4px 20px
-        rgba(0,0,0,.38);
-}
-
-h1 span {
-    color: #57adff;
-}
-
-.hero p {
-    max-width: 650px;
-
-    font-size: 18px;
-    line-height: 1.55;
-
-    color: #edf6ff;
-
-    margin-bottom: 14px;
-
-    text-shadow:
-        0 2px 7px
-        rgba(0,0,0,.85);
-}
-
-
-/* BUTTONS */
-
-.buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-}
-
-.button {
-    display: inline-block;
-
-    padding: 12px 22px;
-
-    border-radius: 9px;
-
-    font-weight: 700;
-
-    transition: .2s;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-}
-
-.button-primary {
-    color: #ffffff;
-    background: #1687ff;
-}
-
-.button-primary:hover {
-    background: #0573df;
-}
-
-.button-secondary {
-    color: #ffffff;
-
-    border:
-        1px solid
-        #83c4ff;
-
-    background:
-        rgba(4,25,50,.52);
-}
-
-
-/* GENERAL */
-
-section {
-    padding: 90px 30px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-}
-
-.section-label {
-    color: #62b5ff;
-
-    font-size: 14px;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-
-    margin-bottom: 8px;
-}
-
-.section-title {
-    font-size:
-        clamp(
-            32px,
-            4vw,
-            42px
-        );
-
-    margin-bottom: 15px;
-}
-
-.section-description {
-    max-width: 760px;
-
-    color: #aebfd2;
-
-    font-size: 18px;
-
-    margin-bottom: 45px;
-}
-
-
-/* SERVICES */
-
-.services {
-    background:
-        radial-gradient(
-            circle at 15% 20%,
-            rgba(22,135,255,.12),
-            transparent 30%
-        ),
-        #0a1727;
-}
-
-.service-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 20px;
-}
-
-.service-card {
-    position: relative;
-
-    min-height: 290px;
-
-    padding: 28px;
-
-    border-radius: 18px;
-
-    border:
-        1px solid
-        rgba(105,175,235,.20);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(17,36,57,.95),
-            rgba(9,23,38,.96)
-        );
-
-    transition: .25s;
-}
-
-.service-card::before {
-    content: "";
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 3px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #1687ff,
-            #65c5ff
-        );
-}
-
-.service-card:hover {
-    transform: translateY(-7px);
-    border-color: rgba(98,181,255,.55);
-}
-
-.service-number {
-    position: absolute;
-
-    top: 22px;
-    right: 24px;
-
-    color:
-        rgba(120,195,255,.22);
-
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.service-icon {
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 24px;
-
-    border-radius: 14px;
-
-    color: #67bdff;
-
-    background:
-        rgba(22,135,255,.12);
-
-    border:
-        1px solid
-        rgba(98,181,255,.25);
-}
-
-.service-icon svg {
-    width: 30px;
-    height: 30px;
-
-    stroke: currentColor;
-    fill: none;
-
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.service-card h3 {
-    font-size: 21px;
-    margin-bottom: 12px;
-}
-
-.service-card p {
-    color: #aebfd2;
-    font-size: 15px;
-}
-
-
-/* PROJECT */
-
-.project {
-    background: #07111f;
-}
-
-.project-card {
-    padding: 42px;
-
-    border: 1px solid #285a8c;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #10253d,
-            #0e3968
-        );
-}
-
-.project-status {
-    display: inline-flex;
-    align-items: center;
-
-    gap: 8px;
-
-    padding: 6px 12px;
-
-    margin-bottom: 18px;
-
-    border-radius: 30px;
-
-    border:
-        1px solid
-        rgba(65,220,150,.28);
-
-    background:
-        rgba(28,160,105,.13);
-
-    color: #83efbd;
-
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.project-status-dot {
-    width: 8px;
-    height: 8px;
-
-    border-radius: 50%;
-
-    background: #3be39e;
-
-    box-shadow:
-        0 0 10px
-        rgba(59,227,158,.75);
-}
-
-.project-card h3 {
-    font-size: 32px;
-    margin-bottom: 15px;
-}
-
-.project-card > p {
-    max-width: 900px;
-
-    color: #c4d6e8;
-
-    font-size: 17px;
-
-    margin-bottom: 25px;
-}
-
-.features {
-    margin-bottom: 22px;
-}
-
-.feature {
-    display: inline-block;
-
-    margin: 5px 5px 5px 0;
-
-    padding: 7px 14px;
-
-    border-radius: 20px;
-
-    background:
-        rgba(255,255,255,.08);
-
-    color: #d6ebff;
-
-    font-size: 14px;
-}
-
-.project-action {
-    margin-bottom: 30px;
-}
-
-.project-screenshot {
-    padding: 12px;
-
-    border-radius: 16px;
-
-    background: #ffffff;
-}
-
-.project-screenshot img {
-    display: block;
-
-    width: 100%;
-    height: auto;
-
-    border-radius: 10px;
-}
-
-.screenshot-caption {
-    max-width: 850px;
-
-    margin: 18px auto 0;
-
-    color: #b9d9f5;
-
-    font-size: 15px;
-
-    text-align: center;
-}
-
-
-/* WORKFLOW */
-
-.workflow {
-    background: #0a1727;
-    overflow: hidden;
-}
-
-.workflow-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(5,1fr);
-
-    gap: 34px;
-}
-
-.workflow-step {
-    position: relative;
-
-    min-height: 300px;
-
-    padding: 24px;
-
-    border:
-        1px solid
-        #213750;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #101f31,
-            #0c1a2a
-        );
-}
-
-.workflow-step h3 {
-    color: #72bdff;
-    margin-bottom: 10px;
-}
-
-.workflow-step p {
-    color: #b7c7d8;
-}
-
-.step-number {
-    width: 40px;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #1687ff;
-
-    font-weight: 800;
-
-    margin-bottom: 15px;
-}
-
-.workflow-step:not(:last-child)::after {
-    content: "→";
-
-    position: absolute;
-
-    top: 50%;
-    right: -29px;
-
-    transform:
-        translateY(-50%);
-
-    color: #58b4ff;
-
-    font-size: 25px;
-    font-weight: 800;
-}
-
-
-/* CONTACT */
-
-.contact {
-    background: #07111f;
-    text-align: center;
-}
-
-.contact p {
-    max-width: 680px;
-
-    margin:
-        0
-        auto
-        32px;
-
-    color: #bdcada;
-
-    font-size: 18px;
-}
-
-.contact .buttons {
-    justify-content: center;
-}
-
-
-/* FOOTER */
-
-footer {
-    padding: 30px;
-
-    border-top:
-        1px solid
-        #152436;
-
-    background: #050b13;
-
-    color: #718399;
-
-    text-align: center;
-}
-
-
-/* TABLET */
-
-@media screen and (max-width:1000px) {
-
-    .service-grid {
-        grid-template-columns:
-            repeat(2,1fr);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mamourart | Software Development & AI Automation</title>
+  <meta name="description" content="Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises.">
+  <meta name="theme-color" content="#07111f">
+  <style>
+    :root{
+      --bg:#06101d;
+      --bg2:#0a1727;
+      --card:#0f2033;
+      --card2:#102943;
+      --text:#f7fbff;
+      --muted:#a9bfd4;
+      --line:rgba(132,191,242,.18);
+      --blue:#1d8fff;
+      --blue2:#69c6ff;
+      --green:#72e2ad;
+      --max:1180px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .eyebrow{
+      color:var(--blue2);font-weight:800;text-transform:uppercase;
+      letter-spacing:.14em;font-size:.76rem;margin-bottom:.9rem
+    }
+    .hero .eyebrow{
+      margin-left:0;
+      margin-bottom:1rem
+    }
+    .section-title{
+      font-size:clamp(2rem,4vw,3.1rem);line-height:1.08;
+      letter-spacing:-.035em;margin-bottom:1rem
+    }
+    .section-copy{max-width:760px;color:var(--muted);font-size:1.05rem}
+    .button{
+      display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+      min-height:48px;padding:0 1.2rem;border-radius:12px;font-weight:800;
+      border:1px solid transparent;transition:.2s ease
+    }
+    .button:hover{transform:translateY(-2px)}
+    .primary{background:var(--blue);color:white}
+    .secondary{border-color:rgba(133,198,255,.45);background:rgba(13,43,69,.62)}
+    .ghost{border-color:var(--line);color:#cfe9ff;background:rgba(255,255,255,.03)}
+
+    /* NAV */
+    .nav-wrap{
+      position:absolute;
+      inset:0 0 auto;
+      z-index:20;
+      padding:18px 0 0
+    }
+    .nav{
+      min-height:118px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:24px;
+      padding:0;
+      border:0;
+      background:transparent;
+      backdrop-filter:none;
+      border-radius:0
+    }
+    .brand{
+      width:360px;
+      height:118px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      overflow:visible;
+      flex:0 0 auto;
+      padding-top:6px
+    }
+    .brand img{
+      display:block;
+      width:192px;
+      max-width:none;
+      max-height:none;
+      height:auto;
+      object-fit:contain;
+      transform:translateX(-12px);
+      transform-origin:left top
+    }
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:7px 10px;
+      border:1px solid rgba(132,191,242,.24);
+      border-radius:14px;
+      background:rgba(6,18,33,.62);
+      backdrop-filter:blur(12px);
+      box-shadow:0 8px 24px rgba(0,0,0,.18)
+    }
+    .nav-links{display:flex;gap:20px;font-size:.9rem;font-weight:750}
+    .nav-links a{color:#e7f4ff}
+    .nav-links a:hover{color:var(--blue2)}
+    .lang{display:flex;padding:3px;border:1px solid rgba(110,190,255,.4);border-radius:9px}
+    .lang button{
+      border:0;background:transparent;color:#cfe9ff;cursor:pointer;
+      font-weight:800;padding:5px 9px;border-radius:6px
+    }
+    .lang button.active{background:var(--blue);color:white}
+
+    /* HERO */
+    .hero{
+      min-height:100vh;display:flex;align-items:flex-start;position:relative;
+      background:
+        linear-gradient(90deg,rgba(2,11,22,.98) 0%,rgba(4,22,42,.94) 35%,rgba(4,22,42,.58) 60%,rgba(4,22,42,.14) 100%),
+        url("banner.png") center/cover no-repeat;
+    }
+    .hero::after{
+      content:"";position:absolute;inset:auto 0 0;height:120px;
+      background:linear-gradient(transparent,var(--bg))
+    }
+    .hero-grid{
+      position:relative;
+      z-index:2;
+      padding:150px 0 38px;
+      display:grid;
+      grid-template-columns:minmax(0,660px) 1fr;
+      gap:60px
+    }
+    .hero h1{
+      font-size:clamp(3rem,5vw,4.55rem);
+      line-height:.98;
+      letter-spacing:-.05em;
+      margin:12px 0 18px;
+      max-width:650px
+    }
+    .hero h1 span{color:var(--blue2)}
+    .hero-copy{
+      font-size:1.02rem;
+      line-height:1.62;
+      color:#dcecff;
+      max-width:610px
+    }
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    .hero-proof{
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+      margin-top:18px
+    }
+    .proof{
+      padding:7px 11px;border:1px solid var(--line);border-radius:999px;
+      color:#b9d8ef;background:rgba(255,255,255,.035);font-size:.84rem;font-weight:700
     }
 
-    .workflow-grid {
-        grid-template-columns:
-            repeat(2,1fr);
+    /* SERVICES */
+    section{padding:90px 0}
+    .services{background:
+      radial-gradient(circle at 14% 20%,rgba(29,143,255,.12),transparent 28%),var(--bg2)}
+    .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:42px}
+    .service{
+      min-height:270px;padding:25px;border:1px solid var(--line);border-radius:20px;
+      background:linear-gradient(145deg,rgba(16,38,61,.97),rgba(8,23,38,.97));
+      position:relative;overflow:hidden
+    }
+    .service::before{
+      content:"";position:absolute;left:0;top:0;width:100%;height:3px;
+      background:linear-gradient(90deg,var(--blue),var(--blue2))
+    }
+    .service-num{position:absolute;top:20px;right:22px;color:rgba(120,195,255,.28);font-weight:900}
+    .icon{
+      width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+      background:rgba(29,143,255,.12);border:1px solid rgba(105,198,255,.2);
+      font-size:1.45rem;margin-bottom:22px
+    }
+    .service h3{font-size:1.22rem;margin-bottom:9px}
+    .service p{color:var(--muted);font-size:.94rem}
 
-        gap: 18px;
+    /* PROJECTS */
+    .projects{background:var(--bg)}
+    .projects-head{
+      display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:36px
+    }
+    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .project-card{
+      padding:24px;border:1px solid var(--line);border-radius:20px;
+      background:linear-gradient(145deg,rgba(15,34,53,.95),rgba(8,23,38,.98));
+      display:flex;flex-direction:column;min-height:310px
+    }
+    .project-card.featured{grid-column:span 2;background:linear-gradient(135deg,#10253d,#0d3a6b)}
+    .status{
+      display:inline-flex;align-items:center;gap:8px;width:max-content;
+      padding:6px 10px;border-radius:999px;border:1px solid rgba(91,219,151,.25);
+      color:var(--green);font-weight:800;font-size:.78rem;background:rgba(42,171,110,.1)
+    }
+    .status.dev{color:#ffd889;border-color:rgba(255,203,103,.28);background:rgba(171,118,42,.1)}
+    .status.live{color:#9fd3ff;border-color:rgba(100,180,255,.3);background:rgba(46,126,195,.1)}
+    .dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 9px currentColor}
+    .project-card h3{font-size:1.65rem;line-height:1.15;margin:18px 0 12px}
+    .project-card p{color:#bed0df}
+    .tags{display:flex;flex-wrap:wrap;gap:7px;margin:19px 0 0}
+    .tag{font-size:.76rem;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:#d6edff}
+    .project-links{margin-top:auto;padding-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+    .mini-link{font-weight:800;color:#8fcfff}
+    .preview{
+      margin-top:22px;padding:9px;border-radius:14px;background:#fff
+    }
+    .preview img{display:block;width:100%;border-radius:9px}
+
+    /* VALUE */
+    .value{background:var(--bg2)}
+    .value-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+    .value-list{display:grid;gap:13px}
+    .value-item{
+      display:grid;grid-template-columns:42px 1fr;gap:14px;padding:18px;
+      border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)
+    }
+    .value-icon{
+      width:42px;height:42px;border-radius:12px;background:rgba(29,143,255,.12);
+      display:grid;place-items:center;color:var(--blue2);font-weight:900
+    }
+    .value-item h3{font-size:1rem;margin-bottom:3px}
+    .value-item p{color:var(--muted);font-size:.9rem}
+    .process{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .step{padding:20px;border:1px solid var(--line);border-radius:16px;background:#0d1f32}
+    .step b{display:block;color:var(--blue2);font-size:.8rem;margin-bottom:8px}
+    .step h3{font-size:1.05rem;margin-bottom:7px}
+    .step p{color:var(--muted);font-size:.9rem}
+
+    /* CONTACT */
+    .contact{text-align:center}
+    .contact .section-copy{margin:0 auto}
+    .contact-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+    footer{
+      border-top:1px solid #14263a;padding:28px 20px;text-align:center;color:#75899e;
+      background:#040a12;font-size:.9rem
     }
 
-    .workflow-step::after {
-        display: none;
-    }
-}
-
-
-/* MOBILE */
-
-@media screen and (max-width:760px) {
-
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
+    @media(min-width:981px) and (max-height:760px){
+      .nav{min-height:104px}
+      .brand{width:320px;height:104px;justify-content:center}
+      .brand img{width:175px;transform:translateX(-10px)}
+      .hero-grid{padding-top:128px;padding-bottom:24px}
+      .hero h1{font-size:clamp(2.8rem,4.6vw,4rem);margin:9px 0 14px}
+      .hero-copy{font-size:.96rem;line-height:1.52}
+      .hero-actions{margin-top:17px}
+      .hero-proof{margin-top:14px}
+      .button{min-height:44px}
+      .proof{padding:6px 10px}
     }
 
-    .hero-header {
-        min-height: 100svh;
-
-        background:
-            linear-gradient(
-                rgba(3,16,31,.74),
-                rgba(3,16,31,.92)
-            ),
-            url("banner.png");
-
-        background-size: cover;
-        background-position: 67% center;
+    @media(max-width:1180px){
+      .container{width:min(var(--max),calc(100% - 56px))}
+      .brand{width:280px;height:128px;padding-top:4px;justify-content:center}
+      .brand img{width:178px;height:auto;max-width:none;max-height:none;transform:translateX(-10px)}
+      .hero-grid{padding-top:155px;padding-bottom:40px}
+      .hero h1{max-width:620px}
+      .hero-copy{max-width:600px}
     }
 
-    nav {
-        width: 100%;
-
-        padding:
-            5px
-            14px
-            2px;
-
-        flex-direction: column;
-        align-items: center;
-
-        gap: 3px;
+    @media(max-width:980px){
+      .service-grid{grid-template-columns:repeat(2,1fr)}
+      .project-grid{grid-template-columns:1fr 1fr}
+      .project-card.featured{grid-column:span 2}
+      .value-grid{grid-template-columns:1fr}
+      .hero-grid{grid-template-columns:1fr}
     }
-
-    .site-logo {
-        width: 100%;
-        justify-content: center;
+    @media(max-width:760px){
+      .container{width:min(100% - 28px,var(--max))}
+      section{padding:65px 0}
+      .nav-wrap{padding:8px 0}
+      .nav{align-items:flex-start;min-height:95px}
+      .brand{width:125px;height:82px;padding-top:0}
+      .brand img{width:116px;height:auto;max-width:none;max-height:none;transform:translateX(-7px)}
+      .nav-right{gap:6px;padding:5px 7px;border-radius:11px}
+      .nav-links{display:none}
+      .hero{min-height:720px;background:
+        linear-gradient(rgba(3,14,27,.78),rgba(3,14,27,.94)),
+        url("banner.png") 66% center/cover no-repeat}
+      .hero-grid{padding:145px 0 58px}
+      .hero h1{font-size:clamp(2.6rem,13vw,3.8rem);max-width:100%}
+      .hero-copy{font-size:1rem}
+      .hero-actions{flex-direction:column}
+      .button{width:100%}
+      .service-grid,.project-grid,.process{grid-template-columns:1fr}
+      .project-card.featured{grid-column:auto}
+      .projects-head{display:block}
+      .projects-head .section-copy{margin-top:8px}
     }
-
-    .site-logo img {
-        width: 112px;
-    }
-
-    .nav-right {
-        position: static;
-
-        width: 100%;
-
-        padding:
-            5px
-            7px;
-
-        gap: 4px;
-
-        flex-direction: column;
-
-        border-radius: 11px;
-    }
-
-    .nav-links {
-        width: 100%;
-
-        justify-content: center;
-        flex-wrap: wrap;
-
-        gap:
-            4px
-            11px;
-    }
-
-    .nav-links a {
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    .language-switch {
-        padding: 2px;
-    }
-
-    .language-switch button {
-        padding: 3px 8px;
-        font-size: 12px;
-    }
-
-    .hero {
-        width: 100%;
-        max-width: 100%;
-
-        padding:
-            12px
-            18px
-            30px;
-
-        text-align: center;
-    }
-
-    .hero-content {
-        width: 100%;
-        max-width: 100%;
-
-        margin: auto;
-    }
-
-    .badge {
-        max-width: 100%;
-
-        padding:
-            5px
-            10px;
-
-        margin-bottom: 10px;
-
-        font-size: 11px;
-
-        line-height: 1.3;
-
-        white-space: normal;
-    }
-
-    h1 {
-        width: 100%;
-        max-width: 100%;
-
-        font-size: 29px;
-
-        line-height: 1.04;
-
-        letter-spacing: -.7px;
-
-        margin-bottom: 10px;
-    }
-
-    .hero p {
-        width: 100%;
-        max-width: 100%;
-
-        font-size: 13.5px;
-
-        line-height: 1.42;
-
-        margin-bottom: 10px;
-    }
-
-    .buttons {
-        width: 100%;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    .button {
-        width: 100%;
-
-        padding:
-            9px
-            14px;
-
-        font-size: 13px;
-
-        text-align: center;
-    }
-
-    section {
-        width: 100%;
-        max-width: 100%;
-
-        padding:
-            55px
-            18px;
-
-        overflow-x: hidden;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 100%;
-
-        min-width: 0;
-    }
-
-    .section-title {
-        font-size: 30px;
-        line-height: 1.15;
-    }
-
-    .section-description {
-        font-size: 16px;
-
-        margin-bottom: 32px;
-    }
-
-    .service-grid {
-        grid-template-columns: 1fr;
-
-        gap: 16px;
-    }
-
-    .service-card {
-        min-width: 0;
-        min-height: auto;
-
-        padding: 24px;
-    }
-
-    .project-card {
-        width: 100%;
-        min-width: 0;
-
-        padding: 22px;
-    }
-
-    .project-card h3 {
-        font-size: 24px;
-        line-height: 1.2;
-    }
-
-    .project-card > p {
-        font-size: 15px;
-    }
-
-    .feature {
-        font-size: 12px;
-    }
-
-    .project-action {
-        width: 100%;
-    }
-
-    .project-action .button {
-        width: 100%;
-    }
-
-    .project-screenshot {
-        width:
-            calc(
-                100% + 16px
-            );
-
-        margin-left: -8px;
-        margin-right: -8px;
-
-        padding: 4px;
-    }
-
-    .project-screenshot img {
-        width: 100%;
-        height: auto;
-    }
-
-    .screenshot-caption {
-        font-size: 13px;
-        line-height: 1.55;
-    }
-
-    .contact p {
-        font-size: 16px;
-    }
-
-    footer {
-        width: 100%;
-
-        padding:
-            22px
-            12px;
-
-        font-size: 11.5px;
-
-        line-height: 1.5;
-    }
-}
-
-
-/* =====================================================
-   MOBILE STABILITY FIX
-   DOIT RESTER A LA FIN DU CSS
-===================================================== */
-
-@media screen and (max-width:760px) {
-
-    .workflow {
-        display: block !important;
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        overflow-x: hidden !important;
-    }
-
-    .workflow .container {
-        display: block !important;
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        min-width: 0 !important;
-
-        overflow-x: hidden !important;
-    }
-
-    .workflow-grid {
-        display: grid !important;
-
-        grid-template-columns:
-            minmax(0,1fr) !important;
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        min-width: 0 !important;
-
-        gap: 16px !important;
-    }
-
-    .workflow-step {
-        display: block !important;
-
-        width: 100% !important;
-        max-width: 100% !important;
-
-        min-width: 0 !important;
-        min-height: auto !important;
-
-        padding: 23px !important;
-    }
-
-    .workflow-step::after {
-        content: none !important;
-
-        display: none !important;
-    }
-}
-
-</style>
+  </style>
 </head>
-
-
 <body>
 
-
-<header class="hero-header">
-
-<nav>
-
-<a class="site-logo" href="#">
-    <img src="logo.png" alt="Mamourart">
-</a>
-
-
-<div class="nav-right">
-
-<div class="nav-links">
-
-<a href="#services" data-i18n="navServices">
-Services
-</a>
-
-<a href="#project" data-i18n="navProject">
-Projet
-</a>
-
-<a href="#workflow" data-i18n="navWorkflow">
-Fonctionnement
-</a>
-
-<a href="#contact" data-i18n="navContact">
-Contact
-</a>
-
-</div>
-
-
-<div class="language-switch">
-
-<button
-    id="enButton"
-    onclick="changeLanguage('en')"
->
-EN
-</button>
-
-<button
-    id="frButton"
-    class="active"
-    onclick="changeLanguage('fr')"
->
-FR
-</button>
-
-</div>
-
-</div>
-
-</nav>
-
-
-<div class="hero">
-
-<div class="hero-content">
-
-
-<div class="badge" data-i18n="badge">
-Développement logiciel • Automatisation IA
-</div>
-
-
-<h1 data-i18n-html="heroTitle">
-
-Créons des
-
-<span>
-solutions logicielles concrètes.
-</span>
-
-</h1>
-
-
-<p data-i18n="heroText">
-
-Mamourart développe des outils d'automatisation,
-des logiciels métiers et des solutions numériques
-conçues pour simplifier les opérations,
-réduire les tâches répétitives
-et améliorer la productivité.
-
-</p>
-
-
-<div class="buttons">
-
-<a
-    class="button button-primary"
-    href="#project"
-    data-i18n="viewProject"
->
-Voir notre projet
-</a>
-
-<a
-    class="button button-secondary"
-    href="mailto:contact@mamourart.com"
-    data-i18n="contactUs"
->
-Nous contacter
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</header>
-
-
-
-<section class="services" id="services">
-
-<div class="container">
-
-<div
-    class="section-label"
-    data-i18n="servicesLabel"
->
-Services
-</div>
-
-
-<h2
-    class="section-title"
-    data-i18n="whatWeBuild"
->
-Nos solutions
-</h2>
-
-
-<p
-    class="section-description"
-    data-i18n="servicesText"
->
-Des technologies pratiques conçues
-pour répondre à des besoins opérationnels réels.
-</p>
-
-
-<div class="service-grid">
-
-
-<article class="service-card">
-
-<span class="service-number">
-01
-</span>
-
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-
-<circle
-    cx="12"
-    cy="12"
-    r="3"
-></circle>
-
-<path
-    d="M4 12a8 8 0 0 1 8-8"
-></path>
-
-<path
-    d="M20 12a8 8 0 0 1-8 8"
-></path>
-
-<path d="M12 4v3"></path>
-<path d="M12 17v3"></path>
-
-</svg>
-
-</div>
-
-
-<h3 data-i18n="businessAutomation">
-Automatisation métier
-</h3>
-
-
-<p data-i18n="businessText">
-Automatisation des tâches répétitives,
-du traitement des informations
-et des flux opérationnels.
-</p>
-
-</article>
-
-
-
-<article class="service-card">
-
-<span class="service-number">
-02
-</span>
-
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-
-<rect
-    x="3"
-    y="4"
-    width="18"
-    height="14"
-    rx="2"
-></rect>
-
-<path d="M8 21h8"></path>
-<path d="M12 18v3"></path>
-<path d="M9 9l-2 2 2 2"></path>
-<path d="M15 9l2 2-2 2"></path>
-
-</svg>
-
-</div>
-
-
-<h3 data-i18n="softwareDevelopment">
-Développement logiciel
-</h3>
-
-
-<p data-i18n="softwareText">
-Création d'applications desktop,
-web et métiers adaptées aux besoins réels.
-</p>
-
-</article>
-
-
-
-<article class="service-card">
-
-<span class="service-number">
-03
-</span>
-
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-
-<path
-    d="M9 4a4 4 0 0 0-4 4v1a4 4 0 0 0 0 6v1a4 4 0 0 0 4 4"
-></path>
-
-<path
-    d="M15 4a4 4 0 0 1 4 4v1a4 4 0 0 1 0 6v1a4 4 0 0 1-4 4"
-></path>
-
-<path d="M9 4v16"></path>
-<path d="M15 4v16"></path>
-
-</svg>
-
-</div>
-
-
-<h3 data-i18n="aiApis">
-IA & APIs
-</h3>
-
-
-<p data-i18n="aiText">
-Intégration d'APIs modernes,
-d'intelligence artificielle
-et de workflows automatisés.
-</p>
-
-</article>
-
-
-
-<article class="service-card">
-
-<span class="service-number">
-04
-</span>
-
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-
-<path d="M3 6h11v10H3z"></path>
-
-<path d="M14 9h4l3 3v4h-7z"></path>
-
-<circle
-    cx="7"
-    cy="18"
-    r="2"
-></circle>
-
-<circle
-    cx="18"
-    cy="18"
-    r="2"
-></circle>
-
-</svg>
-
-</div>
-
-
-<h3 data-i18n="transportTechnology">
-Technologies transport
-</h3>
-
-
-<p data-i18n="transportText">
-Développement d'outils
-pour les missions de transport,
-l'affectation des chauffeurs
-et les opérations de flotte.
-</p>
-
-</article>
-
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<section class="project" id="project">
-
-<div class="container">
-
-<div
-    class="section-label"
-    data-i18n="portfolio"
->
-Portfolio
-</div>
-
-
-<h2
-    class="section-title"
-    data-i18n="featuredProject"
->
-Projet principal
-</h2>
-
-
-<p
-    class="section-description"
-    data-i18n="projectIntro"
->
-Un prototype d'automatisation
-conçu pour les opérations de transport.
-</p>
-
-
-<div class="project-card">
-
-
-<div class="project-status">
-
-<span class="project-status-dot"></span>
-
-<span data-i18n="projectStatus">
-Prototype fonctionnel
-</span>
-
-</div>
-
-
-<h3>
-Mamourart Transport Automation
-</h3>
-
-
-<p data-i18n="projectDescription">
-
-Un système de gestion des missions de transport
-qui traite les données,
-vérifie la disponibilité des chauffeurs,
-propose le chauffeur disponible le plus adapté
-et ajoute une validation humaine
-avant l'affectation finale.
-
-</p>
-
-
-<div class="features">
-
-<span
-    class="feature"
-    data-i18n="featureDriver"
->
-Affectation chauffeur
-</span>
-
-<span
-    class="feature"
-    data-i18n="featureDistance"
->
-Calcul de distance
-</span>
-
-<span
-    class="feature"
-    data-i18n="featureApproval"
->
-Validation humaine
-</span>
-
-<span
-    class="feature"
-    data-i18n="featureReassignment"
->
-Réaffectation automatique
-</span>
-
-<span
-    class="feature"
-    data-i18n="featureDashboard"
->
-Tableau de bord
-</span>
-
-<span class="feature">
-Python
-</span>
-
-</div>
-
-
-<div class="project-action">
-
-<a
-    class="button button-primary"
-    href="https://github.com/kamel-hamdi-dev/mamourart-transport-automation"
-    target="_blank"
-    rel="noopener noreferrer"
-    data-i18n="githubProject"
->
-Voir le projet sur GitHub
-</a>
-
-</div>
-
-
-<div class="project-screenshot">
-
-<img
-    src="dashboard.png"
-    alt="Mamourart Transport Automation Dashboard"
-    loading="lazy"
->
-
-</div>
-
-
-<div
-    class="screenshot-caption"
-    data-i18n="screenshotCaption"
->
-
-Démo réelle du prototype :
-affectation automatique,
-validation humaine
-et réaffectation des chauffeurs.
-
-</div>
-
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<section class="workflow" id="workflow">
-
-<div class="container">
-
-<div
-    class="section-label"
-    data-i18n="workflow"
->
-Fonctionnement
-</div>
-
-
-<h2
-    class="section-title"
-    data-i18n="howWorks"
->
-Comment fonctionne l'automatisation
-</h2>
-
-
-<p
-    class="section-description"
-    data-i18n="workflowText"
->
-
-Le prototype combine
-la sélection automatique des chauffeurs
-avec une validation humaine
-avant l'affectation finale.
-
-</p>
-
-
-<div class="workflow-grid">
-
-
-<div class="workflow-step">
-
-<div class="step-number">
-1
-</div>
-
-<h3 data-i18n="step1">
-Réception de la mission
-</h3>
-
-<p data-i18n="step1Text">
-Les informations de la mission
-sont lues et structurées automatiquement.
-</p>
-
-</div>
-
-
-
-<div class="workflow-step">
-
-<div class="step-number">
-2
-</div>
-
-<h3 data-i18n="step2">
-Recherche du chauffeur
-</h3>
-
-<p data-i18n="step2Text">
-Le système vérifie
-la disponibilité,
-la ville et la distance.
-</p>
-
-</div>
-
-
-
-<div class="workflow-step">
-
-<div class="step-number">
-3
-</div>
-
-<h3 data-i18n="step3">
-Validation humaine
-</h3>
-
-<p data-i18n="step3Text">
-Un responsable peut
-approuver ou refuser
-la proposition.
-</p>
-
-</div>
-
-
-
-<div class="workflow-step">
-
-<div class="step-number">
-4
-</div>
-
-<h3 data-i18n="step4">
-Alternative automatique
-</h3>
-
-<p data-i18n="step4Text">
-En cas de refus,
-le système propose automatiquement
-le prochain chauffeur adapté.
-</p>
-
-</div>
-
-
-
-<div class="workflow-step">
-
-<div class="step-number">
-5
-</div>
-
-<h3 data-i18n="step5">
-Affectation finale
-</h3>
-
-<p data-i18n="step5Text">
-Le chauffeur approuvé
-devient l'affectation finale
-de la mission.
-</p>
-
-</div>
-
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<section class="contact" id="contact">
-
-<div class="container">
-
-<div
-    class="section-label"
-    data-i18n="contactLabel"
->
-Contact
-</div>
-
-
-<h2
-    class="section-title"
-    data-i18n="contactTitle"
->
-Construisons quelque chose d'utile
-</h2>
-
-
-<p data-i18n="contactText">
-
-Vous êtes intéressé par Mamourart,
-l'automatisation du transport,
-l'IA ou le développement logiciel ?
-Contactez-nous.
-
-</p>
-
-
-<div class="buttons">
-
-<a
-    class="button button-primary"
-    href="mailto:contact@mamourart.com"
->
-contact@mamourart.com
-</a>
-
-
-<a
-    class="button button-secondary"
-    href="https://www.linkedin.com/in/kamel-hamdi-dev/"
-    target="_blank"
-    rel="noopener noreferrer"
->
-LinkedIn
-</a>
-
-
-<a
-    class="button button-secondary"
-    href="https://github.com/kamel-hamdi-dev"
-    target="_blank"
-    rel="noopener noreferrer"
->
-GitHub
-</a>
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<footer data-i18n="footer">
-© 2026 Mamourart. Développement logiciel & Automatisation IA.
-</footer>
-
-
-
-<script>
-
-const translations = {
-
-fr: {
-
-navServices: "Services",
-
-navProject: "Projet",
-
-navWorkflow: "Fonctionnement",
-
-navContact: "Contact",
-
-badge:
-"Développement logiciel • Automatisation IA",
-
-heroTitle:
-`Créons des <span>solutions logicielles concrètes.</span>`,
-
-heroText:
-"Mamourart développe des outils d'automatisation, des logiciels métiers et des solutions numériques conçues pour simplifier les opérations, réduire les tâches répétitives et améliorer la productivité.",
-
-viewProject:
-"Voir notre projet",
-
-contactUs:
-"Nous contacter",
-
-servicesLabel:
-"Services",
-
-whatWeBuild:
-"Nos solutions",
-
-servicesText:
-"Des technologies pratiques conçues pour répondre à des besoins opérationnels réels.",
-
-businessAutomation:
-"Automatisation métier",
-
-businessText:
-"Automatisation des tâches répétitives, du traitement des informations et des flux opérationnels.",
-
-softwareDevelopment:
-"Développement logiciel",
-
-softwareText:
-"Création d'applications desktop, web et métiers adaptées aux besoins réels.",
-
-aiApis:
-"IA & APIs",
-
-aiText:
-"Intégration d'APIs modernes, d'intelligence artificielle et de workflows automatisés.",
-
-transportTechnology:
-"Technologies transport",
-
-transportText:
-"Développement d'outils pour les missions de transport, l'affectation des chauffeurs et les opérations de flotte.",
-
-portfolio:
-"Portfolio",
-
-featuredProject:
-"Projet principal",
-
-projectIntro:
-"Un prototype d'automatisation conçu pour les opérations de transport.",
-
-projectStatus:
-"Prototype fonctionnel",
-
-projectDescription:
-"Un système de gestion des missions de transport qui traite les données, vérifie la disponibilité des chauffeurs, propose le chauffeur disponible le plus adapté et ajoute une validation humaine avant l'affectation finale.",
-
-featureDriver:
-"Affectation chauffeur",
-
-featureDistance:
-"Calcul de distance",
-
-featureApproval:
-"Validation humaine",
-
-featureReassignment:
-"Réaffectation automatique",
-
-featureDashboard:
-"Tableau de bord",
-
-screenshotCaption:
-"Démo réelle du prototype : affectation automatique, validation humaine et réaffectation des chauffeurs.",
-
-githubProject:
-"Voir le projet sur GitHub",
-
-workflow:
-"Fonctionnement",
-
-howWorks:
-"Comment fonctionne l'automatisation",
-
-workflowText:
-"Le prototype combine la sélection automatique des chauffeurs avec une validation humaine avant l'affectation finale.",
-
-step1:
-"Réception de la mission",
-
-step1Text:
-"Les informations de la mission sont lues et structurées automatiquement.",
-
-step2:
-"Recherche du chauffeur",
-
-step2Text:
-"Le système vérifie la disponibilité, la ville et la distance.",
-
-step3:
-"Validation humaine",
-
-step3Text:
-"Un responsable peut approuver ou refuser la proposition.",
-
-step4:
-"Alternative automatique",
-
-step4Text:
-"En cas de refus, le système propose automatiquement le prochain chauffeur adapté.",
-
-step5:
-"Affectation finale",
-
-step5Text:
-"Le chauffeur approuvé devient l'affectation finale de la mission.",
-
-contactLabel:
-"Contact",
-
-contactTitle:
-"Construisons quelque chose d'utile",
-
-contactText:
-"Vous êtes intéressé par Mamourart, l'automatisation du transport, l'IA ou le développement logiciel ? Contactez-nous.",
-
-footer:
-"© 2026 Mamourart. Développement logiciel & Automatisation IA."
-
-},
-
-
-en: {
-
-navServices:
-"Services",
-
-navProject:
-"Project",
-
-navWorkflow:
-"How It Works",
-
-navContact:
-"Contact",
-
-badge:
-"Software Development • AI Automation",
-
-heroTitle:
-`Building practical <span>software solutions.</span>`,
-
-heroText:
-"Mamourart develops automation tools, business software and real-world digital solutions designed to simplify operations, reduce repetitive work and improve productivity.",
-
-viewProject:
-"View Our Project",
-
-contactUs:
-"Contact Us",
-
-servicesLabel:
-"Services",
-
-whatWeBuild:
-"What We Build",
-
-servicesText:
-"Practical technology designed around real operational needs.",
-
-businessAutomation:
-"Business Automation",
-
-businessText:
-"Automating repetitive workflows, information processing and operational tasks.",
-
-softwareDevelopment:
-"Software Development",
-
-softwareText:
-"Building desktop, web and business applications based on real-world requirements.",
-
-aiApis:
-"AI & APIs",
-
-aiText:
-"Connecting software with modern APIs, intelligent automation and AI-powered workflows.",
-
-transportTechnology:
-"Transport Technology",
-
-transportText:
-"Developing tools for transport missions, driver assignment and fleet operations.",
-
-portfolio:
-"Portfolio",
-
-featuredProject:
-"Featured Project",
-
-projectIntro:
-"A real-world automation prototype designed for transport operations.",
-
-projectStatus:
-"Functional prototype",
-
-projectDescription:
-"A transport mission management system that processes mission data, checks driver availability, proposes the nearest suitable driver and includes a human approval workflow before final assignment.",
-
-featureDriver:
-"Driver Assignment",
-
-featureDistance:
-"Distance Calculation",
-
-featureApproval:
-"Human Approval",
-
-featureReassignment:
-"Automatic Reassignment",
-
-featureDashboard:
-"Mission Dashboard",
-
-screenshotCaption:
-"Live prototype demo: automatic assignment, human approval and driver reassignment.",
-
-githubProject:
-"View Project on GitHub",
-
-workflow:
-"Workflow",
-
-howWorks:
-"How The Automation Works",
-
-workflowText:
-"The prototype combines automatic driver selection with human control before the final assignment.",
-
-step1:
-"Receive Mission",
-
-step1Text:
-"Transport mission information is read and structured automatically.",
-
-step2:
-"Find Driver",
-
-step2Text:
-"The system checks availability, city and distance.",
-
-step3:
-"Human Approval",
-
-step3Text:
-"A manager can approve or reject the proposed assignment.",
-
-step4:
-"Automatic Alternative",
-
-step4Text:
-"If rejected, the next suitable driver is proposed automatically.",
-
-step5:
-"Final Assignment",
-
-step5Text:
-"The approved driver becomes the final assignment for the mission.",
-
-contactLabel:
-"Contact",
-
-contactTitle:
-"Let's Build Something Useful",
-
-contactText:
-"Interested in Mamourart, transport automation, AI automation or software development? Get in touch.",
-
-footer:
-"© 2026 Mamourart. Software Development & AI Automation."
-
-}
-
-};
-
-
-function changeLanguage(language) {
-
-document
-.querySelectorAll("[data-i18n]")
-.forEach(element => {
-
-const key =
-element.getAttribute("data-i18n");
-
-if (
-translations[language] &&
-translations[language][key]
-) {
-
-element.textContent =
-translations[language][key];
-
-}
-
-});
-
-
-document
-.querySelectorAll("[data-i18n-html]")
-.forEach(element => {
-
-const key =
-element.getAttribute("data-i18n-html");
-
-if (
-translations[language] &&
-translations[language][key]
-) {
-
-element.innerHTML =
-translations[language][key];
-
-}
-
-});
-
-
-document.documentElement.lang =
-language;
-
-
-document
-.getElementById("enButton")
-.classList
-.toggle(
-"active",
-language === "en"
-);
-
-
-document
-.getElementById("frButton")
-.classList
-.toggle(
-"active",
-language === "fr"
-);
-
-
-localStorage.setItem(
-"mamourart-language",
-language
-);
-
-}
-
-
-const savedLanguage =
-localStorage.getItem(
-"mamourart-language"
-);
-
-
-if (savedLanguage) {
-
-changeLanguage(savedLanguage);
-
-} else {
-
-const browserLanguage =
-navigator.language
-.toLowerCase();
-
-
-if (
-browserLanguage.startsWith("fr")
-) {
-
-changeLanguage("fr");
-
-} else {
-
-changeLanguage("en");
-
-}
-
-}
-
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/service-worker.js");
-    });
-}
-</script>
-
+  <div class="nav-wrap">
+    <div class="container">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="Mamourart home">
+          <img src="logo.png" alt="Mamourart">
+        </a>
+        <div class="nav-right">
+          <div class="nav-links">
+            <a href="#services" data-i18n="navServices">Services</a>
+            <a href="#projects" data-i18n="navProjects">Projets</a>
+            <a href="#approach" data-i18n="navApproach">Méthode</a>
+            <a href="#contact" data-i18n="navContact">Contact</a>
+          </div>
+          <div class="lang" aria-label="Language selector">
+            <button id="frButton" class="active" type="button" onclick="setLanguage('fr')">FR</button>
+            <button id="enButton" type="button" onclick="setLanguage('en')">EN</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow" data-i18n="heroEyebrow">Software • IA • Automatisation</div>
+        <h1 data-i18n-html="heroTitle">Des logiciels qui transforment les <span>opérations réelles.</span></h1>
+        <p class="hero-copy" data-i18n="heroText">
+          Mamourart conçoit des logiciels métiers, des automatisations IA et des intégrations API pour réduire les tâches répétitives et rendre les opérations plus simples, rapides et fiables.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#projects" data-i18n="viewProjects">Découvrir nos projets</a>
+          <a class="button secondary" href="mailto:contact@mamourart.com" data-i18n="discussProject">Discuter d'un projet</a>
+        </div>
+        <div class="hero-proof">
+          <span class="proof" data-i18n="proof1">Automatisation métier</span>
+          <span class="proof" data-i18n="proof2">Développement logiciel</span>
+          <span class="proof">APIs & AI</span>
+          <span class="proof" data-i18n="proof4">Outils transport</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="services" id="services">
+    <div class="container">
+      <div class="eyebrow" data-i18n="servicesLabel">Services</div>
+      <h2 class="section-title" data-i18n="servicesTitle">Construire, automatiser, intégrer.</h2>
+      <p class="section-copy" data-i18n="servicesCopy">
+        Des solutions concrètes conçues autour de besoins opérationnels réels.
+      </p>
+
+      <div class="service-grid">
+        <article class="service">
+          <span class="service-num">01</span>
+          <div class="icon">⚙</div>
+          <h3 data-i18n="service1Title">Automatisation métier</h3>
+          <p data-i18n="service1Text">Automatiser les tâches répétitives, les validations, le traitement des données et les flux opérationnels.</p>
+        </article>
+        <article class="service">
+          <span class="service-num">02</span>
+          <div class="icon">⌘</div>
+          <h3 data-i18n="service2Title">Développement logiciel</h3>
+          <p data-i18n="service2Text">Créer des applications web, desktop et outils métiers adaptés à des processus précis.</p>
+        </article>
+        <article class="service">
+          <span class="service-num">03</span>
+          <div class="icon">AI</div>
+          <h3>IA & APIs</h3>
+          <p data-i18n="service3Text">Connecter les applications à l'IA, aux APIs modernes et aux workflows automatisés.</p>
+        </article>
+        <article class="service">
+          <span class="service-num">04</span>
+          <div class="icon">↗</div>
+          <h3 data-i18n="service4Title">Technologies transport</h3>
+          <p data-i18n="service4Text">Développer des outils pour les missions, chauffeurs, affectations et opérations de flotte.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="container">
+      <div class="projects-head">
+        <div>
+          <div class="eyebrow">Portfolio</div>
+          <h2 class="section-title" data-i18n="projectsTitle">Des projets construits autour de problèmes réels.</h2>
+        </div>
+        <p class="section-copy" data-i18n="projectsCopy">
+          Le portfolio Mamourart évolue progressivement avec des prototypes fonctionnels, des produits en développement et des outils déjà publiés.
+        </p>
+      </div>
+
+      <div class="project-grid">
+        <article class="project-card featured">
+          <div class="status"><span class="dot"></span><span data-i18n="transportStatus">Prototype fonctionnel</span></div>
+          <h3>Mamourart Transport Automation</h3>
+          <p data-i18n="transportText">
+            Gestion de missions de transport avec sélection du chauffeur, calcul de distance, validation humaine et réaffectation automatique.
+          </p>
+          <div class="tags">
+            <span class="tag">Python</span><span class="tag">PostgreSQL</span>
+            <span class="tag" data-i18n="tagApproval">Human Approval</span>
+            <span class="tag" data-i18n="tagAutomation">Automation</span>
+          </div>
+          <div class="project-links">
+            <a class="mini-link" href="https://github.com/kamel-hamdi-dev/mamourart-transport-automation" target="_blank" rel="noopener" data-i18n="githubLink">Voir sur GitHub →</a>
+          </div>
+          <div class="preview">
+            <img src="dashboard.png" alt="Mamourart Transport Automation dashboard" loading="lazy">
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="status dev"><span class="dot"></span><span data-i18n="desktopStatus">En développement</span></div>
+          <h3>Mamourart Desktop Agent</h3>
+          <p data-i18n="desktopText">
+            Assistant logiciel orienté agent : comprendre le contexte, expliquer les erreurs, proposer des corrections et préparer des actions contrôlées par l'utilisateur.
+          </p>
+          <div class="tags">
+            <span class="tag">VS Code</span><span class="tag">AI Agents</span>
+            <span class="tag">Desktop</span><span class="tag">Human Approval</span>
+          </div>
+          <div class="project-links">
+            <span class="mini-link" data-i18n="comingSoon">Présentation bientôt disponible</span>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="status live"><span class="dot"></span><span data-i18n="websiteStatus">En ligne</span></div>
+          <h3>Mamourart Website</h3>
+          <p data-i18n="websiteText">
+            Site officiel et portfolio évolutif de Mamourart, conçu pour présenter les services, projets et futures solutions.
+          </p>
+          <div class="tags">
+            <span class="tag">Responsive</span><span class="tag">FR / EN</span>
+            <span class="tag">SEO</span><span class="tag">PWA</span>
+          </div>
+          <div class="project-links">
+            <a class="mini-link" href="https://www.mamourart.com/" target="_blank" rel="noopener" data-i18n="visitSite">Visiter le site →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="value" id="approach">
+    <div class="container value-grid">
+      <div>
+        <div class="eyebrow" data-i18n="approachLabel">Approche</div>
+        <h2 class="section-title" data-i18n="approachTitle">Du problème opérationnel à une solution utilisable.</h2>
+        <p class="section-copy" data-i18n="approachCopy">
+          Nous privilégions les prototypes testables, les intégrations simples et le contrôle humain avant toute automatisation sensible.
+        </p>
+        <div class="value-list" style="margin-top:28px">
+          <div class="value-item">
+            <div class="value-icon">1</div>
+            <div><h3 data-i18n="value1Title">Comprendre le flux réel</h3><p data-i18n="value1Text">Identifier les tâches, données, décisions et points de friction avant de coder.</p></div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">2</div>
+            <div><h3 data-i18n="value2Title">Construire un prototype utile</h3><p data-i18n="value2Text">Valider rapidement la logique métier avec une version fonctionnelle et mesurable.</p></div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">3</div>
+            <div><h3 data-i18n="value3Title">Garder l'humain en contrôle</h3><p data-i18n="value3Text">Utiliser l'automatisation pour assister les décisions, avec validation lorsque c'est nécessaire.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="process">
+        <div class="step"><b>01</b><h3 data-i18n="step1Title">Analyser</h3><p data-i18n="step1Text">Processus, données, contraintes et résultat attendu.</p></div>
+        <div class="step"><b>02</b><h3 data-i18n="step2Title">Prototyper</h3><p data-i18n="step2Text">Créer une première version testable rapidement.</p></div>
+        <div class="step"><b>03</b><h3 data-i18n="step3Title">Valider</h3><p data-i18n="step3Text">Tester avec des cas réels et corriger les points faibles.</p></div>
+        <div class="step"><b>04</b><h3 data-i18n="step4Title">Évoluer</h3><p data-i18n="step4Text">Ajouter intégrations, IA, dashboard et automatisations avancées.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="eyebrow" data-i18n="contactLabel">Contact</div>
+      <h2 class="section-title" data-i18n="contactTitle">Vous avez un processus à simplifier ?</h2>
+      <p class="section-copy" data-i18n="contactCopy">
+        Parlons de votre besoin et voyons si un logiciel, une automatisation ou une intégration IA peut apporter une amélioration concrète.
+      </p>
+      <div class="contact-actions">
+        <a class="button primary" href="mailto:contact@mamourart.com">contact@mamourart.com</a>
+        <a class="button ghost" href="https://www.linkedin.com/in/kamel-hamdi-dev/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="button ghost" href="https://github.com/kamel-hamdi-dev" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer data-i18n="footer">© 2026 Mamourart. Développement logiciel & Automatisation IA.</footer>
+
+  <script>
+    const translations = {
+      fr:{
+        navServices:"Services",navProjects:"Projets",navApproach:"Méthode",navContact:"Contact",
+        heroEyebrow:"Software • IA • Automatisation",
+        heroTitle:'Des logiciels qui transforment les <span>opérations réelles.</span>',
+        heroText:"Mamourart conçoit des logiciels métiers, des automatisations IA et des intégrations API pour réduire les tâches répétitives et rendre les opérations plus simples, rapides et fiables.",
+        viewProjects:"Découvrir nos projets",discussProject:"Discuter d'un projet",
+        proof1:"Automatisation métier",proof2:"Développement logiciel",proof4:"Outils transport",
+        servicesLabel:"Services",servicesTitle:"Construire, automatiser, intégrer.",
+        servicesCopy:"Des solutions concrètes conçues autour de besoins opérationnels réels.",
+        service1Title:"Automatisation métier",service1Text:"Automatiser les tâches répétitives, les validations, le traitement des données et les flux opérationnels.",
+        service2Title:"Développement logiciel",service2Text:"Créer des applications web, desktop et outils métiers adaptés à des processus précis.",
+        service3Text:"Connecter les applications à l'IA, aux APIs modernes et aux workflows automatisés.",
+        service4Title:"Technologies transport",service4Text:"Développer des outils pour les missions, chauffeurs, affectations et opérations de flotte.",
+        projectsTitle:"Des projets construits autour de problèmes réels.",
+        projectsCopy:"Le portfolio Mamourart évolue progressivement avec des prototypes fonctionnels, des produits en développement et des outils déjà publiés.",
+        transportStatus:"Prototype fonctionnel",transportText:"Gestion de missions de transport avec sélection du chauffeur, calcul de distance, validation humaine et réaffectation automatique.",
+        tagApproval:"Validation humaine",tagAutomation:"Automatisation",githubLink:"Voir sur GitHub →",
+        desktopStatus:"En développement",desktopText:"Assistant logiciel orienté agent : comprendre le contexte, expliquer les erreurs, proposer des corrections et préparer des actions contrôlées par l'utilisateur.",
+        comingSoon:"Présentation bientôt disponible",websiteStatus:"En ligne",
+        websiteText:"Site officiel et portfolio évolutif de Mamourart, conçu pour présenter les services, projets et futures solutions.",
+        visitSite:"Visiter le site →",
+        approachLabel:"Approche",approachTitle:"Du problème opérationnel à une solution utilisable.",
+        approachCopy:"Nous privilégions les prototypes testables, les intégrations simples et le contrôle humain avant toute automatisation sensible.",
+        value1Title:"Comprendre le flux réel",value1Text:"Identifier les tâches, données, décisions et points de friction avant de coder.",
+        value2Title:"Construire un prototype utile",value2Text:"Valider rapidement la logique métier avec une version fonctionnelle et mesurable.",
+        value3Title:"Garder l'humain en contrôle",value3Text:"Utiliser l'automatisation pour assister les décisions, avec validation lorsque c'est nécessaire.",
+        step1Title:"Analyser",step1Text:"Processus, données, contraintes et résultat attendu.",
+        step2Title:"Prototyper",step2Text:"Créer une première version testable rapidement.",
+        step3Title:"Valider",step3Text:"Tester avec des cas réels et corriger les points faibles.",
+        step4Title:"Évoluer",step4Text:"Ajouter intégrations, IA, dashboard et automatisations avancées.",
+        contactLabel:"Contact",contactTitle:"Vous avez un processus à simplifier ?",
+        contactCopy:"Parlons de votre besoin et voyons si un logiciel, une automatisation ou une intégration IA peut apporter une amélioration concrète.",
+        footer:"© 2026 Mamourart. Développement logiciel & Automatisation IA."
+      },
+      en:{
+        navServices:"Services",navProjects:"Projects",navApproach:"Approach",navContact:"Contact",
+        heroEyebrow:"Software • AI • Automation",
+        heroTitle:'Software built for <span>real operations.</span>',
+        heroText:"Mamourart builds business software, AI automation and API integrations that reduce repetitive work and make operations simpler, faster and more reliable.",
+        viewProjects:"Explore our projects",discussProject:"Discuss a project",
+        proof1:"Business automation",proof2:"Software development",proof4:"Transport tools",
+        servicesLabel:"Services",servicesTitle:"Build, automate, integrate.",
+        servicesCopy:"Practical solutions designed around real operational needs.",
+        service1Title:"Business Automation",service1Text:"Automate repetitive tasks, approvals, data processing and operational workflows.",
+        service2Title:"Software Development",service2Text:"Build web, desktop and business applications tailored to specific processes.",
+        service3Text:"Connect applications to AI, modern APIs and automated workflows.",
+        service4Title:"Transport Technology",service4Text:"Build tools for missions, drivers, assignments and fleet operations.",
+        projectsTitle:"Projects built around real problems.",
+        projectsCopy:"The Mamourart portfolio grows through functional prototypes, products in development and published tools.",
+        transportStatus:"Functional prototype",transportText:"Transport mission management with driver selection, distance calculation, human approval and automatic reassignment.",
+        tagApproval:"Human Approval",tagAutomation:"Automation",githubLink:"View on GitHub →",
+        desktopStatus:"In development",desktopText:"Agent-oriented software assistant designed to understand context, explain errors, propose fixes and prepare user-controlled actions.",
+        comingSoon:"Project page coming soon",websiteStatus:"Live",
+        websiteText:"Mamourart's official website and evolving portfolio for services, projects and future products.",
+        visitSite:"Visit website →",
+        approachLabel:"Approach",approachTitle:"From operational problem to usable solution.",
+        approachCopy:"We prioritize testable prototypes, simple integrations and human control before sensitive automation.",
+        value1Title:"Understand the real workflow",value1Text:"Identify tasks, data, decisions and friction points before building.",
+        value2Title:"Build a useful prototype",value2Text:"Validate the business logic quickly with a functional, measurable first version.",
+        value3Title:"Keep humans in control",value3Text:"Use automation to support decisions, with approval where it matters.",
+        step1Title:"Analyze",step1Text:"Process, data, constraints and expected result.",
+        step2Title:"Prototype",step2Text:"Create a first testable version quickly.",
+        step3Title:"Validate",step3Text:"Test real cases and fix weak points.",
+        step4Title:"Evolve",step4Text:"Add integrations, AI, dashboards and advanced automation.",
+        contactLabel:"Contact",contactTitle:"Have a process worth simplifying?",
+        contactCopy:"Tell us what you need and let's see whether software, automation or an AI integration can create a concrete improvement.",
+        footer:"© 2026 Mamourart. Software Development & AI Automation."
+      }
+    };
+
+    function setLanguage(lang){
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key=el.dataset.i18n;
+        if(translations[lang][key]) el.textContent=translations[lang][key];
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach(el=>{
+        const key=el.dataset.i18nHtml;
+        if(translations[lang][key]) el.innerHTML=translations[lang][key];
+      });
+      document.documentElement.lang=lang;
+      document.getElementById("frButton").classList.toggle("active",lang==="fr");
+      document.getElementById("enButton").classList.toggle("active",lang==="en");
+      localStorage.setItem("mamourart-language-v2",lang);
+    }
+
+    const saved=localStorage.getItem("mamourart-language-v2");
+    if(saved){setLanguage(saved)}
+    else{setLanguage(navigator.language.toLowerCase().startsWith("fr")?"fr":"en")}
+  </script>
 </body>
 </html>
