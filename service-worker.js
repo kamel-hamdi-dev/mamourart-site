@@ -1,11 +1,15 @@
-const CACHE_NAME = "mamourart-v2";
+const CACHE_NAME = "mamourart-v3";
 
 const FILES_TO_CACHE = [
   "/",
   "/index.html",
+  "/logo.webp",
   "/logo.png",
-  "/banner.png",
+  "/banner.jpg",
+  "/banner-mobile.jpg",
   "/dashboard.png",
+  "/icon-192.png",
+  "/icon-512.png",
   "/manifest.json"
 ];
 
