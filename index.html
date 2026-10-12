@@ -3,9 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mamourart | Software Development & AI Automation</title>
+  <title>Mamourart | Développement logiciel et automatisation IA</title>
   <meta name="description" content="Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises.">
+  <link rel="canonical" href="https://mamourart.com/">
+  <meta property="og:title" content="Mamourart | Développement logiciel et automatisation IA">
+  <meta property="og:description" content="Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises.">
+  <meta property="og:url" content="https://mamourart.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="https://mamourart.com/banner.jpg">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="600">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mamourart | Développement logiciel et automatisation IA">
+  <meta name="twitter:description" content="Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises.">
+  <meta name="twitter:image" content="https://mamourart.com/banner.jpg">
+  <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#07111f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mamourart",
+    "url": "https://mamourart.com/",
+    "logo": "https://mamourart.com/logo.png",
+    "email": "contact@mamourart.com",
+    "sameAs": [
+      "https://www.linkedin.com/in/kamel-hamdi-dev/",
+      "https://github.com/kamel-hamdi-dev"
+    ],
+    "description": "Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Mamourart",
+    "alternateName": "Mamourart Software",
+    "url": "https://mamourart.com/"
+  }
+  </script>
   <style>
     :root{
       --bg:#06101d;
@@ -15,7 +58,7 @@
       --text:#f7fbff;
       --muted:#a9bfd4;
       --line:rgba(132,191,242,.18);
-      --blue:#1d8fff;
+      --blue:#1a6fbf;
       --blue2:#69c6ff;
       --green:#72e2ad;
       --max:1180px;
@@ -23,14 +66,15 @@
     *{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{
-      font-family:Inter,Segoe UI,Arial,sans-serif;
+      font-family:Inter,"Segoe UI",Arial,sans-serif;
       background:var(--bg);
       color:var(--text);
       line-height:1.6;
       overflow-x:hidden;
     }
     a{text-decoration:none;color:inherit}
-    .container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    a:focus-visible,button:focus-visible{outline:2px solid var(--blue2);outline-offset:3px}
+    .container{width:min(var(--max),calc(100% - 40px));margin-inline:auto}
     .eyebrow{
       color:var(--blue2);font-weight:800;text-transform:uppercase;
       letter-spacing:.14em;font-size:.76rem;margin-bottom:.9rem
@@ -62,9 +106,9 @@
       padding:18px 0 0
     }
     .nav{
-      min-height:118px;
+      min-height:0;
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
       gap:24px;
       padding:0;
@@ -74,25 +118,45 @@
       border-radius:0
     }
     .brand{
-      width:360px;
-      height:118px;
       display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      overflow:visible;
-      flex:0 0 auto;
-      padding-top:6px
+      align-items:center;
+      flex:0 1 auto;
+      min-width:0
     }
+    .brand picture{display:flex;min-width:0}
     .brand img{
       display:block;
-      width:192px;
-      max-width:none;
-      max-height:none;
+      width:auto;
       height:auto;
-      object-fit:contain;
-      transform:translateX(-12px);
-      transform-origin:left top
+      max-height:128px;
+      max-width:min(42vw,220px)
     }
+    .nav-toggle{
+      display:none;
+      width:44px;
+      height:44px;
+      border:0;
+      border-radius:10px;
+      background:transparent;
+      color:#e7f4ff;
+      cursor:pointer;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:5px;
+      padding:0
+    }
+    .nav-toggle-bar{
+      display:block;
+      width:18px;
+      height:2px;
+      border-radius:2px;
+      background:currentColor;
+      transition:transform .2s ease,opacity .2s ease
+    }
+    .nav-toggle.is-open .nav-toggle-bar:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .nav-toggle.is-open .nav-toggle-bar:nth-child(2){opacity:0}
+    .nav-toggle.is-open .nav-toggle-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
     .nav-right{
       display:flex;
       align-items:center;
@@ -104,13 +168,13 @@
       backdrop-filter:blur(12px);
       box-shadow:0 8px 24px rgba(0,0,0,.18)
     }
-    .nav-links{display:flex;gap:20px;font-size:.9rem;font-weight:750}
+    .nav-links{display:flex;gap:20px;font-size:.9rem;font-weight:800}
     .nav-links a{color:#e7f4ff}
     .nav-links a:hover{color:var(--blue2)}
     .lang{display:flex;padding:3px;border:1px solid rgba(110,190,255,.4);border-radius:9px}
     .lang button{
       border:0;background:transparent;color:#cfe9ff;cursor:pointer;
-      font-weight:800;padding:5px 9px;border-radius:6px
+      font-weight:800;min-width:36px;padding:5px 9px;border-radius:6px
     }
     .lang button.active{background:var(--blue);color:white}
 
@@ -119,7 +183,7 @@
       min-height:100vh;display:flex;align-items:flex-start;position:relative;
       background:
         linear-gradient(90deg,rgba(2,11,22,.98) 0%,rgba(4,22,42,.94) 35%,rgba(4,22,42,.58) 60%,rgba(4,22,42,.14) 100%),
-        url("banner.png") center/cover no-repeat;
+        url("banner.jpg") center/cover no-repeat;
     }
     .hero::after{
       content:"";position:absolute;inset:auto 0 0;height:120px;
@@ -128,7 +192,7 @@
     .hero-grid{
       position:relative;
       z-index:2;
-      padding:150px 0 38px;
+      padding:176px 0 38px;
       display:grid;
       grid-template-columns:minmax(0,660px) 1fr;
       gap:60px
@@ -242,24 +306,8 @@
       background:#040a12;font-size:.9rem
     }
 
-    @media(min-width:981px) and (max-height:760px){
-      .nav{min-height:104px}
-      .brand{width:320px;height:104px;justify-content:center}
-      .brand img{width:175px;transform:translateX(-10px)}
-      .hero-grid{padding-top:160px;padding-bottom:24px}
-      .hero h1{font-size:clamp(2.8rem,4.6vw,4rem);margin:9px 0 14px}
-      .hero-copy{font-size:.96rem;line-height:1.52}
-      .hero-actions{margin-top:17px}
-      .hero-proof{margin-top:14px}
-      .button{min-height:44px}
-      .proof{padding:6px 10px}
-    }
-
     @media(max-width:1180px){
       .container{width:min(var(--max),calc(100% - 56px))}
-      .brand{width:280px;height:128px;padding-top:4px;justify-content:center}
-      .brand img{width:178px;height:auto;max-width:none;max-height:none;transform:translateX(-10px)}
-      .hero-grid{padding-top:155px;padding-bottom:40px}
       .hero h1{max-width:620px}
       .hero-copy{max-width:600px}
     }
@@ -275,15 +323,37 @@
       .container{width:min(100% - 28px,var(--max))}
       section{padding:65px 0}
       .nav-wrap{padding:8px 0}
-      .nav{align-items:flex-start;min-height:95px}
-      .brand{width:125px;height:82px;padding-top:0}
-      .brand img{width:116px;height:auto;max-width:none;max-height:none;transform:translateX(-7px)}
-      .nav-right{gap:6px;padding:5px 7px;border-radius:11px}
-      .nav-links{display:none}
-      .hero{min-height:720px;background:
-        linear-gradient(rgba(3,14,27,.78),rgba(3,14,27,.94)),
-        url("banner.png") 66% center/cover no-repeat}
-      .hero-grid{padding:145px 0 58px}
+      .nav{align-items:center}
+      .brand img{max-height:96px;max-width:46vw}
+      .nav-right{position:relative;gap:6px;padding:4px 6px 4px 4px;border-radius:12px}
+      .nav-toggle{display:inline-flex}
+      .lang button{min-width:44px;min-height:44px;padding:0 10px}
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:calc(100% + 8px);
+        right:0;
+        z-index:30;
+        min-width:220px;
+        flex-direction:column;
+        gap:2px;
+        padding:8px;
+        border:1px solid rgba(132,191,242,.24);
+        border-radius:14px;
+        background:rgba(6,18,33,.96);
+        box-shadow:0 16px 40px rgba(0,0,0,.35)
+      }
+      .nav-links.is-open{display:flex}
+      .nav-links a{min-height:44px;display:flex;align-items:center;padding:0 12px;border-radius:8px}
+      .nav-links a:hover{background:rgba(255,255,255,.05)}
+      .hero{
+        min-height:100vh;
+        min-height:100svh;
+        background:
+          linear-gradient(rgba(3,14,27,.78),rgba(3,14,27,.94)),
+          url("banner-mobile.jpg") 66% center/cover no-repeat
+      }
+      .hero-grid{padding:132px 0 58px}
       .hero h1{font-size:clamp(2.6rem,13vw,3.8rem);max-width:100%}
       .hero-copy{font-size:1rem}
       .hero-actions{flex-direction:column}
@@ -293,26 +363,44 @@
       .projects-head{display:block}
       .projects-head .section-copy{margin-top:8px}
     }
+    @media(min-width:981px) and (max-height:760px){
+      .brand img{max-height:104px}
+      .hero-grid{padding-top:152px;padding-bottom:24px}
+      .hero h1{font-size:clamp(2.8rem,4.6vw,4rem);margin:9px 0 14px}
+      .hero-copy{font-size:.96rem;line-height:1.52}
+      .hero-actions{margin-top:17px}
+      .hero-proof{margin-top:14px}
+      .button{min-height:44px}
+      .proof{padding:6px 10px}
+    }
   </style>
 </head>
 <body>
 
   <div class="nav-wrap">
     <div class="container">
-      <nav class="nav" aria-label="Main navigation">
-        <a class="brand" href="#top" aria-label="Mamourart home">
-          <img src="logo.png" alt="Mamourart">
+      <nav class="nav" aria-label="Navigation principale" data-i18n-aria="navLabel">
+        <a class="brand" href="#top">
+          <picture>
+            <source srcset="logo.webp" type="image/webp">
+            <img src="logo.png" alt="Mamourart" width="418" height="320">
+          </picture>
         </a>
         <div class="nav-right">
-          <div class="nav-links">
+          <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu" data-i18n-aria="openMenu">
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+          </button>
+          <div class="nav-links" id="navLinks">
             <a href="#services" data-i18n="navServices">Services</a>
             <a href="#projects" data-i18n="navProjects">Projets</a>
             <a href="#approach" data-i18n="navApproach">Méthode</a>
             <a href="#contact" data-i18n="navContact">Contact</a>
           </div>
-          <div class="lang" aria-label="Language selector">
-            <button id="frButton" class="active" type="button" onclick="setLanguage('fr')">FR</button>
-            <button id="enButton" type="button" onclick="setLanguage('en')">EN</button>
+          <div class="lang" aria-label="Sélecteur de langue" data-i18n-aria="langLabel">
+            <button id="frButton" class="active" type="button" aria-pressed="true">FR</button>
+            <button id="enButton" type="button" aria-pressed="false">EN</button>
           </div>
         </div>
       </nav>
@@ -334,13 +422,14 @@
         <div class="hero-proof">
           <span class="proof" data-i18n="proof1">Automatisation métier</span>
           <span class="proof" data-i18n="proof2">Développement logiciel</span>
-          <span class="proof">APIs & AI</span>
+          <span class="proof" data-i18n="proof3">APIs & IA</span>
           <span class="proof" data-i18n="proof4">Outils transport</span>
         </div>
       </div>
     </div>
   </header>
 
+  <main>
   <section class="services" id="services">
     <div class="container">
       <div class="eyebrow" data-i18n="servicesLabel">Services</div>
@@ -352,25 +441,25 @@
       <div class="service-grid">
         <article class="service">
           <span class="service-num">01</span>
-          <div class="icon">⚙</div>
+          <div class="icon" aria-hidden="true">⚙</div>
           <h3 data-i18n="service1Title">Automatisation métier</h3>
           <p data-i18n="service1Text">Automatiser les tâches répétitives, les validations, le traitement des données et les flux opérationnels.</p>
         </article>
         <article class="service">
           <span class="service-num">02</span>
-          <div class="icon">⌘</div>
+          <div class="icon" aria-hidden="true">⌘</div>
           <h3 data-i18n="service2Title">Développement logiciel</h3>
           <p data-i18n="service2Text">Créer des applications web, desktop et outils métiers adaptés à des processus précis.</p>
         </article>
         <article class="service">
           <span class="service-num">03</span>
-          <div class="icon">AI</div>
-          <h3>IA & APIs</h3>
+          <div class="icon" aria-hidden="true">AI</div>
+          <h3 data-i18n="service3Title">IA et APIs</h3>
           <p data-i18n="service3Text">Connecter les applications à l'IA, aux APIs modernes et aux workflows automatisés.</p>
         </article>
         <article class="service">
           <span class="service-num">04</span>
-          <div class="icon">↗</div>
+          <div class="icon" aria-hidden="true">↗</div>
           <h3 data-i18n="service4Title">Technologies transport</h3>
           <p data-i18n="service4Text">Développer des outils pour les missions, chauffeurs, affectations et opérations de flotte.</p>
         </article>
@@ -382,7 +471,7 @@
     <div class="container">
       <div class="projects-head">
         <div>
-          <div class="eyebrow">Portfolio</div>
+          <div class="eyebrow" data-i18n="portfolioLabel">Portfolio</div>
           <h2 class="section-title" data-i18n="projectsTitle">Des projets construits autour de problèmes réels.</h2>
         </div>
         <p class="section-copy" data-i18n="projectsCopy">
@@ -399,14 +488,14 @@
           </p>
           <div class="tags">
             <span class="tag">Python</span><span class="tag">PostgreSQL</span>
-            <span class="tag" data-i18n="tagApproval">Human Approval</span>
+            <span class="tag" data-i18n="tagApproval">Validation humaine</span>
             <span class="tag" data-i18n="tagAutomation">Automation</span>
           </div>
           <div class="project-links">
             <a class="mini-link" href="https://github.com/kamel-hamdi-dev/mamourart-transport-automation" target="_blank" rel="noopener" data-i18n="githubLink">Voir sur GitHub →</a>
           </div>
           <div class="preview">
-            <img src="dashboard.png" alt="Mamourart Transport Automation dashboard" loading="lazy">
+            <img src="dashboard.png" alt="Tableau de bord Mamourart Transport Automation" data-i18n-alt="dashboardAlt" width="1278" height="731" loading="lazy">
           </div>
         </article>
 
@@ -417,8 +506,8 @@
             Assistant logiciel orienté agent : comprendre le contexte, expliquer les erreurs, proposer des corrections et préparer des actions contrôlées par l'utilisateur.
           </p>
           <div class="tags">
-            <span class="tag">VS Code</span><span class="tag">AI Agents</span>
-            <span class="tag">Desktop</span><span class="tag">Human Approval</span>
+            <span class="tag">VS Code</span><span class="tag" data-i18n="tagAgents">Agents IA</span>
+            <span class="tag">Desktop</span><span class="tag" data-i18n="tagApproval">Validation humaine</span>
           </div>
           <div class="project-links">
             <span class="mini-link" data-i18n="comingSoon">Présentation bientôt disponible</span>
@@ -436,7 +525,7 @@
             <span class="tag">SEO</span><span class="tag">PWA</span>
           </div>
           <div class="project-links">
-            <a class="mini-link" href="https://www.mamourart.com/" target="_blank" rel="noopener" data-i18n="visitSite">Visiter le site →</a>
+            <a class="mini-link" href="https://mamourart.com/" data-i18n="visitSite">Visiter le site →</a>
           </div>
         </article>
       </div>
@@ -490,28 +579,35 @@
       </div>
     </div>
   </section>
+  </main>
 
   <footer data-i18n="footer">© 2026 Mamourart. Développement logiciel & Automatisation IA.</footer>
 
   <script>
     const translations = {
       fr:{
+        metaTitle:"Mamourart | Développement logiciel et automatisation IA",
+        metaDescription:"Mamourart développe des logiciels, des automatisations IA et des outils numériques pour les entreprises.",
+        navLabel:"Navigation principale",langLabel:"Sélecteur de langue",
+        openMenu:"Ouvrir le menu",closeMenu:"Fermer le menu",
         navServices:"Services",navProjects:"Projets",navApproach:"Méthode",navContact:"Contact",
         heroEyebrow:"Software • IA • Automatisation",
         heroTitle:'Des logiciels qui transforment les <span>opérations réelles.</span>',
         heroText:"Mamourart conçoit des logiciels métiers, des automatisations IA et des intégrations API pour réduire les tâches répétitives et rendre les opérations plus simples, rapides et fiables.",
         viewProjects:"Découvrir nos projets",discussProject:"Discuter d'un projet",
-        proof1:"Automatisation métier",proof2:"Développement logiciel",proof4:"Outils transport",
+        proof1:"Automatisation métier",proof2:"Développement logiciel",proof3:"APIs et IA",proof4:"Outils transport",
         servicesLabel:"Services",servicesTitle:"Construire, automatiser, intégrer.",
         servicesCopy:"Des solutions concrètes conçues autour de besoins opérationnels réels.",
         service1Title:"Automatisation métier",service1Text:"Automatiser les tâches répétitives, les validations, le traitement des données et les flux opérationnels.",
         service2Title:"Développement logiciel",service2Text:"Créer des applications web, desktop et outils métiers adaptés à des processus précis.",
-        service3Text:"Connecter les applications à l'IA, aux APIs modernes et aux workflows automatisés.",
+        service3Title:"IA et APIs",service3Text:"Connecter les applications à l'IA, aux APIs modernes et aux workflows automatisés.",
         service4Title:"Technologies transport",service4Text:"Développer des outils pour les missions, chauffeurs, affectations et opérations de flotte.",
+        portfolioLabel:"Portfolio",
         projectsTitle:"Des projets construits autour de problèmes réels.",
         projectsCopy:"Le portfolio Mamourart évolue progressivement avec des prototypes fonctionnels, des produits en développement et des outils déjà publiés.",
         transportStatus:"Prototype fonctionnel",transportText:"Gestion de missions de transport avec sélection du chauffeur, calcul de distance, validation humaine et réaffectation automatique.",
-        tagApproval:"Validation humaine",tagAutomation:"Automatisation",githubLink:"Voir sur GitHub →",
+        tagApproval:"Validation humaine",tagAutomation:"Automatisation",tagAgents:"Agents IA",githubLink:"Voir sur GitHub →",
+        dashboardAlt:"Tableau de bord Mamourart Transport Automation",
         desktopStatus:"En développement",desktopText:"Assistant logiciel orienté agent : comprendre le contexte, expliquer les erreurs, proposer des corrections et préparer des actions contrôlées par l'utilisateur.",
         comingSoon:"Présentation bientôt disponible",websiteStatus:"En ligne",
         websiteText:"Site officiel et portfolio évolutif de Mamourart, conçu pour présenter les services, projets et futures solutions.",
@@ -530,22 +626,28 @@
         footer:"© 2026 Mamourart. Développement logiciel & Automatisation IA."
       },
       en:{
+        metaTitle:"Mamourart | Software Development & AI Automation",
+        metaDescription:"Mamourart builds business software, AI automation and digital tools for companies.",
+        navLabel:"Main navigation",langLabel:"Language selector",
+        openMenu:"Open menu",closeMenu:"Close menu",
         navServices:"Services",navProjects:"Projects",navApproach:"Approach",navContact:"Contact",
         heroEyebrow:"Software • AI • Automation",
         heroTitle:'Software built for <span>real operations.</span>',
         heroText:"Mamourart builds business software, AI automation and API integrations that reduce repetitive work and make operations simpler, faster and more reliable.",
         viewProjects:"Explore our projects",discussProject:"Discuss a project",
-        proof1:"Business automation",proof2:"Software development",proof4:"Transport tools",
+        proof1:"Business automation",proof2:"Software development",proof3:"APIs & AI",proof4:"Transport tools",
         servicesLabel:"Services",servicesTitle:"Build, automate, integrate.",
         servicesCopy:"Practical solutions designed around real operational needs.",
         service1Title:"Business Automation",service1Text:"Automate repetitive tasks, approvals, data processing and operational workflows.",
         service2Title:"Software Development",service2Text:"Build web, desktop and business applications tailored to specific processes.",
-        service3Text:"Connect applications to AI, modern APIs and automated workflows.",
+        service3Title:"AI & APIs",service3Text:"Connect applications to AI, modern APIs and automated workflows.",
         service4Title:"Transport Technology",service4Text:"Build tools for missions, drivers, assignments and fleet operations.",
+        portfolioLabel:"Portfolio",
         projectsTitle:"Projects built around real problems.",
         projectsCopy:"The Mamourart portfolio grows through functional prototypes, products in development and published tools.",
         transportStatus:"Functional prototype",transportText:"Transport mission management with driver selection, distance calculation, human approval and automatic reassignment.",
-        tagApproval:"Human Approval",tagAutomation:"Automation",githubLink:"View on GitHub →",
+        tagApproval:"Human Approval",tagAutomation:"Automation",tagAgents:"AI Agents",githubLink:"View on GitHub →",
+        dashboardAlt:"Mamourart Transport Automation dashboard",
         desktopStatus:"In development",desktopText:"Agent-oriented software assistant designed to understand context, explain errors, propose fixes and prepare user-controlled actions.",
         comingSoon:"Project page coming soon",websiteStatus:"Live",
         websiteText:"Mamourart's official website and evolving portfolio for services, projects and future products.",
@@ -566,23 +668,95 @@
     };
 
     function setLanguage(lang){
+      const copy=translations[lang];
       document.querySelectorAll("[data-i18n]").forEach(el=>{
         const key=el.dataset.i18n;
-        if(translations[lang][key]) el.textContent=translations[lang][key];
+        if(copy[key]) el.textContent=copy[key];
       });
       document.querySelectorAll("[data-i18n-html]").forEach(el=>{
         const key=el.dataset.i18nHtml;
-        if(translations[lang][key]) el.innerHTML=translations[lang][key];
+        if(copy[key]) el.innerHTML=copy[key];
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(el=>{
+        if(el.id==="navToggle") return;
+        const key=el.dataset.i18nAria;
+        if(copy[key]) el.setAttribute("aria-label", copy[key]);
+      });
+      document.querySelectorAll("[data-i18n-alt]").forEach(el=>{
+        const key=el.dataset.i18nAlt;
+        if(copy[key]) el.alt=copy[key];
       });
       document.documentElement.lang=lang;
-      document.getElementById("frButton").classList.toggle("active",lang==="fr");
-      document.getElementById("enButton").classList.toggle("active",lang==="en");
-      localStorage.setItem("mamourart-language-v2",lang);
+      document.title=copy.metaTitle;
+      const description=document.querySelector('meta[name="description"]');
+      if(description) description.setAttribute("content", copy.metaDescription);
+      const ogTitle=document.querySelector('meta[property="og:title"]');
+      const ogDescription=document.querySelector('meta[property="og:description"]');
+      const twitterTitle=document.querySelector('meta[name="twitter:title"]');
+      const twitterDescription=document.querySelector('meta[name="twitter:description"]');
+      const ogLocale=document.querySelector('meta[property="og:locale"]');
+      if(ogTitle) ogTitle.setAttribute("content", copy.metaTitle);
+      if(ogDescription) ogDescription.setAttribute("content", copy.metaDescription);
+      if(twitterTitle) twitterTitle.setAttribute("content", copy.metaTitle);
+      if(twitterDescription) twitterDescription.setAttribute("content", copy.metaDescription);
+      if(ogLocale) ogLocale.setAttribute("content", lang==="fr"?"fr_FR":"en_US");
+      document.getElementById("frButton").classList.toggle("active", lang==="fr");
+      document.getElementById("enButton").classList.toggle("active", lang==="en");
+      document.getElementById("frButton").setAttribute("aria-pressed", lang==="fr" ? "true" : "false");
+      document.getElementById("enButton").setAttribute("aria-pressed", lang==="en" ? "true" : "false");
+      const toggle=document.getElementById("navToggle");
+      const menuOpen=toggle.getAttribute("aria-expanded")==="true";
+      toggle.setAttribute("aria-label", copy[menuOpen ? "closeMenu" : "openMenu"]);
+      try{ localStorage.setItem("mamourart-language-v2", lang); }catch(error){}
     }
 
-    const saved=localStorage.getItem("mamourart-language-v2");
-    if(saved){setLanguage(saved)}
-    else{setLanguage(navigator.language.toLowerCase().startsWith("fr")?"fr":"en")}
+    const navToggle=document.getElementById("navToggle");
+    const navLinks=document.getElementById("navLinks");
+
+    function setMenu(open){
+      navLinks.classList.toggle("is-open", open);
+      navToggle.classList.toggle("is-open", open);
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      const lang=document.documentElement.lang==="en" ? "en" : "fr";
+      navToggle.setAttribute("aria-label", translations[lang][open ? "closeMenu" : "openMenu"]);
+    }
+
+    navToggle.addEventListener("click", ()=>{
+      setMenu(navToggle.getAttribute("aria-expanded")!=="true");
+    });
+    navLinks.querySelectorAll("a").forEach(link=>{
+      link.addEventListener("click", ()=>setMenu(false));
+    });
+    document.addEventListener("keydown", event=>{
+      if(event.key==="Escape") setMenu(false);
+    });
+    window.addEventListener("resize", ()=>{
+      if(window.innerWidth>760) setMenu(false);
+    });
+    document.getElementById("frButton").addEventListener("click", ()=>setLanguage("fr"));
+    document.getElementById("enButton").addEventListener("click", ()=>setLanguage("en"));
+
+    let initialLanguage="fr";
+    try{
+      const saved=localStorage.getItem("mamourart-language-v2");
+      if(saved==="fr" || saved==="en") initialLanguage=saved;
+      else initialLanguage=navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
+    }catch(error){
+      initialLanguage=navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
+    }
+    setLanguage(initialLanguage);
+
+    if("serviceWorker" in navigator){
+      const hadController=Boolean(navigator.serviceWorker.controller);
+      if(hadController){
+        navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+          window.location.reload();
+        });
+      }
+      window.addEventListener("load", ()=>{
+        navigator.serviceWorker.register("/service-worker.js");
+      });
+    }
   </script>
 </body>
 </html>
