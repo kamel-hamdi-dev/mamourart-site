@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   test:
+    # Required status check. This name must stay exactly "Python site checks".
     name: Python site checks
     runs-on: ubuntu-latest
     steps:
@@ -32,5 +33,61 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Run site checks
-        run: python -m pytest
+      - name: Run required site checks
+        run: |
+          mkdir -p reports
+          python -m pytest -m "not external" --ignore=tests/test_external_links.py --junitxml=reports/required-junit.xml --tb=short -ra
+
+      - name: Publish the required test report
+        if: always()
+        run: python .github/scripts/pytest_summary.py reports/required-junit.xml --title "Contrôles obligatoires du site" --mode required --markdown reports/required-summary.md
+
+      - name: Upload the required test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-site-checks-report
+          path: |
+            reports/required-junit.xml
+            reports/required-summary.md
+          if-no-files-found: warn
+
+  external-links:
+    # Informational report. continue-on-error on the pytest step keeps this job green
+    # when the public Internet or LinkedIn is unavailable.
+    name: External link checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run external link checks
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          mkdir -p reports
+          python -m pytest -m external -o junit_logging=system-out --junitxml=reports/external-junit.xml --tb=short -ra
+
+      - name: Publish the external link report
+        if: always()
+        run: python .github/scripts/pytest_summary.py reports/external-junit.xml --title "Liens externes" --mode optional --markdown reports/external-summary.md
+
+      - name: Upload the external link report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-link-checks-report
+          path: |
+            reports/external-junit.xml
+            reports/external-summary.md
+          if-no-files-found: warn

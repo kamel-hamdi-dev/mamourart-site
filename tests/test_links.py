@@ -1,5 +1,3 @@
-import urllib.error
-import urllib.request
 from urllib.parse import urlparse
 
 from tests.checks import ROOT, parse_page, read_text, site_file
@@ -12,7 +10,6 @@ PUBLISHED_LINKS = {
     "https://www.linkedin.com/in/kamel-hamdi-dev/",
     "https://github.com/kamel-hamdi-dev",
 }
-USER_AGENT = "Mozilla/5.0 (compatible; MamourartSiteCheck/1.0; +https://mamourart.com/)"
 
 
 def page():
@@ -80,17 +77,6 @@ def test_new_tab_links_keep_noopener():
         assert anchor["href"].startswith("https://")
 
 
-def test_external_links_respond():
-    hrefs = sorted({anchor["href"] for anchor in page().anchors if anchor["href"].startswith("https://")})
-    assert hrefs, "the page has no external links"
-    failures = []
-    for href in hrefs:
-        status = _status(href)
-        if not _acceptable(href, status):
-            failures.append(f"{href} -> {status}")
-    assert failures == []
-
-
 def test_internal_asset_paths_stay_inside_the_repository():
     for anchor in page().anchors:
         href = anchor["href"]
@@ -98,20 +84,3 @@ def test_internal_asset_paths_stay_inside_the_repository():
             continue
         target = site_file(urlparse(href).path or "/")
         assert target.is_relative_to(ROOT.resolve())
-
-
-def _status(url: str) -> int:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            return response.status
-    except urllib.error.HTTPError as error:
-        return error.code
-
-
-def _acceptable(url: str, status: int) -> bool:
-    if 200 <= status < 400:
-        return True
-    host = urlparse(url).hostname or ""
-    # LinkedIn answers 999 to automated clients instead of a normal page status.
-    return host.endswith("linkedin.com") and status == 999
