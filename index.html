@@ -206,9 +206,11 @@
     }
     .status.dev{color:#ffd889;border-color:rgba(255,203,103,.28);background:rgba(171,118,42,.1)}
     .status.live{color:#9fd3ff;border-color:rgba(100,180,255,.3);background:rgba(46,126,195,.1)}
+    .status.prep{color:#d8c7ff;border-color:rgba(190,164,255,.32);background:rgba(120,90,190,.12)}
     .dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 9px currentColor}
     .project-card h3{font-size:1.65rem;line-height:1.15;margin:18px 0 12px}
     .project-card p{color:#bed0df}
+    .project-card .planned{margin-top:12px;color:#c5d6e6;font-size:.92rem}
     .tags{display:flex;flex-wrap:wrap;gap:7px;margin:19px 0 0}
     .tag{font-size:.76rem;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:#d6edff}
     .project-links{margin-top:auto;padding-top:22px;display:flex;gap:10px;flex-wrap:wrap}
@@ -439,6 +441,23 @@
             <a class="mini-link" href="https://www.mamourart.com/" target="_blank" rel="noopener" data-i18n="visitSite">Visiter le site →</a>
           </div>
         </article>
+
+        <article class="project-card">
+          <div class="status prep"><span class="dot"></span><span data-i18n="hoursStatus">En préparation</span></div>
+          <h3>Mamourart Mes Heures</h3>
+          <p data-i18n="hoursText">
+            Application Android de suivi des heures de travail, des plannings et d'estimation du salaire, destinée aux salariés en France.
+          </p>
+          <p class="planned" data-i18n="hoursFeatures">
+            Fonctionnalités prévues : suivi des heures, planning, estimation du salaire et module d'information « Mes droits ».
+          </p>
+          <div class="tags">
+            <span class="tag">Android</span>
+          </div>
+          <div class="project-links">
+            <span class="mini-link" data-i18n="hoursNote">Pas encore publié</span>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -516,6 +535,10 @@
         comingSoon:"Présentation bientôt disponible",websiteStatus:"En ligne",
         websiteText:"Site officiel et portfolio évolutif de Mamourart, conçu pour présenter les services, projets et futures solutions.",
         visitSite:"Visiter le site →",
+        hoursStatus:"En préparation",
+        hoursText:"Application Android de suivi des heures de travail, des plannings et d'estimation du salaire, destinée aux salariés en France.",
+        hoursFeatures:"Fonctionnalités prévues : suivi des heures, planning, estimation du salaire et module d'information « Mes droits ».",
+        hoursNote:"Pas encore publié",
         approachLabel:"Approche",approachTitle:"Du problème opérationnel à une solution utilisable.",
         approachCopy:"Nous privilégions les prototypes testables, les intégrations simples et le contrôle humain avant toute automatisation sensible.",
         value1Title:"Comprendre le flux réel",value1Text:"Identifier les tâches, données, décisions et points de friction avant de coder.",
@@ -550,6 +573,10 @@
         comingSoon:"Project page coming soon",websiteStatus:"Live",
         websiteText:"Mamourart's official website and evolving portfolio for services, projects and future products.",
         visitSite:"Visit website →",
+        hoursStatus:"In preparation",
+        hoursText:"Android application for tracking working hours, schedules and estimated pay, designed for employees in France.",
+        hoursFeatures:"Planned features: time tracking, work schedules, pay estimates and a worker rights information module.",
+        hoursNote:"Not yet published",
         approachLabel:"Approach",approachTitle:"From operational problem to usable solution.",
         approachCopy:"We prioritize testable prototypes, simple integrations and human control before sensitive automation.",
         value1Title:"Understand the real workflow",value1Text:"Identify tasks, data, decisions and friction points before building.",
