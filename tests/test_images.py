@@ -1,5 +1,23 @@
 from urllib.parse import urlparse
+from PIL import Image
 
+
+def image_size(path):
+    if path.suffix.lower() == ".png":
+        return png_size(path)
+
+    if path.suffix.lower() == ".webp":
+        with Image.open(path) as img:
+            assert img.format == "WEBP", f"{path.name} is not a valid WebP"
+            img.verify()
+
+        with Image.open(path) as img:
+            width, height = img.size
+            assert width > 0 and height > 0
+            img.load()
+            return width, height
+
+    raise AssertionError(f"Unsupported image format: {path.name}")
 from tests.checks import ROOT, parse_page, png_size, read_text, site_file, style_urls
 
 
@@ -17,7 +35,7 @@ def test_html_images_exist_and_have_alt_text():
             continue
         path = site_file(urlparse(src).path)
         assert path.is_file(), src
-        png_size(path)
+        image_size(path)
 
 
 def test_css_images_exist():
@@ -28,8 +46,7 @@ def test_css_images_exist():
             continue
         path = site_file(urlparse(url).path)
         assert path.is_file(), url
-        png_size(path)
-
+        image_size(path)
 
 def test_icon_files_have_declared_pixel_sizes():
     assert png_size(ROOT / "icon-192.png") == (192, 192)
