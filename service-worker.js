@@ -1,4 +1,4 @@
-const CACHE_NAME = "mamourart-v3";
+const CACHE_NAME = "mamourart-v4";
 
 const FILES_TO_CACHE = [
   "/",
