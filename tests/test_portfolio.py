@@ -57,6 +57,7 @@ def test_existing_portfolio_projects_remain():
     assert titles == [
         "Mamourart Transport Automation",
         "Mamourart GPS AI",
+        "Mamourart Fret Alerts",
         "Mamourart Desktop Agent",
         "Mamourart Website",
         "Mamourart Mes Heures",
@@ -108,3 +109,21 @@ def test_homepage_script_parses():
         script.write_text(scripts[0], encoding="utf-8")
         result = subprocess.run([node, "--check", str(script)], capture_output=True, text=True, check=False)
     assert result.returncode == 0, result.stderr
+
+
+def test_fret_alerts_concept_and_demo_are_explicit():
+    html = read_text("index.html")
+    matches = [card for card in _articles(html) if "Mamourart Fret Alerts" in card]
+    assert len(matches) == 1
+    card = matches[0]
+    assert 'class="status prep"' in card
+    assert 'href="fret-alerts-demo.html"' in card
+    assert 'src="fret-alerts-preview.webp"' in card
+    assert "offres fictives" in card
+    assert "aucune négociation ni réservation" in card
+    assert (ROOT / "fret-alerts-demo.html").is_file()
+    assert (ROOT / "fret-alerts-preview.webp").is_file()
+    for lang in ("fr", "en"):
+        block = _language_block(html, lang)
+        for key in ("fretStatus", "fretText", "fretNote", "fretDemoLink", "fretPreviewAlt"):
+            assert f'{key}:"' in block
