@@ -128,8 +128,9 @@ def test_calls_to_action_and_contact_channels():
     assert 'href="#services" data-i18n="ctaServices"' in html
     assert 'href="#contact" data-i18n="ctaProject"' in html
     assert 'href="mailto:contact@mamourart.com"' in html
-    assert "<form" not in html.lower()
-    assert "Aucun message n'est enregistré sur ce site." in html
+    assert '<form class="quote-form"' in html
+    assert 'action="contact-submit.php"' in html
+    assert "Les demandes ne sont pas stockées dans une base de données du site." in html
 
 
 def test_about_presents_a_brand_without_invented_credentials():
