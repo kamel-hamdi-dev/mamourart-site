@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Mamourart Fret Alerts : prototype conceptuel FR/EN de veille et d'alertes de fret sur données fictives.">
+  <title>Mamourart Fret Alerts | Prototype conceptuel</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--panel:#0d2033;--panel2:#10283f;--line:#28435a;--fg:#eff7ff;--muted:#afc4d8;--blue:#399df4;--cyan:#96dbff;--green:#66ddb5;--amber:#ffd086}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 85% 5%,#10345a 0,transparent 36%),var(--bg);color:var(--fg);font:15px/1.55 Inter,"Segoe UI",system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.wrap{width:min(1200px,calc(100% - 40px));margin:auto}
+    .top{height:80px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #234057;gap:10px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.035em;font-size:20px}.mark{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(130deg,#154f9a,#2ca6f4);box-shadow:0 10px 25px #0367b025;color:#fff;font-size:27px}.brand b{color:#9edfff}.right{display:flex;align-items:center;gap:15px}.back{font-size:13px;color:#c8ddee}.languages{display:flex;background:#112c45;border:1px solid #315574;border-radius:999px;padding:3px}.languages button{border:0;background:none;color:#c6d7e6;border-radius:999px;padding:5px 12px;font-weight:750}.languages button[aria-pressed=true]{background:#286dab;color:white}
+    .hero{padding:62px 0 30px;max-width:950px}.eyebrow{color:#90cffa;letter-spacing:.18em;font-size:12px;font-weight:800;text-transform:uppercase;margin:0 0 14px}.hero h1{letter-spacing:-.06em;line-height:1.08;font-size:clamp(34px,5.4vw,65px);max-width:900px;margin:0}.accent{color:var(--cyan)}.lead{max-width:800px;color:#bfd3e4;font-size:17px;margin:19px 0}.tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}.tag{font-size:12px;font-weight:650;color:#cce4f8;background:#0e263e;border:1px solid #31506a;border-radius:999px;padding:7px 11px}.tag.warn{color:#ffdc9a;border-color:#85683c;background:#342b1d}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:25px 0}.stat{border:1px solid var(--line);background:linear-gradient(140deg,#122f49,#0c1e30);border-radius:16px;padding:20px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:32px;letter-spacing:-.04em;display:block;margin-top:4px}.stat .hint{font-size:12px;color:var(--cyan)}
+    .workspace{border:1px solid #32516b;background:#0a1c2c;border-radius:22px;box-shadow:0 25px 90px #02081255;overflow:hidden;margin:20px 0 42px}.workspace-head{padding:21px 23px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.workspace-head h2{font-size:19px;letter-spacing:-.02em;margin:0}.workspace-head p{color:var(--muted);font-size:13px;margin:3px 0 0}.live{border:1px solid #80673d;color:#ffda92;background:#322617;padding:6px 11px;border-radius:999px;font-size:12px;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.9fr)}.list-pane{padding:22px;border-right:1px solid var(--line);min-width:0}.filter-title{font-weight:800;font-size:14px;margin:0 0 13px}.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}.field select,.field input{width:100%;background:#102a42;color:#edf7ff;border:1px solid #365773;border-radius:10px;padding:11px 11px;min-height:44px;outline-offset:2px}.field input::placeholder{color:#9ab5cb}.filter-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:17px 0 15px}.results{font-size:14px;color:#cee6f6}.reset{background:none;border:0;color:#89cdff;font-weight:750;font-size:13px}.offers{display:grid;gap:10px}.offer{width:100%;display:block;text-align:left;color:var(--fg);background:#10273d;border:1px solid #2b4a64;border-radius:15px;padding:15px 16px;transition:background .2s,border-color .2s}.offer:hover,.offer.active{border-color:#5cbbff;background:#153450}.offer-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.route{font-size:16px;font-weight:820;letter-spacing:-.015em}.route span{color:#76beec;padding:0 4px}.match{background:#184b43;color:#9cf5cd;border:1px solid #387e69;font-size:11px;font-weight:750;border-radius:999px;padding:4px 9px}.offer-sub{font-size:12px;color:#b2c9dc;margin-top:7px}.offer-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px;gap:8px}.offer-price{font-size:17px;font-weight:850}.offer-price small{color:#aed3e9;font-size:12px;font-weight:550;margin-left:6px}.offer-date{color:#a8c7de;font-size:12px}.empty{border:1px dashed #466781;border-radius:14px;padding:28px;text-align:center;color:#bad1e3}.panel{padding:22px;background:linear-gradient(155deg,#102a41,#0b2033);display:flex;flex-direction:column;gap:18px;min-width:0}.panel h3{font-size:15px;margin:0 0 9px}.panel-description{font-size:13px;color:#b3cada;margin:0}.selected-box{padding:17px;background:#0b1f30;border:1px solid #30516c;border-radius:13px}.selected-title{font-size:20px;font-weight:850;margin:0 0 12px}.detail{border-top:1px solid #25435a;display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}.detail span{color:#a6c0d6}.detail strong{text-align:right}.highlight{font-size:12px;color:#a5f0d4;margin-top:10px}.cta{width:100%;border:1px solid #459fe9;background:#196bac;color:white;font-weight:750;padding:12px 13px;border-radius:11px}.cta:hover{background:#2886cb}.outline{width:100%;border:1px solid #4b7592;background:#102b43;color:#d7ebf9;font-weight:750;padding:11px 13px;border-radius:11px}.outline:hover{background:#193e5e}.smallprint{font-size:11px;color:#acc3d7;margin:9px 0 0}.alert-panel{border:1px solid #335873;border-radius:14px;padding:17px;background:#13314b}.alert-panel h3{margin:0 0 7px}.alert-panel p{font-size:13px;color:#bed3e4;margin:0 0 13px}.notice{background:#3a2b18;color:#ffdcab;border-left:3px solid #f0b75f;padding:11px 13px;border-radius:8px;font-size:12px;margin-top:4px}.toast{display:none;padding:12px 14px;border-radius:10px;color:#bdffe4;background:#174c3d;border:1px solid #4bb890;font-size:13px}.toast.show{display:block}
+    .features{padding:22px 0 55px}.features h2{font-size:28px;letter-spacing:-.04em;margin:0 0 18px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{background:linear-gradient(140deg,#102a42,#0b1d2e);border:1px solid var(--line);border-radius:17px;padding:22px}.feature .glyph{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#153e62;color:#86d0ff;font-size:19px;margin-bottom:15px}.feature h3{font-size:16px;margin:0 0 8px}.feature p{font-size:13px;color:#bad0e1;margin:0}.footer{border-top:1px solid #223c53;color:#b2cadd;padding:24px 0 35px;display:flex;justify-content:space-between;gap:12px;font-size:12px}.footer a{color:#90d6ff}
+    @media(max-width:950px){.layout{grid-template-columns:1fr}.list-pane{border-right:0;border-bottom:1px solid var(--line)}.panel{display:grid;grid-template-columns:1fr 1fr}.panel>.panel-description{grid-column:1/-1}.stats{grid-template-columns:1fr 1fr}.feature-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.wrap{width:calc(100% - 28px)}.top{height:70px}.brand{font-size:17px}.mark{width:33px;height:33px;font-size:23px}.back{font-size:11px}.right{gap:8px}.hero{padding-top:36px}.hero h1{font-size:36px}.lead{font-size:15px}.stats{gap:8px}.stat{padding:14px}.stat strong{font-size:25px}.workspace-head,.list-pane,.panel{padding:16px}.panel{display:flex}.filters{grid-template-columns:1fr 1fr}.route{font-size:14px}.feature-grid{grid-template-columns:1fr}.footer{flex-direction:column}.offer-price small{display:block;margin-left:0}}
+    @media(max-width:390px){.filters{grid-template-columns:1fr}.back{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <header class="top wrap">
+    <a class="brand" href="#" aria-label="Mamourart"><span class="mark">M</span><span>Mamourart <b>Fret Alerts</b></span></a>
+    <div class="right"><a class="back" href="#features" data-t="discover">↓ Découvrir le concept</a><div class="languages" role="group" aria-label="Language / Langue"><button type="button" id="fr" aria-pressed="true">FR</button><button type="button" id="en" aria-pressed="false">EN</button></div></div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow" data-t="eyebrow">Concept logiciel B2B · Transport routier</p>
+      <h1 id="hero-title" data-t="hero">Le bon fret, au bon moment. <span class="accent">Sans chercher pendant des heures.</span></h1>
+      <p class="lead" data-t="lead">Un assistant de veille pour les sociétés de transport : il filtre les opportunités selon vos trajets et vos véhicules, puis prépare des alertes pertinentes.</p>
+      <div class="tags"><span class="tag warn" data-t="sim">Prototype interactif · 100 % fictif</span><span class="tag" data-t="service">Service d'information uniquement</span><span class="tag">FR / EN</span></div>
+    </section>
+    <section class="stats" aria-label="Demo statistics">
+      <div class="stat"><small data-t="metric1">Offres simulées</small><strong id="total">8</strong><span class="hint" data-t="metric1sub">Base de démonstration</span></div>
+      <div class="stat"><small data-t="metric2">Types de véhicules</small><strong>4</strong><span class="hint" data-t="metric2sub">Profils fictifs</span></div>
+      <div class="stat"><small data-t="metric3">Zones couvertes</small><strong>7</strong><span class="hint" data-t="metric3sub">Villes d'exemple</span></div>
+      <div class="stat"><small data-t="metric4">Contrats négociés</small><strong>0</strong><span class="hint" data-t="metric4sub">Aucune intermédiation</span></div>
+    </section>
+    <section class="workspace" aria-label="Interactive simulation" id="demo">
+      <div class="workspace-head"><div><h2 data-t="deskTitle">Tableau de veille des opportunités</h2><p data-t="deskSub">Filtrez les offres fictives et simulez une alerte personnalisée.</p></div><span class="live" data-t="sample">● MODE DÉMONSTRATION</span></div>
+      <div class="layout">
+        <div class="list-pane">
+          <h3 class="filter-title" data-t="filterTitle">Vos critères de recherche</h3>
+          <div class="filters">
+            <div class="field"><label for="origin" data-t="origin">Ville de départ</label><select id="origin"></select></div>
+            <div class="field"><label for="destination" data-t="destination">Ville d'arrivée</label><select id="destination"></select></div>
+            <div class="field"><label for="vehicle" data-t="vehicle">Type de véhicule</label><select id="vehicle"></select></div>
+            <div class="field"><label for="minRate" data-t="minRate">Tarif minimum (€/km)</label><select id="minRate"><option value="0">Tous / All</option><option value="1">1,00 €</option><option value="1.3">1,30 €</option><option value="1.6">1,60 €</option><option value="2">2,00 €</option></select></div>
+          </div>
+          <div class="filter-bottom"><span class="results" id="resultCount" aria-live="polite"></span><button class="reset" id="reset" type="button" data-t="reset">Réinitialiser</button></div>
+          <div id="offers" class="offers"></div>
+        </div>
+        <aside class="panel" aria-label="Details and alerts">
+          <p class="panel-description" data-t="panelIntro">Choisissez une offre pour découvrir les critères analysés par Mamourart.</p>
+          <div class="selected-box">
+            <h3 data-t="selectedHeading">Offre sélectionnée</h3>
+            <div class="selected-title" id="selectedRoute">—</div>
+            <div class="detail"><span data-t="kind">Véhicule requis</span><strong id="selectedVehicle">—</strong></div>
+            <div class="detail"><span data-t="distance">Distance indicative</span><strong id="selectedKm">—</strong></div>
+            <div class="detail"><span data-t="price">Prix proposé fictif</span><strong id="selectedPrice">—</strong></div>
+            <div class="detail"><span data-t="rate">Prix indicatif/km</span><strong id="selectedRate">—</strong></div>
+            <p class="highlight" data-t="decision">La décision commerciale reste entièrement entre les entreprises.</p>
+            <button type="button" id="notify" class="outline" data-t="notify">Simuler une notification pour cette offre</button>
+            <p class="smallprint" data-t="notifyNote">Aucun e-mail, SMS ou message n'est envoyé.</p>
+          </div>
+          <div class="alert-panel"><h3 data-t="alertTitle">Créer une alerte de veille</h3><p data-t="alertBody">Conservez les critères actuels dans cette simulation pour visualiser une future alerte d'abonnement.</p><button type="button" id="createAlert" class="cta" data-t="alertButton">Créer une alerte fictive</button><p class="smallprint" data-t="alertNote">Aucun compte, paiement ni abonnement réel.</p></div>
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+          <div class="notice" data-t="legal">Maquette de présentation : les annonces, distances, montants et correspondances sont inventés. Mamourart ne met pas en relation des parties et n'organise aucun transport dans cette démonstration.</div>
+        </aside>
+      </div>
+    </section>
+    <section class="features" id="features"><h2 data-t="howTitle">Comment fonctionnerait le service ?</h2><div class="feature-grid">
+      <article class="feature"><span class="glyph">⌕</span><h3 data-t="feat1Title">Veille autorisée</h3><p data-t="feat1">Consulter des annonces uniquement depuis des partenaires et sources autorisés à cette fin.</p></article>
+      <article class="feature"><span class="glyph">◎</span><h3 data-t="feat2Title">Filtrage intelligent</h3><p data-t="feat2">Comparer les trajets, types de véhicules et montants, avec des scores uniquement indicatifs.</p></article>
+      <article class="feature"><span class="glyph">◈</span><h3 data-t="feat3Title">Alertes par abonnement</h3><p data-t="feat3">Prévenir les transporteurs des opportunités à examiner, sans négocier ni organiser les transports.</p></article>
+    </div></section>
+  </main>
+  <footer class="footer wrap"><span data-t="footer">© Mamourart · Fret Alerts — concept en préparation, non commercialisé.</span><a href="#demo" data-t="backTop">↑ Retour à la démonstration</a></footer>
+  <script>
+  'use strict';
+  // Data below is fully invented for UI demonstration, not sourced from any freight exchange.
+  const routes=[
+    {id:1,from:'Paris',to:'Lyon',type:'tautliner',km:465,price:780,date:'2026-10-19',score:96},
+    {id:2,from:'Lyon',to:'Lille',type:'tautliner',km:690,price:1035,date:'2026-10-20',score:91},
+    {id:3,from:'Lille',to:'Paris',type:'van',km:225,price:320,date:'2026-10-19',score:88},
+    {id:4,from:'Marseille',to:'Lyon',type:'refrigerated',km:320,price:710,date:'2026-10-21',score:95},
+    {id:5,from:'Paris',to:'Bordeaux',type:'tautliner',km:585,price:920,date:'2026-10-22',score:89},
+    {id:6,from:'Toulouse',to:'Marseille',type:'van',km:405,price:580,date:'2026-10-20',score:84},
+    {id:7,from:'Bordeaux',to:'Toulouse',type:'flatbed',km:245,price:570,date:'2026-10-22',score:93},
+    {id:8,from:'Lyon',to:'Paris',type:'refrigerated',km:465,price:890,date:'2026-10-23',score:90}
+  ];
+  const cityNames=[...new Set(routes.flatMap(r=>[r.from,r.to]))].sort((a,b)=>a.localeCompare(b));
+  const d={fr:{eyebrow:'Concept logiciel B2B · Transport routier',hero:'Le bon fret, au bon moment. <span class="accent">Sans chercher pendant des heures.</span>',lead:'Un assistant de veille pour les sociétés de transport : il filtre les opportunités selon vos trajets et vos véhicules, puis prépare des alertes pertinentes.',sim:'Prototype interactif · 100 % fictif',service:"Service d'information uniquement",discover:'↓ Découvrir le concept',metric1:'Offres simulées',metric1sub:'Base de démonstration',metric2:'Types de véhicules',metric2sub:'Profils fictifs',metric3:'Zones couvertes',metric3sub:"Villes d'exemple",metric4:'Contrats négociés',metric4sub:'Aucune intermédiation',deskTitle:'Tableau de veille des opportunités',deskSub:'Filtrez les offres fictives et simulez une alerte personnalisée.',sample:'● MODE DÉMONSTRATION',filterTitle:'Vos critères de recherche',origin:'Ville de départ',destination:"Ville d'arrivée",vehicle:'Type de véhicule',minRate:'Tarif minimum (€/km)',reset:'Réinitialiser',panelIntro:'Choisissez une offre pour découvrir les critères analysés par Mamourart.',selectedHeading:'Offre sélectionnée',kind:'Véhicule requis',distance:'Distance indicative',price:'Prix proposé fictif',rate:'Prix indicatif/km',decision:'La décision commerciale reste entièrement entre les entreprises.',notify:'Simuler une notification pour cette offre',notifyNote:"Aucun e-mail, SMS ou message n'est envoyé.",alertTitle:'Créer une alerte de veille',alertBody:"Conservez les critères actuels dans cette simulation pour visualiser une future alerte d'abonnement.",alertButton:'Créer une alerte fictive',alertNote:'Aucun compte, paiement ni abonnement réel.',legal:"Maquette de présentation : les annonces, distances, montants et correspondances sont inventés. Mamourart ne met pas en relation des parties et n'organise aucun transport dans cette démonstration.",howTitle:'Comment fonctionnerait le service ?',feat1Title:'Veille autorisée',feat1:'Consulter des annonces uniquement depuis des partenaires et sources autorisés à cette fin.',feat2Title:'Filtrage intelligent',feat2:'Comparer les trajets, types de véhicules et montants, avec des scores uniquement indicatifs.',feat3Title:'Alertes par abonnement',feat3:'Prévenir les transporteurs des opportunités à examiner, sans négocier ni organiser les transports.',footer:'© Mamourart · Fret Alerts — concept en préparation, non commercialisé.',backTop:'↑ Retour à la démonstration',all:'Toutes les villes',allTypes:'Tous les véhicules',tautliner:'Semi-remorque bâchée',van:'Utilitaire',refrigerated:'Frigorifique',flatbed:'Plateau',matching:'correspondance simulée',results:'offre(s) fictive(s)',empty:'Aucune offre fictive ne correspond aux filtres.',date:'Chargement fictif',demoNotice:'Notification fictive préparée pour',created:'Alerte fictive créée avec les filtres actuels. Aucun envoi programmé.',none:'Choisissez une offre',rateShort:'€/km'},en:{eyebrow:'B2B software concept · Road freight',hero:'The right load, at the right time. <span class="accent">Without hours of searching.</span>',lead:'A freight monitoring assistant for transport companies: filters opportunities by routes and vehicles, then prepares relevant alerts.',sim:'Interactive prototype · 100% fictional',service:'Information service only',discover:'↓ Explore the concept',metric1:'Simulated listings',metric1sub:'Sample data only',metric2:'Vehicle categories',metric2sub:'Fictional profiles',metric3:'Sample regions',metric3sub:'Example cities',metric4:'Contracts negotiated',metric4sub:'No brokerage',deskTitle:'Freight opportunity dashboard',deskSub:'Filter fictional listings and simulate a custom alert.',sample:'● DEMO MODE',filterTitle:'Your search criteria',origin:'Departure city',destination:'Destination city',vehicle:'Vehicle category',minRate:'Minimum rate (€/km)',reset:'Reset filters',panelIntro:'Select a sample listing to see the criteria Mamourart could analyse.',selectedHeading:'Selected listing',kind:'Required vehicle',distance:'Illustrative distance',price:'Fictional asking price',rate:'Illustrative price/km',decision:'Commercial decisions remain entirely with the companies.',notify:'Simulate notification for this listing',notifyNote:'No email, SMS or message is sent.',alertTitle:'Create a freight watch alert',alertBody:'Use the current filters to preview a future subscription alert.',alertButton:'Create a fictional alert',alertNote:'No account, payment or real subscription.',legal:'Presentation mock-up: listings, distances, prices and matches are invented. Mamourart neither connects parties nor arranges any transport in this demonstration.',howTitle:'How could the service work?',feat1Title:'Authorised monitoring',feat1:'Read listings only from partners and data sources that explicitly allow this use.',feat2Title:'Smart filtering',feat2:'Compare routes, vehicle types and prices using illustrative scores only.',feat3Title:'Subscription alerts',feat3:'Notify carriers of opportunities to assess, without negotiating or arranging transport.',footer:'© Mamourart · Fret Alerts — concept under development, not on sale.',backTop:'↑ Back to the demo',all:'All cities',allTypes:'All vehicles',tautliner:'Curtainsider',van:'Light commercial van',refrigerated:'Refrigerated',flatbed:'Flatbed',matching:'simulated match',results:'fictional listing(s)',empty:'No fictional listings match these filters.',date:'Fictional loading',demoNotice:'Fictional notification prepared for',created:'Fictional alert created with your current filters. No delivery scheduled.',none:'Select a listing',rateShort:'€/km'}};
+  let lang='fr',selected=1;
+  const el=id=>document.getElementById(id);
+  const currency=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  function translatedVehicle(t){return d[lang][t]}
+  function buildOptions(){
+    for(const id of ['origin','destination']){
+      const s=el(id),prior=s.value;s.replaceChildren();s.add(new Option(d[lang].all,''));for(const city of cityNames)s.add(new Option(city,city));s.value=prior;
+    }
+    const v=el('vehicle'),prior=v.value;v.replaceChildren();v.add(new Option(d[lang].allTypes,''));for(const t of ['tautliner','van','refrigerated','flatbed'])v.add(new Option(translatedVehicle(t),t));v.value=prior;
+    el('minRate').options[0].textContent=lang==='fr'?'Tous':'All';
+  }
+  function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function filterRoutes(){const o=el('origin').value,des=el('destination').value,type=el('vehicle').value,min=Number(el('minRate').value);return routes.filter(r=>(!o||r.from===o)&&(!des||r.to===des)&&(!type||r.type===type)&&r.price/r.km>=min)}
+  function showSelected(){const r=routes.find(x=>x.id===selected),valid=!!r;
+    el('selectedRoute').textContent=valid?`${r.from} → ${r.to}`:d[lang].none;
+    el('selectedVehicle').textContent=valid?translatedVehicle(r.type):'—';el('selectedKm').textContent=valid?`${r.km} km`:'—';el('selectedPrice').textContent=valid?currency.format(r.price):'—';el('selectedRate').textContent=valid?`${(r.price/r.km).toFixed(2).replace('.',',')} €/km`:'—';
+    el('notify').disabled=!valid;el('notify').style.opacity=valid?'1':'.6';
+  }
+  function showOffers(){const arr=filterRoutes();el('resultCount').textContent=`${arr.length} ${d[lang].results}`;const container=el('offers');container.replaceChildren();
+    if(!arr.length){const empty=document.createElement('p');empty.className='empty';empty.textContent=d[lang].empty;container.append(empty);selected=null;showSelected();return;}
+    if(!arr.some(x=>x.id===selected))selected=arr[0].id;
+    for(const r of arr){const b=document.createElement('button');b.type='button';b.className='offer'+(r.id===selected?' active':'');b.setAttribute('aria-pressed',String(r.id===selected));b.innerHTML=`<div class="offer-head"><span class="route">${escapeHTML(r.from)} <span>→</span> ${escapeHTML(r.to)}</span><span class="match">${r.score}%</span></div><div class="offer-sub">${escapeHTML(translatedVehicle(r.type))} · ${r.km} km · ${escapeHTML(d[lang].matching)}</div><div class="offer-footer"><span class="offer-price">${currency.format(r.price)} <small>${(r.price/r.km).toFixed(2).replace('.',',')} €/km</small></span><span class="offer-date">${escapeHTML(d[lang].date)} ${r.date.slice(8)}/${r.date.slice(5,7)}</span></div>`;b.addEventListener('click',()=>{selected=r.id;showOffers()});container.append(b)}
+    showSelected();
+  }
+  function setLanguage(next){lang=next;document.documentElement.lang=next;for(const node of document.querySelectorAll('[data-t]')){const key=node.dataset.t;node.innerHTML=d[lang][key]||''}el('fr').setAttribute('aria-pressed',String(next==='fr'));el('en').setAttribute('aria-pressed',String(next==='en'));buildOptions();showOffers();el('toast').classList.remove('show')}
+  for(const id of ['origin','destination','vehicle','minRate'])el(id).addEventListener('change',()=>{showOffers();el('toast').classList.remove('show')});
+  el('reset').addEventListener('click',()=>{for(const id of ['origin','destination','vehicle','minRate'])el(id).selectedIndex=0;showOffers();el('toast').classList.remove('show')});
+  el('fr').addEventListener('click',()=>setLanguage('fr'));el('en').addEventListener('click',()=>setLanguage('en'));
+  function toast(s){el('toast').textContent=s;el('toast').classList.add('show')}
+  el('notify').addEventListener('click',()=>{const r=routes.find(x=>x.id===selected);if(r)toast(`${d[lang].demoNotice} ${r.from} → ${r.to}.`)});
+  el('createAlert').addEventListener('click',()=>toast(d[lang].created));
+  setLanguage('fr');
+  </script>
+</body>
+</html>
