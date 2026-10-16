@@ -1,0 +1,31 @@
+name: PHP 8.2 syntax check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    name: PHP 8.2 syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Verify PHP version
+        run: php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 2) { exit(1); }'
+
+      - name: Check contact endpoint syntax
+        run: php -l contact-submit.php
