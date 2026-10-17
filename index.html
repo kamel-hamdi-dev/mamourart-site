@@ -572,7 +572,8 @@
               <textarea name="details" rows="5" minlength="20" maxlength="3500" required></textarea>
             </label>
             <label class="quote-policy"><input name="privacy_ack" type="checkbox" value="yes" required><span data-i18n="quotePrivacy">J'ai lu les informations ci-dessous concernant mes données.</span></label>
-            <p class="quote-privacy" data-i18n="quotePrivacyInfo">Les informations transmises servent exclusivement à répondre à votre demande. Elles sont envoyées par e-mail à Mamourart, sans enregistrement dans une base de données du site. Pour toute question relative à vos données : contact@mamourart.com.</p>
+            <p class="quote-privacy" data-i18n="quotePrivacyInfo">Les informations servent uniquement à traiter votre demande. Responsable : Kamel Hamdi. Les demandes sans contrat sont conservées 12 mois après le dernier échange dans la messagerie, sans base de données du site. Ne transmettez pas de données sensibles.</p>
+            <p class="quote-privacy"><a href="legal.html?lang=fr#privacy-fr" data-legal-link="privacy" data-i18n="quotePolicyLink">Politique de confidentialité</a></p>
             <div class="quote-trap" aria-hidden="true"><label>Site web <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
             <button class="button primary" type="submit" data-i18n="quoteSend">Envoyer ma demande</button>
             <p class="quote-result" id="quoteResult" role="status" aria-live="polite"></p>
@@ -592,6 +593,8 @@
         <a href="#approach" data-i18n="navApproach">Approche</a>
         <a href="#about" data-i18n="navAbout">À propos</a>
         <a href="#contact" data-i18n="navContact">Contact</a>
+        <a href="legal.html?lang=fr#legal-fr" data-legal-link="legal" data-i18n="legalNotices">Mentions légales</a>
+        <a href="legal.html?lang=fr#privacy-fr" data-legal-link="privacy" data-i18n="privacyPolicy">Confidentialité</a>
       </nav>
     </div>
   </footer>
@@ -712,7 +715,10 @@
         quoteOther:"Autre projet",
         quoteDetails:"Décrivez votre projet *",
         quotePrivacy:"J'ai lu les informations ci-dessous concernant mes données.",
-        quotePrivacyInfo:"Les informations transmises servent exclusivement à répondre à votre demande. Elles sont envoyées par e-mail à Mamourart, sans enregistrement dans une base de données du site. Pour toute question relative à vos données : contact@mamourart.com.",
+        quotePrivacyInfo:"Les informations servent uniquement à traiter votre demande. Responsable : Kamel Hamdi. Les demandes sans contrat sont conservées 12 mois après le dernier échange dans la messagerie, sans base de données du site. Ne transmettez pas de données sensibles.",
+        quotePolicyLink:"Politique de confidentialité",
+        legalNotices:"Mentions légales",
+        privacyPolicy:"Confidentialité",
         quoteSend:"Envoyer ma demande",
         quoteFallback:"En cas de problème avec le formulaire, écrivez directement à contact@mamourart.com.",
         quoteSuccess:"Votre demande a été envoyée. Nous vous répondrons par e-mail.",
@@ -824,7 +830,10 @@
         quoteOther:"Other project",
         quoteDetails:"Describe your project *",
         quotePrivacy:"I have read the information below about my data.",
-        quotePrivacyInfo:"The information provided is used only to respond to your request. It is emailed to Mamourart and is not stored in a website database. For data questions: contact@mamourart.com.",
+        quotePrivacyInfo:"Information is used only to handle your request. Controller: Kamel Hamdi. Enquiries without a contract are kept for 12 months after the last exchange in the email inbox, with no website database. Do not send sensitive data.",
+        quotePolicyLink:"Privacy notice",
+        legalNotices:"Legal notice",
+        privacyPolicy:"Privacy",
         quoteSend:"Send my request",
         quoteFallback:"If the form does not work, email contact@mamourart.com directly.",
         quoteSuccess:"Your request was sent. We will reply by email.",
@@ -856,6 +865,10 @@
         quoteResult.textContent = translations[lang][contactStatus === "sent" ? "quoteSuccess" : "quoteError"];
         quoteResult.classList.toggle("error", contactStatus === "error");
       }
+      document.querySelectorAll("[data-legal-link]").forEach(link=>{
+        const kind = link.dataset.legalLink === "legal" ? "legal" : "privacy";
+        link.href = "legal.html?lang=" + lang + "#" + kind + "-" + lang;
+      });
       document.querySelectorAll("[data-i18n]").forEach(el=>{
         const key = el.dataset.i18n;
         if(translations[lang][key]) el.textContent = translations[lang][key];
