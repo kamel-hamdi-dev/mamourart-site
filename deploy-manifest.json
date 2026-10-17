@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "purpose": "Liste explicite des fichiers publics autorises pour un futur deploiement OVH. Aucun deploiement dans cette phase.",
+  "files": [
+    "apple-touch-icon.png",
+    "banner.png",
+    "contact-submit.php",
+    "dashboard.png",
+    "favicon-16x16.png",
+    "favicon-192.png",
+    "favicon-32x32.png",
+    "favicon-48x48.png",
+    "favicon.ico",
+    "fret-alerts-demo.html",
+    "fret-alerts-preview.webp",
+    "google6b745441057a5802.html",
+    "gps-ai-demo.html",
+    "gps-ai-preview.webp",
+    "icon-192.png",
+    "icon-512.png",
+    "index.html",
+    "legal.html",
+    "logo.png",
+    "manifest.json",
+    "robots.txt",
+    "service-worker.js",
+    "sitemap.xml"
+  ]
+}
