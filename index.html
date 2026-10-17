@@ -313,7 +313,7 @@
     .quote-form textarea{resize:vertical}.quote-form .quote-policy{display:flex;align-items:flex-start;gap:10px;font-weight:500}
     .quote-policy input{margin-top:4px;accent-color:#368de7;width:18px;height:18px;flex:none}
     .quote-privacy,.quote-fallback{font-size:.82rem;color:#b5cade;line-height:1.6;margin:0}
-    .quote-result{margin:0;font-weight:650;min-height:0;color:#a0eac7}.quote-result.error{color:#ffcf98}
+    .quote-result{margin:0;font-weight:650;min-height:0;color:#a0eac7;scroll-margin-top:calc(var(--header) + 28px)}.quote-result.error{color:#ffcf98}
     .quote-trap{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
     @media(max-width:680px){.quote-fields{grid-template-columns:1fr}.quote-wrap{padding:19px}}
 
@@ -576,7 +576,7 @@
             <p class="quote-privacy"><a href="legal.html?lang=fr#privacy-fr" data-legal-link="privacy" data-i18n="quotePolicyLink">Politique de confidentialité</a></p>
             <div class="quote-trap" aria-hidden="true"><label>Site web <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
             <button class="button primary" type="submit" data-i18n="quoteSend">Envoyer ma demande</button>
-            <p class="quote-result" id="quoteResult" role="status" aria-live="polite"></p>
+            <p class="quote-result" id="quoteResult" role="status" aria-live="polite" tabindex="-1"></p>
             <p class="quote-fallback" data-i18n="quoteFallback">En cas de problème avec le formulaire, écrivez directement à contact@mamourart.com.</p>
           </form>
         </div>
@@ -923,6 +923,19 @@
     const saved = localStorage.getItem("mamourart-language-v2");
     if(saved === "fr" || saved === "en") setLanguage(saved);
     else setLanguage(navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en");
+
+    // Bring the final status into view on the post-submit redirect.
+    // This runs once after loading, not whenever the visitor changes language.
+    const submittedStatus = new URLSearchParams(window.location.search).get("contact_status");
+    if ((submittedStatus === "sent" || submittedStatus === "error") && window.location.hash === "#quoteResult") {
+      window.addEventListener("load", () => {
+        const result = document.getElementById("quoteResult");
+        if (result) {
+          result.scrollIntoView({block: "center", behavior: "auto"});
+          result.focus({preventScroll: true});
+        }
+      }, {once: true});
+    }
 
     if("serviceWorker" in navigator){
       window.addEventListener("load", ()=>{
