@@ -7,7 +7,12 @@ header('Referrer-Policy: same-origin');
 header('Cache-Control: no-store');
 
 function back(string $status): never {
-    header('Location: /?contact_status=' . $status . '#contact', true, 303);
+    // When running in the password-protected test folder, return to its test form.
+    // The destination is determined exclusively from a local file, never user input.
+    $destination = is_file(__DIR__ . '/mamourart-form-test.html')
+        ? 'mamourart-form-test.html?contact_status=' . $status
+        : '/?contact_status=' . $status . '#contact';
+    header('Location: ' . $destination, true, 303);
     exit;
 }
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
