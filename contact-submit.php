@@ -11,7 +11,7 @@ function back(string $status): never {
     // The destination is determined exclusively from a local file, never user input.
     $destination = is_file(__DIR__ . '/mamourart-form-test.html')
         ? 'mamourart-form-test.html?contact_status=' . $status
-        : '/?contact_status=' . $status . '#contact';
+        : '/?contact_status=' . $status . '#quoteResult';
     header('Location: ' . $destination, true, 303);
     exit;
 }
