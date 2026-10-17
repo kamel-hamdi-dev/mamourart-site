@@ -20,18 +20,25 @@ python scripts/ovh_sftp_snapshot.py --demo
 python -m pytest -m "not external" --ignore=tests/test_external_links.py
 ```
 
-## Connexion SFTP (NON AUTORISÉE POUR LE MOMENT)
+## Authentification SFTP preparee (CONNEXION REELLE NON AUTORISEE)
 
-Une connexion réelle demandera une décision distincte. Elle nécessitera :
+FileZilla emploie actuellement SFTP/22 avec **authentification normale par mot de passe** sur l'hebergement OVH Free. Ce mode est maintenant gere par le script, **mais ne doit pas etre lance avant une validation distincte**.
 
-- `OVH_SFTP_HOST`, `OVH_SFTP_USER`, `OVH_SFTP_PORT` (22 par défaut) ;
-- `OVH_SFTP_KEY_FILE` (clé SSH privée conservée hors Git) ;
-- `OVH_SFTP_KNOWN_HOSTS` (empreinte du serveur vérifiée par un canal de confiance) ;
-- Paramiko installé séparément dans l'environnement d'exécution.
+La commande `--demo` et tous les tests restent hors ligne et ne lisent pas les identifiants. La commande `--backup-readonly` est la seule a ouvrir une connexion reseau, lorsqu'elle sera explicitement autorisee.
 
-**Aucun mot de passe, aucune clé privée et aucun fichier `known_hosts` ne doivent être publiés dans le dépôt ni copiés dans cette conversation.** Le script utilise une politique stricte de vérification des clés SSH (`RejectPolicy`) et n'active pas le mot de passe comme option.
+Configuration envisagee pour une future sauvegarde **en lecture seule** :
 
-Le mode réseau `--backup-readonly CHEMIN` ne doit pas être utilisé avant que ces paramètres, les autorisations OVH et la méthode de stockage privé de la sauvegarde soient vérifiés. Une sauvegarde doit rester dans un dossier privé, **hors de `www`, hors du dépôt et hors des artefacts publics GitHub**.
+- `OVH_SFTP_HOST`, `OVH_SFTP_USER`, `OVH_SFTP_PORT` (22 par defaut) ;
+- `OVH_SFTP_KNOWN_HOSTS` : fichier prive de cles publiques du serveur **verifiees independamment**, obligatoire ;
+- `OVH_SFTP_AUTH=password` et `OVH_SFTP_PASSWORD` : secret transmis exclusivement par variable d'environnement, sans argument de ligne de commande ;
+- alternativement `OVH_SFTP_AUTH=key` et `OVH_SFTP_KEY_FILE` si une cle est prise en charge ; le mode `key` reste le mode par defaut pour compatibilite ;
+- Paramiko installe plus tard dans un environnement dedie.
+
+L'absence de mode valide, de secret ou de fichier known_hosts est bloquante. Les modes `key` et `password` ne doivent pas etre melanges. La verification de l'identite du serveur emploie `RejectPolicy`, sans acceptation automatique de nouvelles cles.
+
+**Ne mettez jamais de mot de passe ou cle SSH dans Git, les captures d'ecran, les logs, les rapports ou cette conversation.** Une future automatisation GitHub devra utiliser les secrets et une validation humaine. La sauvegarde restera privee, hors de `www`, hors du depot Git et hors des artefacts publics GitHub. En particulier, ne telechargez pas l'export de `contact-submit.php` dans un espace public.
+
+Le mode reseau `--backup-readonly CHEMIN` demeure **interdit** pour le moment : nous devons d'abord confirmer l'empreinte SSH du serveur par un canal de confiance, le stockage prive et l'autorisation de connexion reelle.
 
 ## Non disponible à cette étape
 

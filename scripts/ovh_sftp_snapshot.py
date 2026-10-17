@@ -163,27 +163,64 @@ def _env_required(name: str) -> str:
     return value
 
 
+def _sftp_connection_config() -> tuple[Path, dict]:
+    """Configuration locale explicite, sans connexion ni affichage de secret.
+
+    Le mot de passe est accepte uniquement si OVH_SFTP_AUTH=password.
+    Un fichier known_hosts pre-verifie reste obligatoire pour les deux modes.
+    """
+    host = _env_required("OVH_SFTP_HOST")
+    user = _env_required("OVH_SFTP_USER")
+    known_hosts = Path(_env_required("OVH_SFTP_KNOWN_HOSTS"))
+    if not known_hosts.is_file():
+        raise RuntimeError("Fichier known_hosts introuvable")
+    try:
+        port = int(os.getenv("OVH_SFTP_PORT", "22"))
+    except ValueError as exc:
+        raise RuntimeError("Port SFTP invalide") from exc
+    if not 1 <= port <= 65535:
+        raise RuntimeError("Port SFTP invalide")
+
+    mode = os.getenv("OVH_SFTP_AUTH", "key").strip().lower()
+    if mode not in ("key", "password"):
+        raise RuntimeError("OVH_SFTP_AUTH doit etre key ou password")
+    connect_kwargs = dict(
+        hostname=host, username=user, port=port,
+        look_for_keys=False, allow_agent=False,
+        timeout=15, auth_timeout=15, banner_timeout=15,
+    )
+    if mode == "password":
+        if os.environ.get("OVH_SFTP_KEY_FILE", "").strip():
+            raise RuntimeError("Configuration ambigue : cle SSH fournie en mode password")
+        # Ne pas utiliser strip() sur le secret : les espaces peuvent etre significatifs.
+        password = os.environ.get("OVH_SFTP_PASSWORD")
+        if not password or not password.strip():
+            raise RuntimeError("Configuration SFTP manquante : OVH_SFTP_PASSWORD")
+        connect_kwargs["password"] = password
+    else:
+        if os.environ.get("OVH_SFTP_PASSWORD"):
+            raise RuntimeError("Configuration ambigue : mot de passe fourni en mode key")
+        key = Path(_env_required("OVH_SFTP_KEY_FILE"))
+        if not key.is_file():
+            raise RuntimeError("Fichier de cle SSH introuvable")
+        connect_kwargs["key_filename"] = str(key)
+    return known_hosts, connect_kwargs
+
+
 def _backup_readonly(repo: Path, folder: Path) -> None:
-    # This path cannot execute from a GitHub workflow unless added later with approval.
+    """Sauvegarde explicite en lecture seule ; interdite dans les workflows actuels."""
+    # Verification des parametres AVANT import et tentative de connexion reseau.
+    known_hosts, connect_kwargs = _sftp_connection_config()
     try:
         import paramiko
     except ImportError as exc:
         raise RuntimeError("Installez paramiko dans un environnement dedie avant la sauvegarde SFTP") from exc
-    host = _env_required("OVH_SFTP_HOST")
-    user = _env_required("OVH_SFTP_USER")
-    known_hosts = Path(_env_required("OVH_SFTP_KNOWN_HOSTS"))
-    ssh_key = Path(_env_required("OVH_SFTP_KEY_FILE"))
-    if not known_hosts.is_file() or not ssh_key.is_file():
-        raise RuntimeError("Fichier de cle SSH ou known_hosts introuvable")
     client = paramiko.SSHClient()
     client.load_host_keys(str(known_hosts))
+    # Refuser toute cle d'hote absente ou differente ; jamais AutoAddPolicy.
     client.set_missing_host_key_policy(paramiko.RejectPolicy())
     try:
-        client.connect(
-            hostname=host, username=user, port=int(os.getenv("OVH_SFTP_PORT", "22")),
-            key_filename=str(ssh_key), look_for_keys=False, allow_agent=False,
-            timeout=15, auth_timeout=15, banner_timeout=15,
-        )
+        client.connect(**connect_kwargs)
         with client.open_sftp() as sftp:
             receipt = backup_from_sftp(sftp, repo, folder)
         print(f"SAUVEGARDE SFTP EN LECTURE SEULE VALIDEE : {len(receipt['files'])} fichiers")
