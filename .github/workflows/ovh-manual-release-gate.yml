@@ -1,0 +1,88 @@
+name: OVH - Validation manuelle Go No-Go (SIMULATION)
+
+on:
+  workflow_dispatch:
+    inputs:
+      decision:
+        description: "Decision manuelle (NO-GO par defaut)"
+        required: true
+        type: choice
+        default: NO-GO
+        options:
+          - NO-GO
+          - GO
+      confirmation:
+        description: "Pour GO, saisir exactement JE VALIDE LA SIMULATION"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mamourart-ovh-manual-release-simulation
+  cancel-in-progress: false
+
+jobs:
+  simulation:
+    name: Validation Go No-Go + tests, AUCUN deploiement
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Preparer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Installer les dependances des tests
+        run: python -m pip install -r requirements.txt
+
+      - name: Verrou Go No-Go humain avant toute autre verification
+        env:
+          RELEASE_DECISION: ${{ inputs.decision }}
+          RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
+        run: python scripts/ovh_release_gate.py --report reports/ovh-manual-release-gate.md
+
+      - name: Preparer Node pour les tests du site
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Tests Python obligatoires
+        run: python -m pytest -m "not external" --ignore=tests/test_external_links.py
+
+      - name: Preparer PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Syntaxe PHP
+        run: php -l contact-submit.php
+
+      - name: Inventaire autorise (simulation locale)
+        run: python scripts/ovh_deploy_plan.py --report reports/ovh-deploy-plan.md
+
+      - name: Afficher le rapport de validation
+        if: always()
+        shell: bash
+        run: |
+          if [ -f reports/ovh-manual-release-gate.md ]; then
+            cat reports/ovh-manual-release-gate.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "AUCUN transfert ni changement OVH. Validation de simulation uniquement." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enregistrer les rapports de simulation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovh-go-no-go-simulation
+          path: |
+            reports/ovh-manual-release-gate.md
+            reports/ovh-deploy-plan.md
+          if-no-files-found: warn
