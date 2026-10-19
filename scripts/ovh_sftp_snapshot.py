@@ -18,10 +18,55 @@ from pathlib import Path
 from typing import BinaryIO
 
 from ovh_deploy_plan import build_plan
+import ovh_sftp_preflight as preflight
 
 REMOTE_BASE = "/home/mamourl/www"
 MAX_FILE_BYTES = 15 * 1024 * 1024
 CHUNK_SIZE = 128 * 1024
+APPROVED_USER = "mamourl"
+APPROVED_PORT = 22
+
+
+def _private_dir() -> Path:
+    return Path.home() / "Documents" / "mamourart-private-sftp"
+
+
+def _backup_root() -> Path:
+    return Path.home() / "Documents" / "mamourart-ovh-backups"
+
+
+def _is_redirect(path: Path) -> bool:
+    # Windows junctions are not always reported by is_symlink().
+    return path.is_symlink() or (hasattr(path, "is_junction") and path.is_junction())
+
+
+def _safe_backup_target(repo: Path, folder: Path) -> Path:
+    """Refuse destinations arbitraires, redirections et dossiers synchronises evidents.
+
+    Cette fonction ne cree aucun dossier. Le dossier de sauvegardes existe deja.
+    Seule une nouvelle sous-entree directe de celui-ci est acceptee.
+    """
+    root = _backup_root().absolute()
+    target = folder.absolute()
+    if target.parent != root:
+        raise RuntimeError("Sauvegarde autorisee uniquement dans mamourart-ovh-backups")
+    if (not target.name or target.name in (".", "..") or
+            not target.name.startswith("snapshot-") or
+            not all(c.isascii() and (c.isalnum() or c in "-_") for c in target.name)):
+        raise RuntimeError("Nom de sauvegarde invalide : utiliser snapshot-AAAA-MM-JJ")
+    if not root.is_dir() or _is_redirect(root) or _is_redirect(root.parent):
+        raise RuntimeError("Dossier de sauvegardes absent ou redirige")
+    if root.resolve() != root:
+        raise RuntimeError("Dossier de sauvegardes redirige")
+    if target.exists() or _is_redirect(target):
+        raise RuntimeError("La destination existe deja ou est un lien")
+    repo = repo.resolve()
+    if root == repo or repo in root.parents or root in repo.parents:
+        raise RuntimeError("Le dossier de sauvegarde doit etre distinct du depot Git")
+    parts = [p.casefold() for p in root.parts]
+    if any("onedrive" in p or "google drive" in p or "drivefs" in p for p in parts):
+        raise RuntimeError("Dossier de sauvegarde lie a un service cloud")
+    return root
 
 
 def file_hash(path: Path) -> str:
@@ -171,15 +216,19 @@ def _sftp_connection_config() -> tuple[Path, dict]:
     """
     host = _env_required("OVH_SFTP_HOST")
     user = _env_required("OVH_SFTP_USER")
+    if host != preflight.HOST or user != APPROVED_USER:
+        raise RuntimeError("Hote ou utilisateur SFTP non autorise")
     known_hosts = Path(_env_required("OVH_SFTP_KNOWN_HOSTS"))
-    if not known_hosts.is_file():
-        raise RuntimeError("Fichier known_hosts introuvable")
+    expected_known = _private_dir() / "known_hosts"
+    if (known_hosts.absolute() != expected_known.absolute() or
+            _is_redirect(known_hosts) or not known_hosts.is_file()):
+        raise RuntimeError("known_hosts doit etre le fichier prive Mamourart")
     try:
         port = int(os.getenv("OVH_SFTP_PORT", "22"))
     except ValueError as exc:
         raise RuntimeError("Port SFTP invalide") from exc
-    if not 1 <= port <= 65535:
-        raise RuntimeError("Port SFTP invalide")
+    if port != APPROVED_PORT:
+        raise RuntimeError("Port SFTP non autorise : port 22 obligatoire")
 
     mode = os.getenv("OVH_SFTP_AUTH", "key").strip().lower()
     if mode not in ("key", "password"):
@@ -209,7 +258,12 @@ def _sftp_connection_config() -> tuple[Path, dict]:
 
 def _backup_readonly(repo: Path, folder: Path) -> None:
     """Sauvegarde explicite en lecture seule ; interdite dans les workflows actuels."""
-    # Verification des parametres AVANT import et tentative de connexion reseau.
+    # Refus AVANT de lire le mot de passe ou importer Paramiko.
+    backup_root = _safe_backup_target(repo, folder)
+    checks, ok = preflight.perform_checks(repo, _private_dir(), backup_root)
+    if not ok:
+        details = "; ".join(name for name, valid, _ in checks if not valid)
+        raise RuntimeError("Preflight obligatoire refuse la sauvegarde : " + details)
     known_hosts, connect_kwargs = _sftp_connection_config()
     try:
         import paramiko

@@ -69,6 +69,11 @@ def perform_checks(repo: Path, private_dir: Path, backup_dir: Path, *, disk_free
         except (OSError, ValueError, RuntimeError, TypeError) as exc:
             checks.append((name, False, str(exc)))
 
+    # Ne pas perdre les informations de liens en appelant resolve() trop tot.
+    private_redirect = private_dir.is_symlink() or (
+        hasattr(private_dir, "is_junction") and private_dir.is_junction())
+    backup_redirect = backup_dir.is_symlink() or (
+        hasattr(backup_dir, "is_junction") and backup_dir.is_junction())
     repo = repo.resolve()
     private_dir = private_dir.resolve()
     backup_dir = backup_dir.resolve()
@@ -80,7 +85,7 @@ def perform_checks(repo: Path, private_dir: Path, backup_dir: Path, *, disk_free
     check("Manifeste public", manifest_check)
 
     def private_check():
-        if not private_dir.is_dir() or private_dir.is_symlink():
+        if not private_dir.is_dir() or private_redirect:
             raise ValueError("dossier prive introuvable ou lien symbolique")
         if _within(private_dir, repo) or _within(repo, private_dir):
             raise ValueError("le dossier prive doit etre separe du depot Git")
@@ -100,7 +105,7 @@ def perform_checks(repo: Path, private_dir: Path, backup_dir: Path, *, disk_free
     check("Cle publique SSH locale", key_check)
 
     def backup_check():
-        if not backup_dir.is_dir() or backup_dir.is_symlink():
+        if not backup_dir.is_dir() or backup_redirect:
             raise ValueError("dossier de sauvegardes introuvable ou lien symbolique")
         if (_within(backup_dir, repo) or _within(repo, backup_dir) or
                 _within(backup_dir, private_dir) or _within(private_dir, backup_dir)):
