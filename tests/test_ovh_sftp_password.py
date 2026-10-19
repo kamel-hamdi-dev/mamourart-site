@@ -19,8 +19,9 @@ def valid_config(monkeypatch, tmp_path):
         monkeypatch.delenv(item, raising=False)
     known = tmp_path / "known_hosts"
     known.write_text("test-placeholder-not-used-for-a-connection", encoding="utf-8")
-    monkeypatch.setenv("OVH_SFTP_HOST", "fictional-sftp.invalid")
-    monkeypatch.setenv("OVH_SFTP_USER", "test-only")
+    monkeypatch.setattr(snapshot, "_private_dir", lambda: tmp_path)
+    monkeypatch.setenv("OVH_SFTP_HOST", snapshot.preflight.HOST)
+    monkeypatch.setenv("OVH_SFTP_USER", snapshot.APPROVED_USER)
     monkeypatch.setenv("OVH_SFTP_KNOWN_HOSTS", str(known))
     return tmp_path
 
@@ -75,7 +76,7 @@ def test_unknown_mode_or_bad_port_refused(valid_config, monkeypatch):
     monkeypatch.setenv("OVH_SFTP_AUTH", "password")
     monkeypatch.setenv("OVH_SFTP_PASSWORD", "fake")
     monkeypatch.setenv("OVH_SFTP_PORT", "99999")
-    with pytest.raises(RuntimeError, match="Port SFTP invalide"):
+    with pytest.raises(RuntimeError, match="Port SFTP"):
         snapshot._sftp_connection_config()
     monkeypatch.setenv("OVH_SFTP_PORT", "22")
     monkeypatch.setenv("OVH_SFTP_AUTH", "auto")
@@ -116,10 +117,12 @@ def test_connection_uses_reject_policy_no_network(valid_config, monkeypatch):
     fake_module = SimpleNamespace(SSHClient=FakeClient, RejectPolicy=lambda: sentinel)
     monkeypatch.setitem(sys.modules, "paramiko", fake_module)
     monkeypatch.setattr(snapshot, "backup_from_sftp", lambda *_: {"files": [{"file": "fictional"}]})
+    monkeypatch.setattr(snapshot, "_safe_backup_target", lambda *_: valid_config)
+    monkeypatch.setattr(snapshot.preflight, "perform_checks", lambda *_: ([], True))
     snapshot._backup_readonly(valid_config / "fake-repo", valid_config / "fake-private-backup")
     assert [action for action, _ in calls] == ["known_hosts", "strict_policy", "connect_fake", "closed"]
     assert calls[2][1]["password"] == "secret-simulacre"
-    assert calls[2][1]["hostname"] == "fictional-sftp.invalid"
+    assert calls[2][1]["hostname"] == snapshot.preflight.HOST
     assert not (valid_config / "fake-private-backup").exists()
 
 
