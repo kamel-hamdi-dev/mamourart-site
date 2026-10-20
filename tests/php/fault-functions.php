@@ -57,3 +57,10 @@ function rename(string $from, string $to): bool {
     if ($GLOBALS['contact_fault'] === 'snapshot-rename' && !\is_dir($from) && basename($to) === 'state.json') return false;
     return $GLOBALS['contact_fault'] === 'rename' ? false : \rename($from, $to);
 }
+
+function unlink(string $path): bool {
+    return $GLOBALS['contact_fault'] === 'unlink' ? false : \unlink($path);
+}
+function ftruncate($stream, int $size): bool {
+    return $GLOBALS['contact_fault'] === 'truncate' ? false : \ftruncate($stream, $size);
+}

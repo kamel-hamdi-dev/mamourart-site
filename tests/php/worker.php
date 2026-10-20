@@ -11,4 +11,12 @@ require_isolated_test_path($config['directory']);
 fwrite(STDOUT, "ready\n");
 fflush(STDOUT);
 if (fgets(STDIN) !== "go\n") exit(2);
-echo mamourart_contact_reserve($config['directory'], $config['ip'], static fn(): int => $config['now']) ? "1\n" : "0\n";
+if (isset($config['content'])) {
+    $reason = null;
+    $ok = mamourart_contact_reserve($config['directory'], $config['ip'], static fn(): int => $config['now'],
+        $config['content'], static function () use ($config): bool {
+            file_put_contents($config['directory'] . '/mail-calls', "stub\n", FILE_APPEND);
+            return true;
+        }, $reason);
+    echo json_encode([$ok, $reason]) . "\n";
+} else echo mamourart_contact_reserve($config['directory'], $config['ip'], static fn(): int => $config['now']) ? "1\n" : "0\n";

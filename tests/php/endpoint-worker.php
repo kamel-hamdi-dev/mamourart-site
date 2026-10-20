@@ -5,9 +5,16 @@ namespace {
     $GLOBALS['contact_case'] = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERROR);
     require_isolated_test_path($GLOBALS['contact_case']['endpoint']);
     require_isolated_test_path($GLOBALS['contact_case']['temp']);
+    if (isset($GLOBALS['contact_case']['diagnostics_dir'])) {
+        require_isolated_test_path($GLOBALS['contact_case']['diagnostics_dir']);
+        putenv('MAMOURART_CONTACT_DIAGNOSTICS_DIR=' . $GLOBALS['contact_case']['diagnostics_dir']);
+    } else putenv('MAMOURART_CONTACT_DIAGNOSTICS_DIR');
     $GLOBALS['contact_headers'] = [];
     $GLOBALS['contact_mails'] = [];
     $_SERVER = $GLOBALS['contact_case']['server'];
+    if (array_key_exists('CONTENT_LENGTH', $_SERVER) && $_SERVER['CONTENT_LENGTH'] === null) unset($_SERVER['CONTENT_LENGTH']);
+    $_FILES = $GLOBALS['contact_case']['files'] ?? [];
+    if (($GLOBALS['contact_case']['sapi'] ?? '') === 'fpm-fcgi') define('MamourartContactTests\\PHP_SAPI', 'fpm-fcgi');
     // Base64 transports deliberately malformed UTF-8 through the JSON harness
     // unchanged, so the application (rather than JSON encoding) rejects it.
     $_POST = array_map(static fn(mixed $value): mixed => is_string($value) ? base64_decode($value, true) : $value,
@@ -22,6 +29,10 @@ namespace {
     });
 }
 namespace MamourartContactTests {
+    function file_get_contents(string $path, ...$args): string|false {
+        if ($path === 'php://input') return base64_decode($GLOBALS['contact_case']['body'] ?? '', true);
+        return \file_get_contents($path, ...$args);
+    }
     function header(string $header, bool $replace = true, int $response_code = 0): void {
         $GLOBALS['contact_headers'][] = [$header, $replace, $response_code];
     }

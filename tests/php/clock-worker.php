@@ -8,7 +8,7 @@ namespace {
 }
 namespace MamourartContactOrder {
     function flock($stream, int $operation, &$would_block = null): bool {
-        if ($operation === LOCK_EX) {
+        if (($operation & ~LOCK_NB) === LOCK_EX) {
             \fwrite(STDOUT, "before-lock\n");
             \fflush(STDOUT);
             if (\fgets(STDIN) !== "acquire\n") exit(2);
