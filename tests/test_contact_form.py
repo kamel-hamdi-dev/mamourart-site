@@ -25,3 +25,30 @@ def test_contact_form_is_bilingual_and_safe_by_default():
     assert "'Reply-To: ' . $email" in php
     assert "@mail('contact@mamourart.com'" in php
     assert "mail('contact@mamourart.com'," in php
+
+
+def test_browser_limits_match_documented_utf16_server_limits():
+    html = read_text("index.html")
+    assert 'name="name" autocomplete="name" minlength="2" maxlength="120"' in html
+    assert 'minlength="20" maxlength="3500"' in html
+    php = read_text("contact-submit.php")
+    assert "form_length($name)" in php
+    assert "form_length($company)" in php
+    assert "form_length($details)" in php
+    assert "> 48000" in php
+
+
+def test_ci_external_link_check_does_not_probe_production(monkeypatch):
+    from urllib.parse import urlparse
+    from tests import test_external_links
+
+    requested = []
+    def fake_status(url):
+        requested.append(url)
+        return 200
+
+    monkeypatch.setattr(test_external_links, "_status", fake_status)
+    test_external_links.test_external_links_respond()
+    assert requested
+    assert all(urlparse(url).hostname not in {"mamourart.com", "www.mamourart.com"}
+               for url in requested)

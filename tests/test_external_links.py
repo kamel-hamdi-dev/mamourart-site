@@ -23,6 +23,8 @@ def test_external_links_respond():
             anchor["href"]
             for anchor in parse_page(read_text("index.html")).anchors
             if anchor["href"].startswith("https://")
+            # Production is outside the authorized CI test scope for this site.
+            and urlparse(anchor["href"]).hostname not in {"mamourart.com", "www.mamourart.com"}
         }
     )
     assert hrefs, "the page has no external links"
