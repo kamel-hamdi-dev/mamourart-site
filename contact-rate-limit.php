@@ -66,7 +66,8 @@ function mamourart_contact_reserve(string $directory, string $remote, callable $
     $lock = @fopen($lockPath, 'r+');
     if ($lock === false) return false;
     try {
-        if (!@chmod($lockPath, 0600) || !@flock($lock, LOCK_EX)) return false;
+        if (!@chmod($lockPath, 0600)) return false;
+        if (!mamourart_contact_lock($lock, $reason)) return false;
         // Evaluate the clock only inside the transaction, after any lock wait.
         $now = $clock();
         if (!is_int($now) || $now < 0) return false;
@@ -87,11 +88,14 @@ function mamourart_contact_reserve(string $directory, string $remote, callable $
         $ipCount = 0;
         foreach ($history as $entry) {
             // Corruption and a clock moving backwards fail closed, never reset quotas.
-            if (!is_array($entry) || !in_array(count($entry), [2, 4], true) ||
+            if (!is_array($entry) || count(array_diff(array_keys($entry), ['time', 'bucket', 'digest', 'sent', 'key_id'])) !== 0 ||
                 !isset($entry['time'], $entry['bucket']) || !is_int($entry['time']) ||
                 $entry['time'] < 0 || $entry['time'] > $now || !is_string($entry['bucket']) ||
                 !preg_match('/\A(?:[a-f0-9]{32}|[a-f0-9]{64})\z/', $entry['bucket'])) return false;
-            if (count($entry) === 4 && (!isset($entry['digest'], $entry['sent']) ||
+            if (array_key_exists('key_id', $entry) && (!is_string($entry['key_id']) ||
+                !preg_match('/\A[a-f0-9]{64}\z/', $entry['key_id']))) return false;
+            if (array_key_exists('digest', $entry) !== array_key_exists('sent', $entry)) return false;
+            if (array_key_exists('digest', $entry) && (!isset($entry['sent']) ||
                 !is_string($entry['digest']) || !preg_match('/\A[a-f0-9]{64}\z/', $entry['digest']) ||
                 !is_bool($entry['sent']))) return false;
             if ($entry['time'] > $now - 3600) {
@@ -99,44 +103,64 @@ function mamourart_contact_reserve(string $directory, string $remote, callable $
                 if ($entry['bucket'] === $bucket) ++$ipCount;
             }
         }
+        $key = null;
+        $identity = null;
+        $dependent = false;
+        foreach ($history as $entry) {
+            if (strlen($entry['bucket']) === 64 || isset($entry['digest']) || isset($entry['key_id'])) {
+                $dependent = true;
+                // 39B HMAC records have no trustworthy key identity. Never silently
+                // enroll them with a potentially already corrupted key.
+                if (!isset($entry['key_id'])) { $reason = 'key_integrity'; return false; }
+            }
+        }
+        if ($content !== null || $dependent) {
+            $keyPath = $directory . '/key';
+            if (is_link($keyPath)) return false;
+            if (!is_file($keyPath)) {
+                if ($dependent) { $reason = 'key_integrity'; return false; }
+                if (!mamourart_contact_snapshot($directory, $keyPath, random_bytes(32))) return false;
+            }
+            if (!@chmod($keyPath, 0600)) return false;
+            $key = @file_get_contents($keyPath, false, null, 0, 33);
+            if (!is_string($key) || strlen($key) !== 32) { $reason = 'key_integrity'; return false; }
+            $identity = hash('sha256', 'mamourart-contact-key-id-v1|' . $key);
+            foreach ($history as $entry) {
+                if (isset($entry['key_id']) && !hash_equals($entry['key_id'], $identity)) {
+                    $reason = 'key_integrity'; return false;
+                }
+            }
+        }
         if ($maintenance) {
-            // Inspect at most 64 directory entries per run. Never touch the lock/key,
-            // symlinks or recent snapshots; only crash leftovers older than one hour.
+            $partial = false;
             $scanned = 0;
             foreach (new \DirectoryIterator($directory) as $file) {
-                if (++$scanned > 64) break;
+                if (++$scanned > 64) { $partial = true; break; }
+                // Only this application's tempnam pattern, never arbitrary .state-*.
                 if (!$file->isLink() && $file->isFile() &&
-                    str_starts_with($file->getFilename(), '.state-') && $file->getMTime() <= $now - 3600)
-                    @unlink($file->getPathname());
+                    preg_match('/\A\.state-[A-Za-z0-9]{6}\z/', $file->getFilename()) &&
+                    $file->getMTime() <= $now - 3600 && !@unlink($file->getPathname())) $partial = true;
             }
             foreach ($active as &$entry) {
                 if ($entry['time'] <= $now - 300) unset($entry['digest'], $entry['sent']);
             }
             unset($entry);
-            $reason = 'maintenance';
-            return $active === $history || mamourart_contact_snapshot($directory, $statePath,
-                json_encode($active, JSON_THROW_ON_ERROR));
+            if ($active !== $history && !mamourart_contact_snapshot($directory, $statePath,
+                json_encode($active, JSON_THROW_ON_ERROR))) return false;
+            $reason = $partial ? 'maintenance_partial' : 'maintenance';
+            return true;
         }
         $digest = null;
-        if ($content !== null) {
-            if ($send === null) return false;
-            // Generated locally, never supplied by HTTP and never committed to Git.
-            $keyPath = $directory . '/key';
-            if (is_link($keyPath)) return false;
-            if (!is_file($keyPath)) {
-                // A lost key must never silently disable an existing deduplication ledger.
-                foreach ($history as $entry) if (isset($entry['digest']) || strlen($entry['bucket']) === 64) return false;
-                if (!mamourart_contact_snapshot($directory, $keyPath, random_bytes(32))) return false;
-            }
-            if (!@chmod($keyPath, 0600)) return false;
-            $key = @file_get_contents($keyPath, false, null, 0, 33);
-            if (!is_string($key) || strlen($key) !== 32) return false;
+        if ($key !== null) {
             $legacyBucket = $bucket;
             $bucket = hash_hmac('sha256', 'mamourart-contact-ip-v1|' . $remote, $key);
             $ipCount = 0;
             foreach ($active as $entry) {
                 if ($entry['bucket'] === $bucket || $entry['bucket'] === $legacyBucket) ++$ipCount;
             }
+        }
+        if ($content !== null) {
+            if ($send === null || $key === null) return false;
             $digest = hash_hmac('sha256', 'mamourart-contact-dedup-v1|' . $content, $key);
             foreach ($active as $entry) {
                 if (isset($entry['digest']) && $entry['time'] > $now - 300 &&
@@ -154,8 +178,13 @@ function mamourart_contact_reserve(string $directory, string $remote, callable $
             if ($entry['time'] <= $now - 300) unset($entry['digest'], $entry['sent']);
         }
         unset($entry);
+        if ($identity !== null) {
+            foreach ($active as &$entry) $entry['key_id'] = $identity;
+            unset($entry);
+        }
         $active[] = ['time' => $now, 'bucket' => $bucket];
         $last = count($active) - 1;
+        if ($identity !== null) $active[$last]['key_id'] = $identity;
         if ($digest !== null) {
             $active[$last]['digest'] = $digest;
             $active[$last]['sent'] = false;
@@ -181,6 +210,21 @@ function mamourart_contact_reserve(string $directory, string $remote, callable $
     }
 }
 
+/** No blocking flock: 250 ms voluntary wait budget, at most 26 attempts. */
+function mamourart_contact_lock($lock, ?string &$reason): bool {
+    $deadline = hrtime(true) + 250000000;
+    for ($attempt = 0; $attempt < 26; ++$attempt) {
+        $wouldBlock = 0;
+        if (@flock($lock, LOCK_EX | LOCK_NB, $wouldBlock)) return true;
+        if ($wouldBlock !== 1) return false;
+        if ($attempt === 25 || hrtime(true) >= $deadline) break;
+        usleep((int)min(10000, max(0, intdiv($deadline - hrtime(true), 1000))));
+        if (hrtime(true) >= $deadline) break;
+    }
+    $reason = 'lock_busy';
+    return false;
+}
+
 /** Atomic publication; callers hold the permanent ledger lock. */
 function mamourart_contact_snapshot(string $directory, string $path, string $snapshot): bool {
     $temporary = null;
@@ -203,48 +247,58 @@ function mamourart_contact_snapshot(string $directory, string $path, string $sna
     }
 }
 
-/** Optional aggregate observations, never request data. Disabled without a private directory. */
-function mamourart_contact_diagnostic(string $reason): void {
+/** Optional observations. Explicit outcome lets private maintenance report failures. */
+function mamourart_contact_diagnostic(string $reason): string {
     $allowed = ['validation', 'honeypot', 'individual_quota', 'global_quota',
-        'already_processed', 'pending', 'storage_failure', 'mail_failure'];
+        'already_processed', 'pending', 'storage_failure', 'mail_failure', 'lock_busy', 'key_integrity'];
     $maintenance = $reason === 'maintenance';
-    if (!$maintenance && !in_array($reason, $allowed, true)) return;
+    if (!$maintenance && !in_array($reason, $allowed, true)) return 'disabled';
     $directory = getenv('MAMOURART_CONTACT_DIAGNOSTICS_DIR');
-    if (!is_string($directory) || $directory === '' || $directory[0] !== '/' ||
-        is_link($directory) || !is_dir($directory)) return;
+    if ($directory === false || $directory === '') return 'disabled';
+    if ($directory[0] !== '/' || is_link($directory) || !is_dir($directory)) return 'error';
     $directory = realpath($directory);
-    // Administrator must provision a private directory outside the public document root.
     $root = realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
     if ($directory === false || $root === false || $directory === $root ||
         str_starts_with($directory . '/', $root . '/') ||
-        (fileperms($directory) & 0777) !== 0700) return;
+        (@fileperms($directory) & 0777) !== 0700) return 'error';
     $path = $directory . '/observations.json';
-    if (is_link($path)) return;
-    if ($maintenance && !is_file($path)) return;
+    if (is_link($path)) return 'error';
+    if ($maintenance && !file_exists($path)) return 'ok';
+    $existed = is_file($path);
     $file = @fopen($path, 'c+');
-    if ($file === false) return;
+    if ($file === false) return 'error';
     try {
-        if (!@chmod($path, 0600) || !@flock($file, LOCK_EX | LOCK_NB)) return;
-        $now = time();
-        $day = intdiv($now, 86400);
-        $raw = stream_get_contents($file, 2049);
-        if ($raw === false || strlen($raw) > 2048) return;
+        if (!@chmod($path, 0600)) return 'error';
+        $wouldBlock = 0;
+        if (!@flock($file, LOCK_EX | LOCK_NB, $wouldBlock)) return $wouldBlock === 1 ? 'partial' : 'error';
+        $now = time(); $day = intdiv($now, 86400);
+        $raw = @stream_get_contents($file, 2049);
+        if ($raw === false) return 'error';
         $state = json_decode($raw, true);
-        if (!is_array($state) || ($state['day'] ?? null) !== $day) $state = ['day' => $day];
-        elseif ($maintenance) return;
-        $state = array_intersect_key($state, array_flip(['day', ...$allowed]));
-        // One observation per reason/minute, at most 8 writes/minute; no unlimited log.
-        $minute = intdiv($now, 60);
-        if (!$maintenance) {
-            if (($state[$reason]['minute'] ?? null) === $minute) return;
-            $state[$reason] = ['minute' => $minute, 'minutes' => min(1440, (int)($state[$reason]['minutes'] ?? 0) + 1)];
+        $valid = is_array($state) && isset($state['day']) && is_int($state['day']) &&
+            $state['day'] >= 0 && $state['day'] <= $day &&
+            count(array_diff(array_keys($state), ['day', ...$allowed])) === 0;
+        if ($valid) foreach ($state as $key => $value) {
+            if ($key === 'day') continue;
+            if (!is_array($value) || count($value) !== 2 || !isset($value['minute'], $value['minutes']) ||
+                !is_int($value['minute']) || !is_int($value['minutes']) || $value['minutes'] < 1 ||
+                $value['minutes'] > 1440 || intdiv($value['minute'], 1440) !== $state['day']) $valid = false;
         }
-        $data = json_encode($state);
-        if ($data === false) return;
-        rewind($file);
-        if (@fwrite($file, $data) === strlen($data)) { @ftruncate($file, strlen($data)); @fflush($file); }
+        $repair = ($existed || $raw !== '') && (strlen($raw) > 2048 || !$valid);
+        if ($repair && !$maintenance) return 'error';
+        if (!$valid || $repair || $state['day'] !== $day) $state = ['day' => $day];
+        elseif ($maintenance) return 'ok';
+        if (!$maintenance) {
+            $minute = intdiv($now, 60);
+            if (($state[$reason]['minute'] ?? null) === $minute) return 'ok';
+            $state[$reason] = ['minute' => $minute, 'minutes' => min(1440, ($state[$reason]['minutes'] ?? 0) + 1)];
+        }
+        $data = json_encode($state, JSON_THROW_ON_ERROR);
+        if (!@rewind($file) || @fwrite($file, $data) !== strlen($data) ||
+            !@ftruncate($file, strlen($data)) || !@fflush($file)) return 'error';
+        return $repair ? 'partial' : 'ok';
     } catch (Throwable $error) {
-        // Diagnostics must never alter admission or disclose paths through PHP warnings.
+        return 'error';
     } finally {
         @flock($file, LOCK_UN);
         @fclose($file);

@@ -65,7 +65,7 @@ test('39B missing, corrupt and symlinked keys fail closed without mail', static 
         unlink($dir . '/key');
         if ($mode === 'corrupt') file_put_contents($dir . '/key', 'bad');
         if ($mode === 'symlink') symlink($dir . '/state.json', $dir . '/key');
-        same(deliver($dir, 'new'), [false, 'storage_failure', 0]);
+        same(deliver($dir, 'new'), [false, $mode === 'symlink' ? 'storage_failure' : 'key_integrity', 0]);
     }
 });
 test('39B corrupt fingerprint schema and unavailable storage fail closed', static function (): void {
@@ -106,7 +106,7 @@ foreach ([['name' => str_repeat('é', 120), 'company' => str_repeat('界', 120),
     ['name' => str_repeat('😀', 60), 'details' => str_repeat('😀', 1750)],
     ['name' => 'Éà', 'details' => str_repeat('é', 20)], ['company' => '', 'details' => str_repeat('界', 3500)]] as $i => $post) {
     test('39B UTF16 valid boundaries #' . $i, static function () use ($post): void {
-        $result = endpoint(['post' => $post, 'server' => ['CONTENT_LENGTH' => '34000']]);
+        $result = endpoint(['post' => $post]);
         redirect($result, 'sent'); same(count($result['mails']), 1);
     });
 }
@@ -146,9 +146,10 @@ test('39B scheduled maintenance removes expired fingerprints and reservations wi
     same(mamourart_contact_reserve($dir, '', static fn(): int => CLOCK + 300, null, null, $reason, true), true);
     same(count(state($dir)), 1); same(isset(state($dir)[0]['digest']), false);
     unlink($dir . '/key');
-    same(deliver($dir, 'new', '192.0.2.1', CLOCK + 301), [false, 'storage_failure', 0]);
-    same(mamourart_contact_reserve($dir, '', static fn(): int => CLOCK + 3600, null, null, $reason, true), true);
-    same(state($dir), []);
+    same(deliver($dir, 'new', '192.0.2.1', CLOCK + 301), [false, 'key_integrity', 0]);
+    same(mamourart_contact_reserve($dir, '', static fn(): int => CLOCK + 3600, null, null, $reason, true), false);
+    same($reason, 'key_integrity');
+    same(count(state($dir)), 1);
 });
 test('39B optional diagnostics aggregate only reasons, rotate by day and bound writes', static function (): void {
     $dir = fresh();
@@ -246,11 +247,11 @@ test('39B endpoint emits private diagnostics for rejections, duplicate and mail 
 });
 test('39B maintenance prunes bounded stale crash files without touching recent snapshots', static function (): void {
     $dir = freshLedger(); deliver($dir);
-    file_put_contents($dir . '/.state-old', 'opaque'); touch($dir . '/.state-old', CLOCK - 3600);
-    file_put_contents($dir . '/.state-recent', 'opaque'); touch($dir . '/.state-recent', CLOCK);
+    file_put_contents($dir . '/.state-OLD123', 'opaque'); touch($dir . '/.state-OLD123', CLOCK - 3600);
+    file_put_contents($dir . '/.state-NEW123', 'opaque'); touch($dir . '/.state-NEW123', CLOCK);
     $inode = fileinode($dir . '/lock'); $reason = null;
     same(mamourart_contact_reserve($dir, '', static fn(): int => CLOCK, null, null, $reason, true), true);
-    same(file_exists($dir . '/.state-old'), false); same(file_exists($dir . '/.state-recent'), true);
+    same(file_exists($dir . '/.state-OLD123'), false); same(file_exists($dir . '/.state-NEW123'), true);
     same(fileinode($dir . '/lock'), $inode); same(count(state($dir)), 1);
 });
 

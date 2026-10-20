@@ -1,5 +1,11 @@
 # Mission 39B — Protection anti-spam du formulaire
 
+> Rapport initial historique du commit audité `0977a3d`. Pour le comportement
+> corrigé, les limites et la livraison après audit 39C, voir
+> [MISSION_39D_SECURITY_REVIEW.md](MISSION_39D_SECURITY_REVIEW.md).
+> Les sections verrou, intégrité HMAC, HTTP et maintenance ci-dessous sont
+> remplacées par ce rapport 39D.
+
 ## Base, périmètre et livraison
 
 Base GitHub `main` vérifiée le 20 octobre 2026 :

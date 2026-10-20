@@ -1,0 +1,147 @@
+diff --git a/index.html b/index.html
+--- a/index.html
++++ b/index.html
+@@ -977,6 +977,2 @@
+-    if (new URLSearchParams(window.location.search).has("contact_status")) {
+-      try {
+-        const saved = localStorage.getItem("mamourart-language-v2");
+-        if (saved === "en" || saved === "fr") initialLanguage = saved;
+-      } catch (_) {}
+-    }
++    // The static destination of the POST redirect determines the response language.
++    // Do not let an unavailable or stale storage preference override this page.
+diff --git a/en.html b/en.html
+--- a/en.html
++++ b/en.html
+@@ -593 +593 @@
+-          <form class="quote-form" method="post" action="contact-submit.php" accept-charset="UTF-8">
++          <form class="quote-form" method="post" action="contact-submit.php?lang=en" accept-charset="UTF-8">
+@@ -595 +595 @@
+-              <label><span data-i18n="quoteName">Your name *</span><input name="name" autocomplete="name" maxlength="120" required></label>
++              <label><span data-i18n="quoteName">Your name *</span><input name="name" autocomplete="name" minlength="2" maxlength="120" required></label>
+@@ -977,6 +977,2 @@
+-    if (new URLSearchParams(window.location.search).has("contact_status")) {
+-      try {
+-        const saved = localStorage.getItem("mamourart-language-v2");
+-        if (saved === "en" || saved === "fr") initialLanguage = saved;
+-      } catch (_) {}
+-    }
++    // The static destination of the POST redirect determines the response language.
++    // Do not let an unavailable or stale storage preference override this page.
+diff --git a/contact-submit.php b/contact-submit.php
+--- a/contact-submit.php
++++ b/contact-submit.php
+@@ -29 +29,3 @@
+-        : '/?contact_status=' . $status . '#quoteResult';
++        : (($_GET['lang'] ?? '') === 'en' && is_file(__DIR__ . '/en.html')
++            ? '/en.html?contact_status=' . $status . '#quoteResult'
++            : '/?contact_status=' . $status . '#quoteResult');
+diff --git a/tests/test_mission38.py b/tests/test_mission38.py
+--- a/tests/test_mission38.py
++++ b/tests/test_mission38.py
+@@ -2 +1,0 @@
+-import hashlib
+@@ -46,2 +45,3 @@
+-    form = re.search(r'<form .*?</form>', read_text('index.html'), re.S)[0]
+-    assert hashlib.sha256(form.encode()).hexdigest() == 'd86d468b7ef46e1995906638ca28bda0087de2ffbbb6972a483b463c53810004'
++    from tests.test_integration39d import assert_secure_form
++    assert_secure_form(read_text('index.html'), 'fr')
++    assert_secure_form(read_text('en.html'), 'en')
+diff --git a/tests/test_integration39d.py b/tests/test_integration39d.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_integration39d.py
+@@ -0,0 +1,59 @@
++"""PROPOSAL ONLY: semantic FR/EN form contract for the combined PRs."""
++from html.parser import HTMLParser
++import pytest
++from tests.checks import read_text
++
++class Form(HTMLParser):
++    def __init__(self, html):
++        super().__init__(); self.form = None; self.controls = {}; self.options = []
++        self.trap = None; self.result = None; self.submit = None; self.privacy = None
++        self.inside = False; self.feed(html)
++    def handle_starttag(self, tag, pairs):
++        a = dict(pairs)
++        if tag == 'form':
++            assert self.form is None
++            self.form = a; self.inside = True
++        if not self.inside: return
++        if 'name' in a:
++            assert a['name'] not in self.controls
++            self.controls[a['name']] = (tag, a)
++        if tag == 'option': self.options.append(a.get('value'))
++        if a.get('class') == 'quote-trap': self.trap = a
++        if a.get('id') == 'quoteResult': self.result = a
++        if tag == 'button': self.submit = a
++        if a.get('data-legal-link') == 'privacy': self.privacy = a
++    def handle_endtag(self, tag):
++        if tag == 'form': self.inside = False
++
++def assert_secure_form(html, lang):
++    form = Form(html)
++    assert form.form == {'class':'quote-form', 'method':'post',
++        'action':'contact-submit.php' + ('?lang=en' if lang == 'en' else ''), 'accept-charset':'UTF-8'}
++    assert form.controls == {
++        'name': ('input', {'name':'name','autocomplete':'name','minlength':'2','maxlength':'120','required':None}),
++        'company': ('input', {'name':'company','autocomplete':'organization','maxlength':'120'}),
++        'email': ('input', {'name':'email','type':'email','autocomplete':'email','maxlength':'254','required':None}),
++        'service': ('select', {'name':'service','required':None}),
++        'details': ('textarea', {'name':'details','rows':'5','minlength':'20','maxlength':'3500','required':None}),
++        'privacy_ack': ('input', {'name':'privacy_ack','type':'checkbox','value':'yes','required':None}),
++        'website': ('input', {'type':'text','name':'website','tabindex':'-1','autocomplete':'off'}),
++    }
++    assert form.options == ['', 'software', 'web', 'automation', 'transport', 'other']
++    assert form.trap == {'class':'quote-trap','aria-hidden':'true'}
++    assert form.result == {'class':'quote-result','id':'quoteResult','role':'status','aria-live':'polite','tabindex':'-1'}
++    assert form.submit == {'class':'button primary','type':'submit','data-i18n':'quoteSend'}
++    assert form.privacy['href'] == f'legal.html?lang={lang}#privacy-{lang}'
++    assert 'data-i18n="quotePrivacyInfo"' in html
++    assert 'data-i18n="quoteFallback"' in html
++
++def test_both_forms_keep_security_semantics():
++    for name, lang in [('index.html','fr'), ('en.html','en')]: assert_secure_form(read_text(name), lang)
++
++@pytest.mark.parametrize('old,new', [
++    ('minlength="2"','minlength="1"'), ('maxlength="120"','maxlength="121"'),
++    ('type="checkbox" value="yes" required','type="checkbox" value="yes"'),
++    ('aria-hidden="true"','aria-hidden="false"'), ('name="website"','name="unknown"'),
++    ('value="transport"','value="untrusted"'), ('method="post"','method="get"'),
++])
++def test_semantic_contract_detects_security_regression(old, new):
++    with pytest.raises(AssertionError): assert_secure_form(read_text('index.html').replace(old,new), 'fr')
+diff --git a/tests/browser_mission38.py b/tests/browser_mission38.py
+--- a/tests/browser_mission38.py
++++ b/tests/browser_mission38.py
+@@ -36 +36 @@
+-    assert page.locator('form').get_attribute('action')=='contact-submit.php'
++    assert page.locator('form').get_attribute('action')==('contact-submit.php?lang=en' if name=='en.html' else 'contact-submit.php')
+diff --git a/tests/php/endpoint-worker.php b/tests/php/endpoint-worker.php
+--- a/tests/php/endpoint-worker.php
++++ b/tests/php/endpoint-worker.php
+@@ -15,0 +16 @@
++    $_GET = $GLOBALS['contact_case']['get'] ?? [];
+diff --git a/tests/php/suite.php b/tests/php/suite.php
+--- a/tests/php/suite.php
++++ b/tests/php/suite.php
+@@ -485,0 +486 @@
++require __DIR__ . '/integration39d.php';
+diff --git a/tests/php/integration39d.php b/tests/php/integration39d.php
+new file mode 100644
+--- /dev/null
++++ b/tests/php/integration39d.php
+@@ -0,0 +1,13 @@
++<?php
++declare(strict_types=1);
++require_once __DIR__ . '/guard.php';
++
++test('39D simulation English POST keeps its static response language and generic error', static function () use ($fixtures): void {
++    file_put_contents($fixtures['public'] . '/en.html', 'local English page');
++    foreach ([['get' => ['lang' => 'en']], ['get' => ['lang' => 'en'], 'post' => ['email' => 'invalid']]] as $case) {
++        $status = isset($case['post']) ? 'error' : 'sent'; $result = endpoint($case);
++        check(in_array(['Location: /en.html?contact_status=' . $status . '#quoteResult', true, 303], $result['headers'], true), 'English response lost');
++        same(count($result['mails']), $status === 'sent' ? 1 : 0);
++    }
++    $result = endpoint(['get' => ['lang' => 'https://attacker.invalid/']]); redirect($result, 'sent');
++});

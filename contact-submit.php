@@ -35,8 +35,30 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     http_response_code(405);
     exit('Method not allowed');
 }
-$requestLength = (string)($_SERVER['CONTENT_LENGTH'] ?? '0');
-if (!preg_match('/\A[0-9]{1,8}\z/', $requestLength) || (int)$requestLength > 48000) reject('validation');
+$requestLength = (string)($_SERVER['CONTENT_LENGTH'] ?? '');
+if (!preg_match('/\A[0-9]{1,8}\z/', $requestLength) || (int)$requestLength < 1 || (int)$requestLength > 48000) reject('validation');
+// This HTML form is URL-encoded and has no uploads. Fail closed on a missing
+// length, alternate parser, truncated PHP parsing or unexpected parameter shape.
+$contentType = trim((string)($_SERVER['CONTENT_TYPE'] ?? ''));
+if (!preg_match('~\Aapplication/x-www-form-urlencoded(?:\s*;\s*charset=(?:utf-8|"utf-8"))?\z~i', $contentType) ||
+    !empty($_FILES)) reject('validation');
+$fields = ['website', 'name', 'company', 'email', 'service', 'details', 'privacy_ack'];
+if (array_diff(array_keys($_POST), $fields)) reject('validation');
+$raw = file_get_contents('php://input', false, null, 0, 48001);
+if (!is_string($raw) || strlen($raw) !== (int)$requestLength || strlen($raw) > 48000 ||
+    preg_match('/%(?![a-f0-9]{2})/i', $raw)) reject('validation');
+$pairs = explode('&', $raw);
+if (count($pairs) > count($fields)) reject('validation');
+$seen = [];
+foreach ($pairs as $pair) {
+    $parts = explode('=', $pair, 2);
+    $field = urldecode($parts[0]);
+    if (count($parts) !== 2 || !in_array($field, $fields, true) || isset($seen[$field])) reject('validation');
+    $seen[$field] = true;
+}
+parse_str($raw, $parsed);
+if ($parsed !== $_POST) reject('validation');
+unset($raw, $parsed, $pairs, $seen);
 $origin = strtolower((string)($_SERVER['HTTP_ORIGIN'] ?? ''));
 if ($origin !== '' && !in_array($origin, ['https://mamourart.com', 'https://www.mamourart.com'], true)) reject('validation');
 $fetchSite = strtolower((string)($_SERVER['HTTP_SEC_FETCH_SITE'] ?? ''));
@@ -66,7 +88,11 @@ if (preg_match('/[\r\n]/', $name . $company)) reject('validation');
 if (!preg_match('//u', $name . $company . $details)) reject('validation');
 // Short-lived state stores only timestamps and opaque hashes, never form contents.
 $remote = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
-$rateDirectory = sys_get_temp_dir() . '/mamourart-contact-v2-' . substr(hash('sha256', __DIR__), 0, 16);
+$temporaryRoot = realpath(sys_get_temp_dir());
+$publicRoot = realpath(__DIR__);
+if ($temporaryRoot === false || !is_dir($temporaryRoot) || $publicRoot === false ||
+    $temporaryRoot === $publicRoot || str_starts_with($temporaryRoot . '/', $publicRoot . '/')) reject('storage_failure');
+$rateDirectory = $temporaryRoot . '/mamourart-contact-v2-' . substr(hash('sha256', __DIR__), 0, 16);
 $clean = static fn(string $value): string => str_replace(["\r", "\0"], '', $value);
 $body = "Nouvelle demande depuis mamourart.com\n\n" .
     "Nom : " . $clean($name) . "\nEntreprise : " . $clean($company) .
