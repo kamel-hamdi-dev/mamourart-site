@@ -56,10 +56,10 @@ def test_existing_portfolio_projects_remain():
     titles = [re.search(r"<h3>(.*?)</h3>", article).group(1) for article in _articles(read_text("index.html"))]
     assert titles == [
         "Mamourart Transport Automation",
+        "Mamourart Website",
         "Mamourart GPS AI",
         "Mamourart Fret Alerts",
         "Mamourart Desktop Agent",
-        "Mamourart Website",
         "Mamourart Mes Heures",
     ]
 
