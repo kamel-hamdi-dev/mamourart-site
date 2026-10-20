@@ -25,7 +25,32 @@ jobs:
           coverage: none
 
       - name: Verify PHP version
-        run: php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 2) { exit(1); }'
+        shell: bash
+        run: |
+          set -euo pipefail
+          php --version
+          php -r 'if (PHP_MAJOR_VERSION !== 8 || PHP_MINOR_VERSION !== 2) { exit(1); }'
 
-      - name: Check contact endpoint syntax
-        run: php -l contact-submit.php
+      - name: Check syntax of all contact PHP files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for file in \
+            contact-submit.php \
+            contact-rate-limit.php \
+            tests/php/clock-worker.php \
+            tests/php/endpoint-worker.php \
+            tests/php/fault-functions.php \
+            tests/php/guard.php \
+            tests/php/interrupt-worker.php \
+            tests/php/run.php \
+            tests/php/suite.php \
+            tests/php/worker.php
+          do
+            php -l "$file"
+          done
+
+      - name: Run contact PHP tests with native mail disabled by the launcher
+        shell: bash
+        run: php tests/php/run.php
