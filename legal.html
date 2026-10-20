@@ -126,6 +126,7 @@
     document.querySelectorAll('[data-legal-lang]').forEach(function(section){section.hidden=section.dataset.legalLang!==lang;});
     document.getElementById('legalFr').setAttribute('aria-pressed', String(lang==='fr'));
     document.getElementById('legalEn').setAttribute('aria-pressed', String(lang==='en'));
+    document.querySelectorAll('a[href^="index.html"],a[href^="en.html"]').forEach(a=>{a.href=(lang==='en'?'en.html':'index.html')+'#contact'});
     document.documentElement.lang=lang;
     document.title=lang==='fr'?'Mamourart — Mentions légales et confidentialité':'Mamourart — Legal notice and privacy';
     const section=window.location.hash;

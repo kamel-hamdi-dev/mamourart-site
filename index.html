@@ -18,6 +18,10 @@
   <meta property="og:image" content="https://mamourart.com/logo.png">
   <meta property="og:image:alt" content="Mamourart">
   <meta name="twitter:card" content="summary">
+  <link rel="alternate" hreflang="fr" href="https://mamourart.com/">
+  <link rel="alternate" hreflang="en" href="https://mamourart.com/en.html">
+  <link rel="alternate" hreflang="x-default" href="https://mamourart.com/">
+  <link rel="preload" as="image" href="banner.webp" type="image/webp" fetchpriority="high">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -129,6 +133,7 @@
         linear-gradient(90deg,rgba(7,17,31,.95) 0%,rgba(7,17,31,.9) 72%,rgba(7,17,31,.38) 86%,rgba(7,17,31,.1) 100%),
         url("banner.png?v=4");
       background-position:center,right center;
+      background-image:linear-gradient(90deg,rgba(7,17,31,.95) 0%,rgba(7,17,31,.9) 72%,rgba(7,17,31,.38) 86%,rgba(7,17,31,.1) 100%),image-set(url("banner.webp") type("image/webp"),url("banner.png") type("image/png"));
       background-size:cover,cover;
       background-repeat:no-repeat
     }
@@ -355,7 +360,7 @@
   <header class="site-header">
     <div class="container header-bar">
       <a class="brand" href="#top">
-        <img src="logo.png" alt="Mamourart">
+        <picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" width="1254" height="1254"></picture>
       </a>
       <div class="header-tools">
         <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu">
@@ -369,8 +374,8 @@
           <a href="#contact" data-i18n="navContact">Contact</a>
         </nav>
         <div class="lang" role="group" aria-label="Langue" data-i18n-aria="langLabel">
-          <button id="frButton" class="active" type="button" aria-pressed="true" onclick="setLanguage('fr')">FR</button>
-          <button id="enButton" type="button" aria-pressed="false" onclick="setLanguage('en')">EN</button>
+          <button id="frButton" class="active" type="button" aria-pressed="true" onclick="navigateLanguage('fr')">FR</button>
+          <button id="enButton" type="button" aria-pressed="false" onclick="navigateLanguage('en')">EN</button>
         </div>
       </div>
     </div>
@@ -449,7 +454,7 @@
               </div>
             </div>
             <div class="preview">
-              <img src="dashboard.png" alt="Tableau de bord du prototype Mamourart Transport Automation" data-i18n-alt="transportAlt" width="1278" height="731" loading="lazy">
+              <picture><source srcset="dashboard.webp" type="image/webp"><img src="dashboard.png" alt="Tableau de bord du prototype Mamourart Transport Automation" data-i18n-alt="transportAlt" width="1278" height="731" loading="lazy"></picture>
             </div>
           </article>
           <article class="project-card featured">
@@ -467,7 +472,7 @@
               <a class="text-link" href="https://www.mamourart.com/" target="_blank" rel="noopener noreferrer"><span data-i18n="visitSite">Visiter le site →</span><span class="sr-only" data-i18n="newTab"> (nouvel onglet)</span></a>
             </div>
             </div>
-            <div class="website-mark"><img src="logo.png" alt="Mamourart" loading="lazy"></div>
+            <div class="website-mark"><picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" loading="lazy" width="1254" height="1254"></picture></div>
           </article>
           <article class="project-card">
             <div class="status prep"><span class="dot" aria-hidden="true"></span><span data-i18n="gpsStatus">Prototype d’interface · données fictives</span></div>
@@ -918,6 +923,9 @@
         const key = el.dataset.i18nAlt;
         if(translations[lang][key]) el.setAttribute("alt", translations[lang][key]);
       });
+      document.querySelectorAll('a[href*="-demo.html"]').forEach(link=>{
+        link.href = link.getAttribute("href").split("?")[0] + "?lang=" + lang;
+      });
       document.documentElement.lang = lang;
       document.title = translations[lang].metaTitle;
       const description = document.querySelector('meta[name="description"]');
@@ -932,7 +940,7 @@
       document.getElementById("enButton").classList.toggle("active", lang === "en");
       document.getElementById("frButton").setAttribute("aria-pressed", lang === "fr" ? "true" : "false");
       document.getElementById("enButton").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
-      localStorage.setItem("mamourart-language-v2", lang);
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
       updateMenuLabel();
     }
 
@@ -961,9 +969,18 @@
       if(window.innerWidth > 980) setMenu(false);
     });
 
-    const saved = localStorage.getItem("mamourart-language-v2");
-    if(saved === "fr" || saved === "en") setLanguage(saved);
-    else setLanguage(navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en");
+    function navigateLanguage(lang){
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
+      window.location.href = (lang === "en" ? "en.html" : "./") + window.location.search + window.location.hash;
+    }
+    let initialLanguage = document.documentElement.lang;
+    if (new URLSearchParams(window.location.search).has("contact_status")) {
+      try {
+        const saved = localStorage.getItem("mamourart-language-v2");
+        if (saved === "en" || saved === "fr") initialLanguage = saved;
+      } catch (_) {}
+    }
+    setLanguage(initialLanguage);
 
     // Bring the final status into view on the post-submit redirect.
     // This runs once after loading, not whenever the visitor changes language.
