@@ -47,24 +47,11 @@ if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', $name . $company . $details)) b
 if (preg_match('/[\r\n]/', $name . $company)) back('error');
 // Reject malformed UTF-8 (the form uses UTF-8).
 if (!preg_match('//u', $name . $company . $details)) back('error');
-// Short-lived rate-limiting state stores only opaque hashes, never form contents.
+// Short-lived state stores only timestamps and opaque hashes, never form contents.
+require_once __DIR__ . '/contact-rate-limit.php';
 $remote = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
-$bucket = substr(hash('sha256', 'mamourart-contact-v1|' . $remote), 0, 32);
-foreach (["mamourart_form_all"=>8, "mamourart_form_{$bucket}"=>3] as $key=>$max) {
-    $path = sys_get_temp_dir() . '/' . $key . '.txt';
-    $file = @fopen($path, 'c+');
-    if ($file === false || !flock($file, LOCK_EX)) back('error');
-    $data = stream_get_contents($file);
-    $history = json_decode($data ?: '[]', true);
-    if (!is_array($history)) $history = [];
-    $history = array_values(array_filter($history, fn($t) => is_numeric($t) && (time() - (int)$t) < 3600));
-    if (count($history) >= $max) {
-        flock($file, LOCK_UN); fclose($file); back('error');
-    }
-    $history[] = time();
-    rewind($file); ftruncate($file, 0); fwrite($file, json_encode($history)); fflush($file);
-    flock($file, LOCK_UN); fclose($file);
-}
+$rateDirectory = sys_get_temp_dir() . '/mamourart-contact-v2-' . substr(hash('sha256', __DIR__), 0, 16);
+if (!mamourart_contact_reserve($rateDirectory, $remote, time())) back('error');
 $clean = static fn(string $value): string => str_replace(["\r", "\0"], '', $value);
 $body = "Nouvelle demande depuis mamourart.com\n\n" .
     "Nom : " . $clean($name) . "\nEntreprise : " . $clean($company) .

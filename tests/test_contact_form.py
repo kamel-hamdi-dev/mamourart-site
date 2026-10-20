@@ -18,7 +18,10 @@ def test_contact_form_is_bilingual_and_safe_by_default():
     assert "filter_var($email, FILTER_VALIDATE_EMAIL)" in php
     assert "HTTP_ORIGIN" in php
     assert "HTTP_SEC_FETCH_SITE" in php
-    assert "flock(" in php
+    assert "require_once __DIR__ . '/contact-rate-limit.php'" in php
+    assert "mamourart_contact_reserve(" in php
+    limiter = (ROOT / "contact-rate-limit.php").read_text(encoding="utf-8")
+    assert "flock(" in limiter
     assert "'Reply-To: ' . $email" in php
     assert "@mail('contact@mamourart.com'" in php
     assert "mail('contact@mamourart.com'," in php
