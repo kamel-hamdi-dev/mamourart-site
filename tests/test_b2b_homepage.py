@@ -4,66 +4,52 @@ import re
 
 from tests.checks import parse_page, read_text
 
-HERO = {
-    "fr": {
-        "heroTitle": "Des logiciels sur mesure pour les entreprises.",
-        "heroText": (
-            "Mamourart conçoit des applications, automatise les processus métier "
-            "et développe des solutions numériques adaptées aux besoins professionnels."
-        ),
-        "ctaServices": "Découvrir nos services",
-        "ctaProject": "Discuter de votre projet",
-    },
-    "en": {
-        "heroTitle": "Custom Software Solutions for Businesses.",
-        "heroText": (
-            "Mamourart designs applications, automates business processes "
-            "and develops digital solutions tailored to professional needs."
-        ),
-        "ctaServices": "Explore our services",
-        "ctaProject": "Discuss your project",
-    },
-}
+HERO = {'fr': {'heroTitle': 'Des logiciels sur mesure pour vos opérations métier.',
+        'heroText': 'Applications métier, interfaces web et automatisations : des solutions '
+                    'pensées autour de vos processus, du cadrage aux premières démonstrations.',
+        'ctaServices': 'Explorer les projets',
+        'ctaProject': 'Parler de votre besoin'},
+ 'en': {'heroTitle': 'Custom software for your business operations.',
+        'heroText': 'Business applications, web interfaces and automation designed around your '
+                    'workflows, from initial scoping to early demonstrations.',
+        'ctaServices': 'Explore the projects',
+        'ctaProject': 'Discuss your needs'}}
 
-SERVICES = {
-    "fr": {
-        "service1Title": "Développement logiciel sur mesure",
-        "service1Text": "Applications métier, outils internes, solutions adaptées aux processus des entreprises.",
-        "service2Title": "Développement web et mobile",
-        "service2Text": "Sites professionnels, applications web et mobiles, interfaces responsive.",
-        "service3Title": "Automatisation et intelligence artificielle",
-        "service3Text": "Automatisation de tâches, intégration d'API, assistants et agents IA avec supervision humaine.",
-        "service4Title": "Intégration de systèmes",
-        "service4Text": "Connexion entre applications, bases de données, API et outils professionnels.",
-    },
-    "en": {
-        "service1Title": "Custom Software Development",
-        "service1Text": "Business applications, internal tools and solutions adapted to company processes.",
-        "service2Title": "Web and Mobile Development",
-        "service2Text": "Professional websites, web and mobile applications, responsive interfaces.",
-        "service3Title": "Automation and Artificial Intelligence",
-        "service3Text": "Task automation, API integration, AI assistants and agents with human supervision.",
-        "service4Title": "Systems Integration",
-        "service4Text": "Connections between applications, databases, APIs and professional tools.",
-    },
-}
+SERVICES = {'fr': {'service1Title': 'Applications métier',
+        'service1Text': 'Centraliser les dossiers, suivre les opérations et préparer les '
+                        'validations dans un outil adapté à votre activité.',
+        'service2Title': 'Interfaces web et mobiles',
+        'service2Text': 'Donner aux équipes un accès clair aux informations et aux actions utiles, '
+                        'au bureau comme en déplacement.',
+        'service3Title': 'Automatisation supervisée',
+        'service3Text': 'Préparer les tâches répétitives et les décisions à vérifier, en gardant '
+                        'une validation humaine sur les actions retenues.',
+        'service4Title': 'Connexion d’outils, API et bases de données',
+        'service4Text': 'Faire circuler les informations entre vos outils pour limiter les '
+                        'ressaisies et rendre les données utilisables.'},
+ 'en': {'service1Title': 'Business applications',
+        'service1Text': 'Centralize records, track operations and prepare approvals in a tool '
+                        'designed around your activity.',
+        'service2Title': 'Web and mobile interfaces',
+        'service2Text': 'Give teams clear access to useful information and actions, at the office '
+                        'and on the move.',
+        'service3Title': 'Supervised automation',
+        'service3Text': 'Prepare repetitive tasks and decisions for review, keeping human approval '
+                        'for the selected actions.',
+        'service4Title': 'Connecting tools, APIs and databases',
+        'service4Text': 'Move information between your tools to reduce duplicate entry and make '
+                        'data usable.'}}
 
-STEPS = {
-    "fr": (
-        "Comprendre le besoin",
-        "Définir la solution",
-        "Concevoir et développer",
-        "Tester et valider",
-        "Livrer et accompagner",
-    ),
-    "en": (
-        "Understand the need",
-        "Define the solution",
-        "Design and develop",
-        "Test and validate",
-        "Deliver and support",
-    ),
-}
+STEPS = {'fr': ('Cadrer le besoin',
+        'Concevoir le parcours',
+        'Développer le périmètre retenu',
+        'Tester et valider',
+        'Préparer la livraison'),
+ 'en': ('Scope the need',
+        'Design the workflow',
+        'Develop the agreed scope',
+        'Test and validate',
+        'Prepare delivery')}
 
 FORBIDDEN = (
     "siret",
@@ -125,7 +111,7 @@ def test_visible_french_matches_the_translation_table():
 
 def test_calls_to_action_and_contact_channels():
     html = read_text("index.html")
-    assert 'href="#services" data-i18n="ctaServices"' in html
+    assert 'href="#projects" data-i18n="ctaServices"' in html
     assert 'href="#contact" data-i18n="ctaProject"' in html
     assert 'href="mailto:contact@mamourart.com"' in html
     assert '<form class="quote-form"' in html
