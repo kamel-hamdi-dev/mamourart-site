@@ -944,7 +944,11 @@
       link.addEventListener("click", ()=>setMenu(false));
     });
     document.addEventListener("keydown", event=>{
-      if(event.key === "Escape") setMenu(false);
+      const button = document.getElementById("menuToggle");
+      if(event.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+        setMenu(false);
+        button.focus();
+      }
     });
     document.addEventListener("click", event=>{
       const links = document.getElementById("navLinks");
