@@ -14,7 +14,7 @@ from tests.checks import ROOT
 sys.path.insert(0, str(ROOT / "scripts"))
 import ovh_sftp_snapshot as snapshot  # noqa: E402
 
-NAMES = ("index.html", "contact-submit.php", "legal.html", "service-worker.js")
+NAMES = ("index.html", "contact-submit.php", "contact-rate-limit.php", "legal.html", "service-worker.js")
 
 
 class ReadOnlyFakeSFTP:

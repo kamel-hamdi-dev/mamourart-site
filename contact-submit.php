@@ -51,7 +51,7 @@ if (!preg_match('//u', $name . $company . $details)) back('error');
 require_once __DIR__ . '/contact-rate-limit.php';
 $remote = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
 $rateDirectory = sys_get_temp_dir() . '/mamourart-contact-v2-' . substr(hash('sha256', __DIR__), 0, 16);
-if (!mamourart_contact_reserve($rateDirectory, $remote, time())) back('error');
+if (!mamourart_contact_reserve($rateDirectory, $remote, static fn(): int => time())) back('error');
 $clean = static fn(string $value): string => str_replace(["\r", "\0"], '', $value);
 $body = "Nouvelle demande depuis mamourart.com\n\n" .
     "Nom : " . $clean($name) . "\nEntreprise : " . $clean($company) .

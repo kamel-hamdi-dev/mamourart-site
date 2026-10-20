@@ -21,6 +21,7 @@ function fresh(): string {
     mkdir($directory, 0700);
     return $directory;
 }
+function freshLedger(): string { return fresh() . '/ledger'; }
 function same(mixed $actual, mixed $expected, string $message = ''): void {
     if ($actual !== $expected) throw new RuntimeException($message . ' expected ' . var_export($expected, true) . ', got ' . var_export($actual, true));
 }
@@ -33,7 +34,7 @@ function test(string $name, callable $body): void {
     catch (Throwable $error) { ++$failed; echo "FAIL $name: " . $error->getMessage() . "\n"; }
 }
 function reserve(string $directory, string $ip, int $now = CLOCK): bool {
-    return mamourart_contact_reserve($directory, $ip, $now);
+    return mamourart_contact_reserve($directory, $ip, static fn(): int => $now);
 }
 function state(string $directory): array {
     return json_decode(file_get_contents($directory . '/state.json'), true, 512, JSON_THROW_ON_ERROR);
@@ -43,7 +44,7 @@ function namespaceCopy(string $source, string $destination, string $namespace): 
     same($count, 1, 'Expected exactly one strict declaration in application source');
     file_put_contents($destination, $code);
 }
-function runChild(string $script, array $arguments = [], ?string $input = null): string {
+function runChild(string $script, array $arguments = [], ?string $input = null, int $expectedExit = 0): string {
     $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=mail', '-d', 'allow_url_fopen=0', $script, ...$arguments],
         [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     check(is_resource($process), 'Cannot start PHP child');
@@ -52,7 +53,7 @@ function runChild(string $script, array $arguments = [], ?string $input = null):
     $output = stream_get_contents($pipes[1]);
     $errors = stream_get_contents($pipes[2]);
     fclose($pipes[1]); fclose($pipes[2]);
-    same(proc_close($process), 0, 'PHP child failed: ' . $errors . $output);
+    same(proc_close($process), $expectedExit, 'PHP child failed: ' . $errors . $output);
     same($errors, '', 'Unexpected child stderr');
     return $output;
 }
@@ -83,7 +84,7 @@ function concurrent(string $directory, array $ips): array {
 }
 
 test('IP refusals preserve global capacity; other visitors fill remaining five slots', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     for ($i = 0; $i < 3; ++$i) same(reserve($dir, '192.0.2.1'), true);
     $before = file_get_contents($dir . '/state.json');
     for ($i = 0; $i < 5; ++$i) same(reserve($dir, '192.0.2.1'), false);
@@ -96,14 +97,14 @@ test('IP refusals preserve global capacity; other visitors fill remaining five s
     same(file_get_contents($dir . '/state.json'), $full, 'Global refusal mutated counters');
 });
 test('Global rejection does not consume IP quota in the next second', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     for ($i = 1; $i <= 8; ++$i) same(reserve($dir, '192.0.2.' . $i), true);
     for ($i = 0; $i < 5; ++$i) same(reserve($dir, '198.51.100.1', CLOCK + 3599), false);
     for ($i = 0; $i < 3; ++$i) same(reserve($dir, '198.51.100.1', CLOCK + 3600), true);
     same(reserve($dir, '198.51.100.1', CLOCK + 3600), false);
 });
 test('One-hour expiration is exact for both quotas', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     for ($i = 0; $i < 3; ++$i) same(reserve($dir, '2001:db8::1'), true);
     same(reserve($dir, '2001:db8::1', CLOCK + 3599), false);
     same(reserve($dir, '2001:db8::1', CLOCK + 3600), true);
@@ -111,7 +112,7 @@ test('One-hour expiration is exact for both quotas', static function (): void {
     same(state($dir)[0]['time'], CLOCK + 3600);
 });
 test('Staggered reservations expire individually', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     same(reserve($dir, '192.0.2.1'), true);
     same(reserve($dir, '192.0.2.1', CLOCK + 1), true);
     same(reserve($dir, '192.0.2.1', CLOCK + 2), true);
@@ -121,13 +122,41 @@ test('Staggered reservations expire individually', static function (): void {
     same(reserve($dir, '192.0.2.1', CLOCK + 3601), true);
 });
 test('Clock rollback retains future reservations conservatively', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     for ($i = 0; $i < 3; ++$i) same(reserve($dir, '192.0.2.1'), true);
+    $snapshot = file_get_contents($dir . '/state.json');
     same(reserve($dir, '192.0.2.1', CLOCK - 3601), false);
-    same(count(state($dir)), 3);
+    same(file_get_contents($dir . '/state.json'), $snapshot);
+    same(reserve($dir, '192.0.2.1', CLOCK), false);
+    same(reserve($dir, '192.0.2.1', CLOCK + 3600), true);
+});
+test('Forward clock jump expires quotas; subsequent rollback fails closed without mutation', static function (): void {
+    $dir = freshLedger();
+    for ($i = 0; $i < 3; ++$i) same(reserve($dir, '192.0.2.1'), true);
+    same(reserve($dir, '192.0.2.1', CLOCK + 7200), true);
+    $snapshot = file_get_contents($dir . '/state.json');
+    same(reserve($dir, '192.0.2.2', CLOCK + 3600), false);
+    same(file_get_contents($dir . '/state.json'), $snapshot);
+    same(reserve($dir, '192.0.2.2', CLOCK + 7200), true);
+});
+foreach ([-1, '1700000000', 1700000000.0, null, true] as $index => $badClock) {
+    test('Invalid clock callback fails closed and preserves ledger #' . $index, static function () use ($badClock): void {
+        $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
+        $snapshot = file_get_contents($dir . '/state.json');
+        same(mamourart_contact_reserve($dir, '192.0.2.2', static fn(): mixed => $badClock), false);
+        same(file_get_contents($dir . '/state.json'), $snapshot);
+        same(reserve($dir, '192.0.2.2'), true);
+    });
+}
+test('Throwing clock callback fails closed and releases lock', static function (): void {
+    $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
+    $snapshot = file_get_contents($dir . '/state.json');
+    same(mamourart_contact_reserve($dir, '192.0.2.2', static function (): never { throw new RuntimeException('clock failed'); }), false);
+    same(file_get_contents($dir . '/state.json'), $snapshot);
+    same(reserve($dir, '192.0.2.2'), true);
 });
 test('State contains only timestamps and opaque IP buckets', static function (): void {
-    $dir = fresh(); same(reserve($dir, '192.0.2.99'), true);
+    $dir = freshLedger(); same(reserve($dir, '192.0.2.99'), true);
     same(state($dir), [['time' => CLOCK, 'bucket' => substr(hash('sha256', 'mamourart-contact-v1|192.0.2.99'), 0, 32)]]);
     check(!str_contains(file_get_contents($dir . '/state.json'), '192.0.2.99'), 'Raw IP leaked');
 });
@@ -151,7 +180,7 @@ test('Concurrent distinct-IP requests allow exactly eight reservations', static 
     same(count(state($dir)), 8);
 });
 test('Concurrent mixed-IP requests respect both quotas', static function (): void {
-    $dir = fresh();
+    $dir = freshLedger();
     same(reserve($dir, '198.51.100.254', CLOCK - 3600), true);
     $ips = [];
     for ($i = 0; $i < 6; ++$i) foreach (['192.0.2.1', '192.0.2.2', '192.0.2.3'] as $ip) $ips[] = $ip;
@@ -163,7 +192,7 @@ test('Concurrent mixed-IP requests respect both quotas', static function (): voi
 test('Concurrent first initialization never exceeds either quota', static function (): void {
     $dir = fresh() . '/cold-start';
     $allowed = concurrent($dir, array_fill(0, 16, '192.0.2.1'));
-    check(count($allowed) >= 1 && count($allowed) <= 3, 'Cold-start quota exceeded or no initialization succeeded');
+    same(count($allowed), 3, 'Cold-start lost capacity or exceeded its quota');
     same(count(state($dir)), count($allowed));
 });
 test('Unavailable storage directory fails closed', static function (): void {
@@ -177,10 +206,23 @@ test('Unopenable lock fails closed', static function (): void {
     same(file_exists($dir . '/state.json'), false);
 });
 test('Existing lock with missing state fails closed instead of resetting quotas', static function (): void {
-    $dir = fresh(); same(reserve($dir, '192.0.2.1'), true);
+    $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
     unlink($dir . '/state.json');
     same(reserve($dir, '192.0.2.1'), false);
     same(file_exists($dir . '/state.json'), false);
+});
+test('Existing state without lock is refused without creating a replacement lock', static function (): void {
+    $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
+    $snapshot = file_get_contents($dir . '/state.json');
+    unlink($dir . '/lock');
+    same(reserve($dir, '192.0.2.1'), false);
+    same(file_exists($dir . '/lock'), false);
+    same(file_get_contents($dir . '/state.json'), $snapshot);
+});
+test('Existing empty directory is refused rather than silently reinitialized', static function (): void {
+    $dir = fresh();
+    same(reserve($dir, '192.0.2.1'), false);
+    same(array_values(array_diff(scandir($dir), ['.', '..'])), []);
 });
 $validBucket = substr(hash('sha256', 'mamourart-contact-v1|192.0.2.1'), 0, 32);
 foreach (['', '{broken', '{}', 'null', '[null]', '[{"time":"1700000000","bucket":"bad"}]', str_repeat(' ', 4097),
@@ -191,7 +233,8 @@ foreach (['', '{broken', '{}', 'null', '[null]', '[{"time":"1700000000","bucket"
     json_encode(array_fill(0, 9, ['time' => CLOCK - 3600, 'bucket' => $validBucket])),
 ] as $index => $invalid) {
     test('Malformed or oversized stored state fails closed #' . $index, static function () use ($invalid): void {
-        $dir = fresh(); file_put_contents($dir . '/state.json', $invalid);
+        $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
+        file_put_contents($dir . '/state.json', $invalid);
         same(reserve($dir, '192.0.2.1'), false);
         same(file_get_contents($dir . '/state.json'), $invalid);
     });
@@ -202,18 +245,124 @@ require __DIR__ . '/fault-functions.php';
 require $testRoot . '/fault-helper.php';
 foreach (['chmod', 'lock', 'read', 'temp', 'open-write', 'write', 'write-zero', 'write-partial', 'flush', 'close', 'rename'] as $fault) {
     test('Injected storage failure preserves previous snapshot: ' . $fault, static function () use ($fault): void {
-        $dir = fresh(); same(reserve($dir, '192.0.2.1'), true);
+        $dir = freshLedger(); same(reserve($dir, '192.0.2.1'), true);
         $snapshot = file_get_contents($dir . '/state.json');
         $GLOBALS['contact_fault'] = $fault;
         $GLOBALS['contact_partial_written'] = 0;
         $GLOBALS['contact_close_failed'] = false;
-        try { same(\MamourartContactFaults\mamourart_contact_reserve($dir, '192.0.2.2', CLOCK), false); }
+        try { same(\MamourartContactFaults\mamourart_contact_reserve($dir, '192.0.2.2', static fn(): int => CLOCK), false); }
         finally { $GLOBALS['contact_fault'] = ''; }
         same(file_get_contents($dir . '/state.json'), $snapshot);
         same(array_values(array_diff(scandir($dir), ['.', '..', 'lock', 'state.json'])), [], 'Temporary snapshot leaked');
         same(reserve($dir, '192.0.2.2'), true, 'Lock was not released after failure');
     });
 }
+foreach (['mkdir', 'open-write', 'open-lock', 'write', 'write-zero', 'write-partial', 'flush', 'close', 'close-lock', 'rename'] as $fault) {
+    test('First initialization failure leaves final path absent and fresh retry succeeds: ' . $fault, static function () use ($fault): void {
+        $dir = freshLedger();
+        $GLOBALS['contact_fault'] = $fault;
+        $GLOBALS['contact_partial_written'] = 0;
+        $GLOBALS['contact_close_failed'] = false;
+        $GLOBALS['contact_close_calls'] = 0;
+        try { same(\MamourartContactFaults\mamourart_contact_reserve($dir, '192.0.2.1', static fn(): int => CLOCK), false); }
+        finally { $GLOBALS['contact_fault'] = ''; }
+        clearstatcache(true, $dir);
+        same(file_exists($dir), false, 'Partial final ledger was published');
+        same(array_values(array_diff(scandir(dirname($dir)), ['.', '..'])), [], 'Initialization staging files leaked after an ordinary failure');
+        same(reserve($dir, '192.0.2.1'), true, 'Recoverable initialization failure blocked retry');
+        same(count(state($dir)), 1);
+        same(reserve($dir, '192.0.2.1'), true);
+        same(reserve($dir, '192.0.2.1'), true);
+        $snapshot = file_get_contents($dir . '/state.json');
+        same(reserve($dir, '192.0.2.1'), false);
+        same(file_get_contents($dir . '/state.json'), $snapshot);
+    });
+}
+foreach (['lock', 'temp', 'snapshot-rename'] as $fault) {
+    test('Failure after initial publication preserves empty ledger and permanent lock: ' . $fault, static function () use ($fault): void {
+        $dir = freshLedger();
+        $GLOBALS['contact_fault'] = $fault;
+        try { same(\MamourartContactFaults\mamourart_contact_reserve($dir, '192.0.2.1', static fn(): int => CLOCK), false); }
+        finally { $GLOBALS['contact_fault'] = ''; }
+        same(file_get_contents($dir . '/state.json'), '[]', 'Published empty ledger was consumed or corrupted');
+        check(is_file($dir . '/lock'), 'Published ledger has no stable lock');
+        $lockInode = fileinode($dir . '/lock');
+        same(array_values(array_diff(scandir($dir), ['.', '..', 'lock', 'state.json'])), [], 'Uncommitted snapshot leaked');
+        same(reserve($dir, '192.0.2.1'), true);
+        clearstatcache(true, $dir . '/lock');
+        same(fileinode($dir . '/lock'), $lockInode, 'Retry replaced the published lock inode');
+        same(count(state($dir)), 1);
+    });
+}
+
+namespaceCopy(dirname(__DIR__, 2) . '/contact-rate-limit.php', $testRoot . '/interrupt-helper.php', 'MamourartContactInterrupt');
+foreach (['before' => 73, 'after' => 74] as $phase => $expectedExit) {
+    test('Interrupted initial directory publication recovers on fresh retry: ' . $phase, static function () use ($testRoot, $phase, $expectedExit): void {
+        $dir = freshLedger();
+        $configPath = fresh() . '/interrupt.json';
+        file_put_contents($configPath, json_encode(['directory' => $dir, 'helper' => $testRoot . '/interrupt-helper.php', 'phase' => $phase], JSON_THROW_ON_ERROR));
+        same(runChild(__DIR__ . '/interrupt-worker.php', [$configPath], null, $expectedExit), 'interrupted-' . $phase . "\n");
+        clearstatcache(true, $dir);
+        if ($phase === 'before') {
+            same(file_exists($dir), false);
+            same(count(glob(dirname($dir) . '/.mamourart-contact-init-*')), 1, 'Expected an unpublished orphan after interruption');
+        } else {
+            same(state($dir), []);
+            check(is_file($dir . '/lock'), 'Published ledger lacked its permanent lock');
+        }
+        same(reserve($dir, '192.0.2.1'), true);
+        same(count(state($dir)), 1);
+    });
+}
+
+function startClockWorker(string $configPath): array {
+    $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=mail', '-d', 'allow_url_fopen=0', __DIR__ . '/clock-worker.php', $configPath],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    check(is_resource($process), 'Cannot start clock ordering worker');
+    stream_set_timeout($pipes[1], 15);
+    return [$process, $pipes];
+}
+function finishClockWorker(?array &$worker, int $expectedClock): void {
+    [$process, $pipes] = $worker;
+    $clockLine = fgets($pipes[1]); $resultLine = fgets($pipes[1]);
+    fclose($pipes[0]);
+    $rest = stream_get_contents($pipes[1]); $errors = stream_get_contents($pipes[2]);
+    fclose($pipes[1]); fclose($pipes[2]);
+    $exit = proc_close($process); $worker = null;
+    same($exit, 0, 'Clock worker failed: ' . $errors . $rest);
+    same($errors, ''); same($rest, '');
+    same($clockLine, 'clock:' . $expectedClock . "\n", 'Clock was evaluated before lock acquisition');
+    same($resultLine, "result:1:1\n", 'Clock must be called exactly once inside the successful transaction');
+}
+namespaceCopy(dirname(__DIR__, 2) . '/contact-rate-limit.php', $testRoot . '/clock-helper.php', 'MamourartContactOrder');
+test('Two processes acquire in reverse arrival order and read their clocks only inside the lock', static function () use ($testRoot): void {
+    $dir = freshLedger(); same(reserve($dir, '198.51.100.254', CLOCK - 3600), true);
+    $aClock = fresh() . '/clock'; $bClock = fresh() . '/clock';
+    file_put_contents($aClock, (string)CLOCK); file_put_contents($bClock, (string)(CLOCK + 1));
+    $aConfig = fresh() . '/clock.json'; $bConfig = fresh() . '/clock.json';
+    foreach ([[$aConfig, $aClock, '192.0.2.1'], [$bConfig, $bClock, '192.0.2.2']] as [$path, $clock, $ip]) {
+        file_put_contents($path, json_encode(['directory' => $dir, 'helper' => $testRoot . '/clock-helper.php', 'clock' => $clock, 'ip' => $ip], JSON_THROW_ON_ERROR));
+    }
+    $a = null; $b = null;
+    try {
+        $a = startClockWorker($aConfig);
+        same(fgets($a[1][1]), "before-lock\n", 'First arrival evaluated its clock before the lock');
+        $b = startClockWorker($bConfig);
+        same(fgets($b[1][1]), "before-lock\n", 'Second arrival evaluated its clock before the lock');
+        fwrite($b[1][0], "acquire\n"); fflush($b[1][0]);
+        finishClockWorker($b, CLOCK + 1);
+        file_put_contents($aClock, (string)(CLOCK + 2));
+        fwrite($a[1][0], "acquire\n"); fflush($a[1][0]);
+        finishClockWorker($a, CLOCK + 2);
+        same(array_column(state($dir), 'time'), [CLOCK + 1, CLOCK + 2]);
+    } finally {
+        foreach ([$a, $b] as $worker) {
+            if ($worker === null) continue;
+            foreach ($worker[1] as $pipe) if (is_resource($pipe)) fclose($pipe);
+            proc_terminate($worker[0]); proc_close($worker[0]);
+        }
+    }
+});
 
 $fixtures = [];
 foreach (['public', 'private'] as $kind) {
@@ -314,7 +463,7 @@ test('GET is rejected without storage or mail', static function (): void {
     check(in_array(['Allow: POST', true, 0], $result['headers'], true), 'Missing Allow header');
 });
 test('Unsafe direct suite or worker invocation cannot reach application code', static function (): void {
-    foreach (['suite.php', 'worker.php', 'endpoint-worker.php'] as $script) {
+    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php'] as $script) {
         $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=', __DIR__ . '/' . $script],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         check(is_resource($process), 'Cannot start guard test'); fclose($pipes[0]);

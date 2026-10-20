@@ -4,8 +4,12 @@ namespace MamourartContactFaults;
 
 // Only the namespaced COPY of the helper uses these fault injections.
 function fopen(string $filename, string $mode) {
-    if ($GLOBALS['contact_fault'] === 'open-write' && str_contains($mode, 'w')) return false;
+    if ($GLOBALS['contact_fault'] === 'open-write' && (str_contains($mode, 'w') || str_contains($mode, 'x'))) return false;
+    if ($GLOBALS['contact_fault'] === 'open-lock' && basename($filename) === 'lock') return false;
     return \fopen($filename, $mode);
+}
+function mkdir(string $directory, int $permissions = 0777, bool $recursive = false): bool {
+    return $GLOBALS['contact_fault'] === 'mkdir' ? false : \mkdir($directory, $permissions, $recursive);
 }
 function chmod(string $filename, int $permissions): bool {
     return $GLOBALS['contact_fault'] === 'chmod' ? false : \chmod($filename, $permissions);
@@ -36,6 +40,10 @@ function fflush($stream): bool {
 }
 function fclose($stream): bool {
     $result = \fclose($stream);
+    if ($GLOBALS['contact_fault'] === 'close-lock') {
+        $GLOBALS['contact_close_calls'] = ($GLOBALS['contact_close_calls'] ?? 0) + 1;
+        if ($GLOBALS['contact_close_calls'] === 2) return false;
+    }
     if ($GLOBALS['contact_fault'] === 'close' && !$GLOBALS['contact_close_failed']) {
         $GLOBALS['contact_close_failed'] = true;
         return false;
@@ -46,5 +54,6 @@ function tempnam(string $directory, string $prefix): string|false {
     return $GLOBALS['contact_fault'] === 'temp' ? false : \tempnam($directory, $prefix);
 }
 function rename(string $from, string $to): bool {
+    if ($GLOBALS['contact_fault'] === 'snapshot-rename' && !\is_dir($from) && basename($to) === 'state.json') return false;
     return $GLOBALS['contact_fault'] === 'rename' ? false : \rename($from, $to);
 }

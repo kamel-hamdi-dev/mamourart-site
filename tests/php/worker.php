@@ -11,4 +11,4 @@ require_isolated_test_path($config['directory']);
 fwrite(STDOUT, "ready\n");
 fflush(STDOUT);
 if (fgets(STDIN) !== "go\n") exit(2);
-echo mamourart_contact_reserve($config['directory'], $config['ip'], $config['now']) ? "1\n" : "0\n";
+echo mamourart_contact_reserve($config['directory'], $config['ip'], static fn(): int => $config['now']) ? "1\n" : "0\n";

@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ALLOWED_EXTENSIONS = {".html", ".php", ".png", ".webp", ".ico", ".js", ".json", ".txt", ".xml"}
-REQUIRED = {"index.html", "contact-submit.php", "legal.html", "service-worker.js"}
+REQUIRED = {"index.html", "contact-submit.php", "contact-rate-limit.php", "legal.html", "service-worker.js"}
 SAFE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
 
 
@@ -26,8 +26,9 @@ def build_plan(root: Path):
         raise ValueError("Manifest: liste de fichiers incorrecte")
     if len(names) != len(set(names)):
         raise ValueError("Manifest: doublons interdits")
-    if not REQUIRED.issubset(names):
-        raise ValueError("Manifest: fichiers indispensables manquants")
+    missing = REQUIRED.difference(names)
+    if missing:
+        raise ValueError("Manifest: fichiers indispensables manquants: " + ", ".join(sorted(missing)))
     rows = []
     for name in names:
         if (not SAFE_NAME.fullmatch(name) or ".." in name or
