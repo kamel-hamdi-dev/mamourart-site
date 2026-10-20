@@ -5,6 +5,10 @@ namespace {
     $GLOBALS['contact_case'] = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERROR);
     require_isolated_test_path($GLOBALS['contact_case']['endpoint']);
     require_isolated_test_path($GLOBALS['contact_case']['temp']);
+    if (isset($GLOBALS['contact_case']['diagnostics_dir'])) {
+        require_isolated_test_path($GLOBALS['contact_case']['diagnostics_dir']);
+        putenv('MAMOURART_CONTACT_DIAGNOSTICS_DIR=' . $GLOBALS['contact_case']['diagnostics_dir']);
+    } else putenv('MAMOURART_CONTACT_DIAGNOSTICS_DIR');
     $GLOBALS['contact_headers'] = [];
     $GLOBALS['contact_mails'] = [];
     $_SERVER = $GLOBALS['contact_case']['server'];
