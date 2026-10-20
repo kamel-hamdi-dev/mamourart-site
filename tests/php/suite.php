@@ -379,7 +379,7 @@ function endpoint(array $overrides = []): array {
     global $fixtures;
     $case = [
         'endpoint' => $fixtures['public'] . '/contact-submit.php', 'temp' => fresh(), 'now' => CLOCK,
-        'server' => ['REQUEST_METHOD' => 'POST', 'CONTENT_LENGTH' => '200', 'HTTP_ORIGIN' => 'https://mamourart.com',
+        'server' => ['REQUEST_METHOD' => 'POST', 'CONTENT_TYPE' => 'application/x-www-form-urlencoded', 'HTTP_ORIGIN' => 'https://mamourart.com',
             'HTTP_SEC_FETCH_SITE' => 'same-origin', 'REMOTE_ADDR' => '192.0.2.1'],
         'post' => ['website' => '', 'name' => 'Alice Example', 'company' => 'Example', 'email' => 'alice@example.test',
             'service' => 'web', 'details' => 'A valid request with at least twenty characters.', 'privacy_ack' => 'yes'],
@@ -387,7 +387,10 @@ function endpoint(array $overrides = []): array {
     foreach ($overrides as $key => $value) {
         $case[$key] = in_array($key, ['server', 'post'], true) ? array_replace($case[$key], $value) : $value;
     }
+    $case['body'] = $overrides['body'] ?? http_build_query($case['post'], '', '&', PHP_QUERY_RFC1738);
+    if (!array_key_exists('CONTENT_LENGTH', $overrides['server'] ?? [])) $case['server']['CONTENT_LENGTH'] = (string)strlen($case['body']);
     $wire = $case;
+    $wire['body'] = base64_encode($case['body']);
     $wire['post'] = array_map(static fn(mixed $value): mixed => is_string($value) ? base64_encode($value) : $value, $case['post']);
     $result = json_decode(runChild(__DIR__ . '/endpoint-worker.php', [], json_encode($wire, JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
     $result['temp'] = $case['temp'];
@@ -468,7 +471,7 @@ test('GET is rejected without storage or mail', static function (): void {
     check(in_array(['Allow: POST', true, 0], $result['headers'], true), 'Missing Allow header');
 });
 test('Unsafe direct suite or worker invocation cannot reach application code', static function (): void {
-    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php', 'mission39b.php'] as $script) {
+    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php', 'mission39b.php', 'mission39d.php', 'slow-worker.php'] as $script) {
         $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=', __DIR__ . '/' . $script],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         check(is_resource($process), 'Cannot start guard test'); fclose($pipes[0]);
@@ -478,6 +481,7 @@ test('Unsafe direct suite or worker invocation cannot reach application code', s
     }
 });
 require __DIR__ . '/mission39b.php';
+require __DIR__ . '/mission39d.php';
 
 echo "RESULT $passed passed, $failed failed; native mail disabled, isolated temporary state only.\n";
 exit($failed === 0 ? 0 : 1);

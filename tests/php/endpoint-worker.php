@@ -12,6 +12,9 @@ namespace {
     $GLOBALS['contact_headers'] = [];
     $GLOBALS['contact_mails'] = [];
     $_SERVER = $GLOBALS['contact_case']['server'];
+    if (array_key_exists('CONTENT_LENGTH', $_SERVER) && $_SERVER['CONTENT_LENGTH'] === null) unset($_SERVER['CONTENT_LENGTH']);
+    $_FILES = $GLOBALS['contact_case']['files'] ?? [];
+    if (($GLOBALS['contact_case']['sapi'] ?? '') === 'fpm-fcgi') define('MamourartContactTests\\PHP_SAPI', 'fpm-fcgi');
     // Base64 transports deliberately malformed UTF-8 through the JSON harness
     // unchanged, so the application (rather than JSON encoding) rejects it.
     $_POST = array_map(static fn(mixed $value): mixed => is_string($value) ? base64_decode($value, true) : $value,
@@ -26,6 +29,10 @@ namespace {
     });
 }
 namespace MamourartContactTests {
+    function file_get_contents(string $path, ...$args): string|false {
+        if ($path === 'php://input') return base64_decode($GLOBALS['contact_case']['body'] ?? '', true);
+        return \file_get_contents($path, ...$args);
+    }
     function header(string $header, bool $replace = true, int $response_code = 0): void {
         $GLOBALS['contact_headers'][] = [$header, $replace, $response_code];
     }
