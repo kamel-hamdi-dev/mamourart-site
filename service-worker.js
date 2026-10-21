@@ -1,5 +1,5 @@
 // Bump this version whenever a public resource changes.
-const CACHE_NAME = "mamourart-v6";
+const CACHE_NAME = "mamourart-v7";
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",
@@ -11,9 +11,44 @@ const PUBLIC_PATHS = new Set(FILES_TO_CACHE.concat([
   "/logo.png", "/banner.png", "/dashboard.png", "/apple-touch-icon.png",
   "/favicon-16x16.png", "/favicon-32x32.png", "/favicon-48x48.png", "/favicon-192.png"
 ]));
+function isPublicUrl(url) {
+  return url.origin === self.location.origin && !url.username && !url.password &&
+    PUBLIC_PATHS.has(url.pathname) && !/\.php(?:\/|$)/i.test(url.pathname) &&
+    [...url.searchParams].every(([key, value]) => key === "lang" && ["fr", "en"].includes(value));
+}
+function isCacheableResponse(response, url) {
+  // A successful fetch alone does not make a response safe for Cache Storage.
+  const networkUrl = new URL(url.href);
+  networkUrl.hash = ""; // Fragments are not transmitted in HTTP requests.
+  return isPublicUrl(url) && response.url === networkUrl.href && response.status === 200 &&
+    response.type === "basic" && !response.redirected && !response.bodyUsed && response.body !== null &&
+    !/no-store|private/i.test(response.headers.get("Cache-Control") || "") &&
+    !response.headers.get("Vary")?.includes("*");
+}
+async function installPrecache() {
+  // Validate the complete essential set before any write. A failed candidate
+  // rejects installation, leaving the active worker and its old cache intact.
+  const candidates = await Promise.all(FILES_TO_CACHE.map(async path => {
+    const url = new URL(path, self.location.origin);
+    if (!path.startsWith("/") || path.startsWith("//") || !isPublicUrl(url) || url.search || url.hash) {
+      throw new Error("Invalid public precache URL");
+    }
+    const response = await fetch(url.href, {method: "GET", cache: "no-cache", credentials: "same-origin", redirect: "error"});
+    if (!isCacheableResponse(response, url)) throw new Error("Unsafe precache response");
+    return [url.href, response];
+  }));
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    // Sequential writes ensure none can outlive failure cleanup.
+    for (const [url, response] of candidates) await cache.put(url, response);
+  } catch (error) {
+    await caches.delete(CACHE_NAME);
+    throw error;
+  }
+  await self.skipWaiting();
+}
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
-    .then(() => self.skipWaiting()));
+  event.waitUntil(installPrecache());
 });
 self.addEventListener("activate", event => {
   event.waitUntil(caches.keys().then(names => Promise.all(names
@@ -38,9 +73,7 @@ self.addEventListener("fetch", event => {
     try {
       const response = await fetch(request, {cache: "no-cache"});
       // Preserve HTTP errors online. Do not cache redirects or private responses.
-      if (isPublic && response.status === 200 && response.type === "basic" && !response.redirected &&
-          !/no-store|private/i.test(response.headers.get("Cache-Control") || "") &&
-          !response.headers.get("Vary")?.includes("*")) {
+      if (isPublic && isCacheableResponse(response, url)) {
         if (cache) await cache.put(key, response.clone()).catch(() => {});
       }
       return response;

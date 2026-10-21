@@ -54,7 +54,10 @@ def test_service_worker_handles_install_activate_and_fetch():
     worker = source()
     for event in EVENTS:
         assert re.search(rf"""addEventListener\(\s*['"]{event}['"]""", worker), event
-    assert "cache.addAll" in worker
+    # Installation responses must pass the worker's own validation before writing.
+    # Cache.addAll alone accepts private/no-store and followed redirects.
+    assert "cache.addAll" not in worker
+    assert "cache.put" in worker
     assert "caches.delete" in worker
     assert "skipWaiting" in worker
     assert "clients.claim" in worker
