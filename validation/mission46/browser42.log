@@ -1,0 +1,5 @@
+PASS 12 real Chromium unsafe/network install cases: v8 never activated/cached; old6 and third-party caches preserved
+PASS v6 -> v8 safe update/offline503/reonline; three failed updates retain active v6 and its valid offline documents
+PASS eight FR/EN viewport banner cases: WebP only, 76,404 bytes; four independent format/CSS-support simulations with offline decode
+PASS four clean mobile installs: precached WebP decoded after offline reload; reonline works; no PNG download during install/navigation
+All fixture requests loopback-only; no PHP execution, form submission, production probe or mail.
