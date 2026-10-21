@@ -196,22 +196,36 @@ inutile ajouté et aucun script de déploiement modifié.
 
 ## 10. GitHub Actions et identification de livraison
 
+PR créée et maintenue ouverte : [#27](https://github.com/kamel-hamdi-dev/mamourart-site/pull/27),
+source `feature/website-v3-2-integration-40`, cible `main`, auto-merge désactivé.
 Code et tests intégrés figés au commit
 `a39e01c345919b05994338cb041ce475b5b7b4e1`.
+Première livraison complète code et rapport :
+`c42b048fe48bcd5fdb69001716e51858e94a7e26`.
 Les commits suivants concernent uniquement ce rapport technique privé.
-Le SHA final de livraison sera celui de la tête de la nouvelle PR, avec les liens
-des runs de ce SHA inscrits dans son corps et dans le compte rendu final.
-Il se résout localement par `git rev-parse feature/website-v3-2-integration-40`.
 
-CI à constater après création de la PR : aucune réussite GitHub Actions n'est
-encore revendiquée dans cette révision initiale du rapport.
+Résultats GitHub Actions constatés par leurs métadonnées et étapes, tous au SHA
+exact `c42b048fe48bcd5fdb69001716e51858e94a7e26` :
+
+| Workflow | Lien du run | Résultat |
+|---|---|---|
+| Site checks | [39551080918](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39551080918) | success ; Python site checks et External link checks réussis |
+| PHP 8.2 syntax check | [39551081024](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39551081024) | success ; lint explicite des dix fichiers et suite PHP réussis |
+
+Les contrôles du SHA final, après cette actualisation documentaire, sont accessibles
+dans les [checks de #27](https://github.com/kamel-hamdi-dev/mamourart-site/pull/27/checks).
+Le SHA final hexadécimal et ses liens de runs sont inscrits dans le corps de la PR
+et dans le compte rendu de livraison, après constat de leur réussite. Le SHA du
+commit contenant cette révision du rapport se résout par
+`git rev-parse feature/website-v3-2-integration-40` ; il n'est pas auto-inscrit dans
+son propre contenu, ce qui changerait à nouveau ce hash.
 
 ## 11. Conservation des références et limites d'autorisation
 
 Recontrôle après validations locales : main toujours identique au SHA initial ;
 PR #25 toujours ouverte/non fusionnée à `ca18a96b5c7d3508a29615063a0e9411c5329f9e` ;
 PR #26 toujours ouverte/non fusionnée à `dd2aa66a4573e018c45bf6f02a044ffdfbce5a51`.
-Seule la nouvelle branche est destinée à être poussée. Aucun commit sur main,
+Seule la nouvelle branche a été poussée. Aucun commit sur main,
 force-push, fermeture des sources, auto-merge, modification de workflows/secrets/
 paramètres GitHub, tâche cron ou déploiement n'a été réalisé.
 
@@ -293,8 +307,9 @@ revue de source et captures. Ces preuves temporaires ne sont pas publiées au si
 
 ## 14. Verdict
 
-**GO conditionnel pour revue indépendante**, sous réserve de GitHub Actions vert
-sur le SHA final et de l'acceptation explicite des risques résiduels ci-dessus.
+**GO conditionnel pour revue indépendante** : validations locales et première CI
+intégrée vertes ; vérifier aussi les checks de la tête finale dans la PR après
+l'actualisation documentaire et accepter explicitement les risques ci-dessus.
 Ce verdict ne constitue aucune autorisation de fusion ou de publication.
 La nouvelle PR réunit #25 et #26 pour une décision ultérieure sans les fermer
 ni les fusionner automatiquement. Décision humaine GO/NO-GO attendue après livraison.
