@@ -1,17 +1,18 @@
 // Bump this version whenever a public resource changes.
 // Separate format variants so a failed replacement cannot delete an active cache.
 const PNG_BANNER = new URL(self.location.href).searchParams.get("banner") === "png";
-const CACHE_NAME = "mamourart-v8" + (PNG_BANNER ? "-png" : "");
+const PNG_LOGO = new URL(self.location.href).searchParams.get("logo") === "png";
+const CACHE_NAME = "mamourart-v8" + (PNG_BANNER ? "-png" : "") + (PNG_LOGO ? "-logo-png" : "");
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",
-  "/logo.webp", "/manifest.json",
+  "/manifest.json",
   "/icon-192.png", "/icon-512.png", "/favicon.ico"
 ];
-FILES_TO_CACHE.push(PNG_BANNER ? "/banner.png" : "/banner.webp");
+FILES_TO_CACHE.push(PNG_BANNER ? "/banner.png" : "/banner.webp", PNG_LOGO ? "/logo.png" : "/logo.webp");
 const PUBLIC_PATHS = new Set(FILES_TO_CACHE.concat([
   "/dashboard.webp", "/gps-ai-preview.webp", "/fret-alerts-preview.webp",
-  "/logo.png", "/banner.webp", "/banner.png", "/dashboard.png", "/apple-touch-icon.png",
+  "/logo.webp", "/logo.png", "/banner.webp", "/banner.png", "/dashboard.png", "/apple-touch-icon.png",
   "/favicon-16x16.png", "/favicon-32x32.png", "/favicon-48x48.png", "/favicon-192.png"
 ]));
 function isPublicUrl(url) {
@@ -120,9 +121,9 @@ async function installPrecache() {
     if (!path.startsWith("/") || path.startsWith("//") || !isPublicUrl(url) || url.search || url.hash) {
       throw new Error("Invalid public precache URL");
     }
-    // The banner was already decoded by the uncontrolled first page. Reuse
-    // its HTTP cache entry, but apply exactly the same validation to its body.
-    const response = await fetch(url.href, {method: "GET", cache: path.startsWith("/banner.") ? "force-cache" : "no-cache", credentials: "same-origin", redirect: "error"});
+    // The selected banner/logo were already loaded by the first page. Reuse
+    // their HTTP cache entries, but validate their bodies just as strictly.
+    const response = await fetch(url.href, {method: "GET", cache: /^\/(banner|logo)\./.test(path) ? "force-cache" : "no-cache", credentials: "same-origin", redirect: "error"});
     if (!await hasValidContent(response, url)) {
       response.body?.cancel().catch(() => {});
       throw new Error("Unsafe precache response");
@@ -145,7 +146,7 @@ self.addEventListener("install", event => {
 });
 self.addEventListener("activate", event => {
   event.waitUntil(caches.keys().then(names => Promise.all(names
-    .filter(name => /^mamourart-v\d+(?:-png)?$/.test(name) && name !== CACHE_NAME)
+    .filter(name => /^mamourart-v\d+(?:-png)?(?:-logo-png)?$/.test(name) && name !== CACHE_NAME)
     .map(name => caches.delete(name)))).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", event => {

@@ -1,4 +1,14 @@
 PASS audited-SHA reproductions: broken WebP, first-visit PNG offline miss, independent image-set/preload double transfer
+RUN update empty-body
+RUN update wrong-mime
+RUN update invalid-html
+RUN update invalid-utf8
+RUN update truncated-stream
+RUN update invalid-json
+RUN update invalid-manifest
+RUN update image-invalid
+RUN update storage-cleanup-failure
+RUN update storage-total-failure
 PASS 10 invalid-content updates with real Cache Storage; v7 unchanged
 PASS invalid runtime bodies never overwrite validated offline resources
 RUN normal 320 index.html

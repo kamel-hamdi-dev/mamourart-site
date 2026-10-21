@@ -58,7 +58,7 @@ valide non activée dans le test, et laisser v7 strictement inchangé.
 - Toutes les ressources essentielles sont validées avant le premier `put`.
   Les écritures restent séquentielles ; échec → récupération du seul candidat,
   installation rejetée, aucun `skipWaiting`. Le cache précédent reste actif.
-- `mamourart-v8` et `mamourart-v8-png` isolent les deux formats lors d'un
+- `mamourart-v8`, ses variantes `-png` et `-logo-png` isolent les formats lors d'un
   remplacement ; nettoyage seulement après installation valide et uniquement
   des noms Mamourart connus. Les caches tiers sont conservés.
 - Au runtime, une réponse invalide reste visible online selon son comportement
@@ -75,13 +75,18 @@ L'absence de preload indépendant évite de contredire le format choisi.
 
 Une erreur WebP n'est plus confiée à `image-set` : le script attend `decode`,
 retire les sources en échec, affecte le PNG puis vérifie son décodage. Le worker
-est enregistré avec `?banner=png` seulement si le PNG a effectivement été utilisé.
+est enregistré avec `banner=png` seulement si le PNG a effectivement été utilisé.
+Le logo du header est aussi décodé et son format effectif est transmis par
+`logo=png` lorsque nécessaire : un navigateur sans décodeur WebP ne doit pas
+être obligé de décoder le logo WebP pour installer sa variante PNG. La simulation
+Chromium refuse explicitement tout décodage WebP dans ce cas, tout en conservant
+le véritable décodage natif des PNG.
 La sélection n'inclut aucune donnée personnelle. Le précache ne télécharge pas
-les deux formats. Sa lecture `force-cache` de la bannière réutilise son entrée
-HTTP si disponible, avec les mêmes contrôles de confidentialité et de contenu.
+les deux formats. Sa lecture `force-cache` de la bannière et du logo réutilise leurs entrées
+HTTP si disponibles, avec les mêmes contrôles de confidentialité et de contenu.
 Les autres ressources restent revalidées par `no-cache`.
 
-`window.mamourartOfflineReady` représente le décodage et l'activation du worker
+`window.mamourartOfflineReady` représente le décodage des deux images et l'activation du worker
 incluant le format choisi. Une interruption réseau avant la fin de cette
 installation n'est pas une disponibilité offline garantie. Aucun formulaire
 ni parcours produit ne dépend de cette promesse de diagnostic.
@@ -95,9 +100,9 @@ PNG après WebP invalide ; conservées dans l'espace de travail de la mission.
 | Contrôle | Résultat | Preuve |
 | --- | --- | --- |
 | Baseline Python/Node au SHA audité | 163 réussis | `baseline-python.log` |
-| Python/Node final, sélection CI obligatoire | 178 réussis, 0 échec | `python.log`, `python.xml` |
-| Scénarios Node de précache | 48 cas, dont contenus/flux et deux niveaux de panne de suppression | `tests/test_pwa_installation.py`, inclus dans les 178 |
-| Runtime Node historique étendu | PASS, exclusions et ancien contenu conservés | `tests/test_mission38.py`, inclus dans les 178 |
+| Python/Node final, sélection CI obligatoire | 179 réussis, 0 échec | `python.log`, `python.xml` |
+| Scénarios Node de précache | 49 cas, dont contenus/flux et deux niveaux de panne de suppression | `tests/test_pwa_installation.py`, inclus dans les 179 |
+| Runtime Node historique étendu | PASS, exclusions et ancien contenu conservés | `tests/test_mission38.py`, inclus dans les 179 |
 | PHP isolé, mail natif/URL streams désactivés | 176 réussis, 0 échec | `php-loopback.json` |
 | Lint PHP complet | 15/15 | `php-lint.log` |
 | Chromium Mission 38 | 5 documents offline, 503/reonline, 20 combinaisons page/largeur, menu/FR/EN | `browser38.log` |
@@ -137,7 +142,7 @@ PHP `run.php` lance lui-même un interpréteur neuf avec mail et URL streams
 désactivés. Les navigateurs ne soumettent aucun formulaire. Les vrais serveurs
 de fixtures sont loopback, PHP/POST refusés ; les autres parcours interceptent
 des fichiers locaux. Les contrôles SEO/Portfolio/liens locaux/ressources du
-manifeste et confidentialité font partie des 178 tests obligatoires.
+manifeste et confidentialité font partie des 179 tests obligatoires.
 
 ## Comparaison de performances au SHA audité
 
@@ -155,8 +160,8 @@ qui désactiverait ce cache. Les 40 cas finaux vérifient les poids exacts.
 
 La hausse en cas de panne WebP correspond à la récupération effective de
 l'image manquante ; elle n'affecte pas le parcours normal. Les fichiers PNG et
-WebP gardent leurs poids d'origine. HTML : index 60 351→61 795 octets, anglais
-59 600→61 044 (+1 444 par document pour le mécanisme de récupération/readiness).
+WebP gardent leurs poids d'origine. HTML : index 60 351→62 187 octets, anglais
+59 600→61 436 (+1 836 par document pour le mécanisme de récupération/readiness).
 La validation ajoute une lecture et un décodage avant stockage, bornés par les
 plafonds indiqués. Aucune mesure Lighthouse, CWV, temps de réponse ou cache OVH
 n'est revendiquée ; les nombres excluent en-têtes HTTP et compression réseau.
@@ -165,9 +170,19 @@ pour remplir Cache Storage ; une réponse privée/no-store est toujours refusée
 
 ## Livraison, CI et limites
 
-La PR et les résultats GitHub Actions au SHA livré sont renseignés lors de la
-livraison. Les journaux des jobs réels doivent être lus, pas seulement leurs badges.
-Aucun workflow n'est modifié ; Chromium reste une validation locale reproductible.
+PR dédiée : [#28](https://github.com/kamel-hamdi-dev/mamourart-site/pull/28),
+ouverte vers `feature/website-v3-2-integration-40`.
+Premier commit code/tests : `b32b4e3516b3bd09c9b6e7a23f13a5e7e33b67b3`.
+Ses deux workflows ont réussi, journaux des trois jobs réellement lus :
+[Site checks 39623818029](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39623818029)
+(178 tests obligatoires + 1 test externe),
+[PHP 39623817806](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39623817806)
+(176 tests, PHP 8.2.35). Preuve : `validation/mission44/ci-initial.json`.
+Le complément final ajoute la sélection du logo PNG et un 179e test pour le
+navigateur sans décodeur WebP. Le SHA final et ses propres résultats/journaux CI
+sont fournis dans la description de #28 et dans le rapport de livraison final,
+après lecture des jobs correspondants. Aucun workflow n'est modifié ; Chromium
+reste une validation locale reproductible.
 
 Fichiers fonctionnels : `service-worker.js`, `index.html`, `en.html`.
 Tests adaptés : `tests/worker_mission42.cjs`, `tests/test_pwa_installation.py`,

@@ -1006,9 +1006,14 @@
     // Expose readiness for diagnostics: ready alone only means SW activation.
     // Installation includes the format decoded on the first uncontrolled visit.
     const bannerReady = banner ? prepareBanner() : Promise.resolve("/banner.webp");
-    window.mamourartOfflineReady = bannerReady.then(async path => {
+    const logo = document.querySelector(".brand img");
+    const logoReady = logo ? logo.decode().then(() => new URL(logo.currentSrc || logo.src).pathname) : Promise.resolve("/logo.webp");
+    window.mamourartOfflineReady = Promise.all([bannerReady, logoReady]).then(async ([path, logoPath]) => {
       if (!("serviceWorker" in navigator)) return false;
-      const script = "/service-worker.js" + (path === "/banner.png" ? "?banner=png" : "");
+      const formats = new URLSearchParams();
+      if (path === "/banner.png") formats.set("banner", "png");
+      if (logoPath === "/logo.png") formats.set("logo", "png");
+      const script = "/service-worker.js" + (formats.size ? "?" + formats : "");
       const registration = await navigator.serviceWorker.register(script);
       const worker = registration.installing || registration.waiting || registration.active;
       if (!worker) throw new Error("Offline worker unavailable");

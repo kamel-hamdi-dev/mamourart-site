@@ -2,12 +2,12 @@
   "index.html": {
     "form_sha256": "0a0d2d5b107ba7d28396ab371a035c53b9778ca943772c55f56cb0fe7ef7c0d3",
     "old_bytes": 60351,
-    "new_bytes": 61795
+    "new_bytes": 62187
   },
   "en.html": {
     "form_sha256": "39bfc4fbf11286268c6f2781f450f03dedab9149ba648cfb847b0ed10f1fafa2",
     "old_bytes": 59600,
-    "new_bytes": 61044
+    "new_bytes": 61436
   },
   "protected_unchanged": [
     "contact-submit.php",

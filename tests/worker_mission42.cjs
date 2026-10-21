@@ -17,8 +17,10 @@ const PRECACHE = ['/', '/index.html', '/en.html', '/legal.html', '/gps-ai-demo.h
   '/icon-192.png', '/icon-512.png', '/favicon.ico'];
 const [workerPath, scenario = 'runtime'] = process.argv.slice(2);
 let source = fs.readFileSync(workerPath, 'utf8');
-const current = source.match(/CACHE_NAME\s*=\s*['"]([^'"]+)/)[1];
-const version = Number(current.match(/\d+$/)[0]);
+const pngVariant = scenario === 'png-variant';
+if (pngVariant) for (const stem of ['logo', 'banner']) PRECACHE[PRECACHE.indexOf('/' + stem + '.webp')] = '/' + stem + '.png';
+const current = source.match(/CACHE_NAME\s*=\s*['"]([^'"]+)/)[1] + (pngVariant ? '-png-logo-png' : '');
+const version = Number(current.match(/\d+/)[0]);
 const previous = `mamourart-v${version - 1}`;
 const events = {}, removed = [], writes = [], fetched = [];
 const stores = new Map([
@@ -59,7 +61,7 @@ async function fetchResponse(request, options = {}) {
   const method = options.method ?? request.method ?? 'GET';
   fetched.push({url, method, options});
   assert.equal(method, 'GET', 'precache and runtime network requests must remain GET');
-  assert.equal(options.cache ?? request.cache, new URL(url).pathname.startsWith('/banner.') ? 'force-cache' : 'no-cache', 'only the decoded banner may reuse HTTP cache');
+  assert.equal(options.cache ?? request.cache, /^\/(banner|logo)\./.test(new URL(url).pathname) ? 'force-cache' : 'no-cache', 'only selected banner/logo may reuse HTTP cache');
   if (!online || (scenario === 'network' && new URL(url).pathname === '/legal.html')) throw Error('network unavailable');
   const candidate = new URL(url).pathname === '/legal.html';
   let config = {status, headers, redirected, type: responseType};
@@ -153,12 +155,13 @@ const context = {
   // Node has no browser image decoder. Accept only the exact official image
   // fixtures here; Chromium tests exercise createImageBitmap on real payloads.
   createImageBitmap: async blob => {
+    if (pngVariant) assert.notEqual(blob.type, 'image/webp', 'a browser without WebP must never need to decode a precache WebP');
     const bytes = Buffer.from(await blob.arrayBuffer());
-    assert.ok(['logo.webp','banner.webp','banner.png','icon-192.png','icon-512.png','favicon.ico','dashboard.webp']
+    assert.ok(['logo.png','logo.webp','banner.webp','banner.png','icon-192.png','icon-512.png','favicon.ico','dashboard.webp']
       .some(name => bytes.equals(fs.readFileSync(path.join(ROOT, name)))), 'invalid image fixture');
     return {width:1,height:1,close(){}};
   },
-  self: {location: {origin: ORIGIN, href: ORIGIN + '/service-worker.js'}, addEventListener: (name, callback) => events[name] = callback,
+  self: {location: {origin: ORIGIN, href: ORIGIN + '/service-worker.js' + (pngVariant ? '?banner=png&logo=png' : '')}, addEventListener: (name, callback) => events[name] = callback,
     skipWaiting: async () => { skipWaiting++; }, clients: {claim: async () => { claimed++; }}},
   caches: {
     open: async name => { if (failOpen) throw Error('cache unavailable'); return cacheFor(name); },
@@ -194,7 +197,7 @@ async function installScenario() {
   if (scenario === 'cache-write') failPutAt = 2;
   if (['cleanup-failure', 'cleanup-total-failure'].includes(scenario)) { failPutAt = 2; failDelete = true; }
   if (scenario === 'cleanup-total-failure') failEntryDelete = true;
-  if (scenario === 'safe' || scenario === 'transition') {
+  if (scenario === 'safe' || scenario === 'transition' || pngVariant) {
     await lifecycle('install');
     assert.equal(skipWaiting, 1); assert.equal(claimed, 0);
     previousPreserved();

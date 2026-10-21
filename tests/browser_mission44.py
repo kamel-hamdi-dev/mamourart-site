@@ -72,8 +72,11 @@ def first_visits(browser, report, output):
                     assert state["src"] == "/banner." + selected, (scenario, state)
                     assert (state["width"], state["height"], state["fit"]) == (2560, 1440, "cover")
                     assert state["position"] == ("72% 50%" if width <= 760 else "100% 50%"), state
-                    cache_name = "mamourart-v8-png" if selected == "png" else "mamourart-v8"
+                    cache_name = "mamourart-v8-png-logo-png" if scenario == "unsupported-webp" else "mamourart-v8-png" if selected == "png" else "mamourart-v8"
                     snapshot = cache_snapshot(page, cache_name)
+                    if scenario == "unsupported-webp":
+                        assert "/logo.png" in snapshot and "/logo.webp" not in snapshot
+                        assert not any(t["path"] == "/logo.webp" for t in fixture.transfers)
                     expected = (ROOT / ("banner." + selected)).read_bytes()
                     assert snapshot[state["src"]]["hash"] == hashlib.sha256(expected).hexdigest()
                     assert "/banner." + ("webp" if selected == "png" else "png") not in snapshot

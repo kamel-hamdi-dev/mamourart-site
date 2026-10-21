@@ -96,6 +96,10 @@ class FixtureServer:
                     return self.reply(200, b"invalid PNG", "image/png")
                 if name == "manifest.json" and fixture.scenario in ("invalid-json", "invalid-manifest"):
                     return self.reply(200, b"{bad json" if fixture.scenario == "invalid-json" else b'{"name":"Wrong","icons":[]}', "application/json")
+                if name == "service-worker.js" and fixture.fallback == "unsupported-webp":
+                    # Also model a decoder that genuinely cannot read WebP; PNG
+                    # decoding remains native. MIME selection alone was weaker.
+                    data = b"const nativeDecode = createImageBitmap; self.createImageBitmap = blob => blob.type === 'image/webp' ? Promise.reject(Error('simulated unsupported WebP decoder')) : nativeDecode(blob);\n" + data
                 if name == "service-worker.js" and fixture.scenario in ("storage-cleanup-failure", "storage-total-failure"):
                     injection = """
 const originalOpen = caches.open.bind(caches), originalDelete = caches.delete.bind(caches);
@@ -172,17 +176,17 @@ def context_for(browser, fixture, width=390, service_workers="allow"):
     return context, page, errors, unexpected
 
 
-def install(page, fixture, update=False):
+def install(page, fixture, update=False, script="/service-worker.js"):
     if not update:
         page.goto(fixture.origin + "/harness.html")
-    return page.evaluate("""async update => {
+    return page.evaluate("""async ({update, script}) => {
       let registration = await navigator.serviceWorker.getRegistration();
       let worker;
       if (update) {
         const found = new Promise(resolve => registration.addEventListener('updatefound', () => resolve(registration.installing), {once:true}));
         await registration.update(); worker = registration.installing || await found;
       } else {
-        registration = await navigator.serviceWorker.register('/service-worker.js');
+        registration = await navigator.serviceWorker.register(script);
         worker = registration.installing || registration.waiting || registration.active;
       }
       const state = await new Promise((resolve, reject) => {
@@ -191,7 +195,7 @@ def install(page, fixture, update=False):
         worker.addEventListener('statechange', check); check();
       });
       return {state, active: registration.active !== null};
-    }""", update)
+    }""", {"update": update, "script": script})
 
 
 def cached_legal(page, cache):
@@ -342,7 +346,8 @@ def responsive_and_fallback(browser, report):
             fixture = FixtureServer(fallback=fallback)
             context, page, errors, unexpected = context_for(browser, fixture, 390)
             try:
-                assert install(page, fixture)["state"] == "activated"
+                script = "/service-worker.js?banner=png&logo=png" if fallback == "unsupported-webp" else "/service-worker.js"
+                assert install(page, fixture, script=script)["state"] == "activated"
                 fixture.requests.clear()
                 page.goto(fixture.origin + "/" + name)
                 css = page.locator(".hero").evaluate("e => getComputedStyle(e).backgroundImage")
@@ -351,7 +356,7 @@ def responsive_and_fallback(browser, report):
                 assert f"/banner.{selected}" in fixture.requests and f"/banner.{'webp' if selected == 'png' else 'png'}" not in fixture.requests, fixture.requests
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
                 assert page.evaluate("window.mamourartOfflineReady")
-                cached = page.evaluate("async format => !!(await (await caches.open(format === 'png' ? 'mamourart-v8-png' : 'mamourart-v8')).match(location.origin+'/banner.' + format))", selected)
+                cached = page.evaluate("async format => !!(await (await caches.open(format === 'png' ? 'mamourart-v8-png-logo-png' : 'mamourart-v8')).match(location.origin+'/banner.' + format))", selected)
                 assert cached, "The selected banner format must be cached before offline use"
                 context.set_offline(True)
                 page.reload()
