@@ -1,14 +1,17 @@
 // Bump this version whenever a public resource changes.
-const CACHE_NAME = "mamourart-v7";
+// Separate format variants so a failed replacement cannot delete an active cache.
+const PNG_BANNER = new URL(self.location.href).searchParams.get("banner") === "png";
+const CACHE_NAME = "mamourart-v8" + (PNG_BANNER ? "-png" : "");
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",
-  "/logo.webp", "/banner.webp", "/manifest.json",
+  "/logo.webp", "/manifest.json",
   "/icon-192.png", "/icon-512.png", "/favicon.ico"
 ];
+FILES_TO_CACHE.push(PNG_BANNER ? "/banner.png" : "/banner.webp");
 const PUBLIC_PATHS = new Set(FILES_TO_CACHE.concat([
   "/dashboard.webp", "/gps-ai-preview.webp", "/fret-alerts-preview.webp",
-  "/logo.png", "/banner.png", "/dashboard.png", "/apple-touch-icon.png",
+  "/logo.png", "/banner.webp", "/banner.png", "/dashboard.png", "/apple-touch-icon.png",
   "/favicon-16x16.png", "/favicon-32x32.png", "/favicon-48x48.png", "/favicon-192.png"
 ]));
 function isPublicUrl(url) {
@@ -25,6 +28,90 @@ function isCacheableResponse(response, url) {
     !/no-store|private/i.test(response.headers.get("Cache-Control") || "") &&
     !response.headers.get("Vary")?.includes("*");
 }
+// Public resources have explicit contracts. Read a clone to completion before
+// Cache.put; a non-null stream can still be empty, truncated or unreadable.
+async function hasValidContent(response, url) {
+  if (!isCacheableResponse(response, url)) return false;
+  const path = url.pathname;
+  const mime = (response.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  const expected = path.endsWith(".webp") ? ["image/webp"] : path.endsWith(".png") ? ["image/png"] :
+    path.endsWith(".ico") ? ["image/x-icon", "image/vnd.microsoft.icon"] :
+    path.endsWith(".json") ? ["application/json", "application/manifest+json"] : ["text/html"];
+  if (!expected.includes(mime)) return false;
+  const limit = mime.startsWith("image/") ? 2 * 1024 * 1024 : 512 * 1024;
+  const reader = response.clone().body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > limit) {
+        // A tee's cancellation promise can wait for the original response's
+        // consumer. Do not block validation on an unread original branch.
+        reader.cancel().catch(() => {});
+        return false;
+      }
+      chunks.push(value);
+    }
+    if (!size) return false;
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    if (mime.startsWith("image/")) {
+      const ascii = (start, end) => String.fromCharCode(...bytes.subarray(start, end));
+      if (path.endsWith(".webp") && (size < 12 || ascii(0, 4) !== "RIFF" || ascii(8, 12) !== "WEBP" ||
+          new DataView(bytes.buffer).getUint32(4, true) + 8 !== size)) return false;
+      if (path.endsWith(".png") && (size < 33 ||
+          ![137,80,78,71,13,10,26,10].every((value, i) => bytes[i] === value) ||
+          ascii(12, 16) !== "IHDR" || ascii(size - 8, size - 4) !== "IEND")) return false;
+      if (path.endsWith(".ico")) {
+        if (size < 22 || bytes[0] !== 0 || bytes[1] !== 0 || bytes[2] !== 1 || bytes[3] !== 0) return false;
+        const view = new DataView(bytes.buffer), count = view.getUint16(4, true);
+        if (!count || 6 + count * 16 > size) return false;
+        for (let i = 0; i < count; i++) {
+          const entry = 6 + i * 16, length = view.getUint32(entry + 8, true), offset = view.getUint32(entry + 12, true);
+          if (!length || offset < 6 + count * 16 || offset + length > size) return false;
+        }
+      }
+      // The real browser decoder catches corrupt payloads beyond magic bytes.
+      const image = await createImageBitmap(new Blob([bytes], {type: mime}));
+      const valid = image.width > 0 && image.height > 0;
+      image.close();
+      return valid;
+    }
+    const content = new TextDecoder("utf-8", {fatal: true}).decode(bytes);
+    if (path.endsWith(".json")) {
+      const manifest = JSON.parse(content);
+      return manifest !== null && typeof manifest === "object" && !Array.isArray(manifest) &&
+        typeof manifest.name === "string" && manifest.name.trim().length > 0 &&
+        manifest.start_url === "/" && manifest.scope === "/" &&
+        Array.isArray(manifest.icons) && manifest.icons.length > 0 &&
+        manifest.icons.every(icon => typeof icon.src === "string" &&
+          PUBLIC_PATHS.has(icon.src) && icon.type === "image/png");
+    }
+    // Structural HTML contract, not an HTML sanitizer or an authenticity check.
+    return /^\s*<!doctype html>/i.test(content) && /<html\b[^>]*>/i.test(content) &&
+      /<title\b[^>]*>[^<]+<\/title>/i.test(content) && /<body\b[^>]*>/i.test(content) &&
+      /<\/body>\s*<\/html>\s*$/i.test(content);
+  } catch (_) {
+    return false;
+  } finally {
+    reader.releaseLock();
+  }
+}
+async function discardCandidate(cache) {
+  // Some storage failures also break CacheStorage.delete. Remove individual
+  // entries as a second, bounded recovery path; never touch an older cache.
+  try { if (await caches.delete(CACHE_NAME)) return; } catch (_) {}
+  if (cache) {
+    try {
+      for (const request of await cache.keys()) await cache.delete(request).catch(() => {});
+    } catch (_) {}
+  }
+  try { await caches.delete(CACHE_NAME); } catch (_) {}
+}
 async function installPrecache() {
   // Validate the complete essential set before any write. A failed candidate
   // rejects installation, leaving the active worker and its old cache intact.
@@ -33,16 +120,22 @@ async function installPrecache() {
     if (!path.startsWith("/") || path.startsWith("//") || !isPublicUrl(url) || url.search || url.hash) {
       throw new Error("Invalid public precache URL");
     }
-    const response = await fetch(url.href, {method: "GET", cache: "no-cache", credentials: "same-origin", redirect: "error"});
-    if (!isCacheableResponse(response, url)) throw new Error("Unsafe precache response");
+    // The banner was already decoded by the uncontrolled first page. Reuse
+    // its HTTP cache entry, but apply exactly the same validation to its body.
+    const response = await fetch(url.href, {method: "GET", cache: path.startsWith("/banner.") ? "force-cache" : "no-cache", credentials: "same-origin", redirect: "error"});
+    if (!await hasValidContent(response, url)) {
+      response.body?.cancel().catch(() => {});
+      throw new Error("Unsafe precache response");
+    }
     return [url.href, response];
   }));
+  let cache;
   try {
-    const cache = await caches.open(CACHE_NAME);
+    cache = await caches.open(CACHE_NAME);
     // Sequential writes ensure none can outlive failure cleanup.
     for (const [url, response] of candidates) await cache.put(url, response);
   } catch (error) {
-    await caches.delete(CACHE_NAME);
+    await discardCandidate(cache);
     throw error;
   }
   await self.skipWaiting();
@@ -52,7 +145,7 @@ self.addEventListener("install", event => {
 });
 self.addEventListener("activate", event => {
   event.waitUntil(caches.keys().then(names => Promise.all(names
-    .filter(name => /^mamourart-v\d+$/.test(name) && name !== CACHE_NAME)
+    .filter(name => /^mamourart-v\d+(?:-png)?$/.test(name) && name !== CACHE_NAME)
     .map(name => caches.delete(name)))).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", event => {
@@ -73,7 +166,7 @@ self.addEventListener("fetch", event => {
     try {
       const response = await fetch(request, {cache: "no-cache"});
       // Preserve HTTP errors online. Do not cache redirects or private responses.
-      if (isPublic && isCacheableResponse(response, url)) {
+      if (isPublic && await hasValidContent(response, url)) {
         if (cache) await cache.put(key, response.clone()).catch(() => {});
       }
       return response;

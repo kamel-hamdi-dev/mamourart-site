@@ -54,3 +54,4 @@ def test_worker_offline_runtime():
         capture_output=True, text=True, check=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+    assert "PASS service worker runtime" in result.stdout

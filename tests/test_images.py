@@ -28,7 +28,11 @@ def test_html_images_exist_and_have_alt_text():
         src = image.get("src", "")
         alt = image.get("alt", "").strip()
         assert src, "image is missing a src"
-        assert alt, f"{src} is missing alt text"
+        if image.get("id") == "heroBanner":
+            assert image.get("alt") == "" and src == "banner.png"
+            assert '<picture class="hero-banner" aria-hidden="true">' in read_text("index.html")
+        else:
+            assert alt, f"{src} is missing alt text"
         assert not src.lower().startswith(("javascript:", "data:"))
         if src.startswith("https://"):
             assert urlparse(src).hostname
@@ -40,7 +44,10 @@ def test_html_images_exist_and_have_alt_text():
 
 def test_css_images_exist():
     urls = style_urls(read_text("index.html"))
-    assert "banner.png" in {urlparse(url).path.lstrip("/") for url in urls}
+    # The decorative banner moved from CSS to picture; verify its resource too.
+    banner = next(image for image in parse_page(read_text("index.html")).images if image.get("id") == "heroBanner")
+    assert banner["src"] == "banner.png"
+    assert image_size(ROOT / banner["src"]) == (2560, 1440)
     for url in urls:
         if url.startswith(("data:", "https:", "http:")):
             continue

@@ -1,0 +1,16 @@
+No syntax errors detected in contact-rate-limit.php
+No syntax errors detected in contact-submit.php
+No syntax errors detected in scripts/contact-maintenance.php
+No syntax errors detected in tests/php/clock-worker.php
+No syntax errors detected in tests/php/endpoint-worker.php
+No syntax errors detected in tests/php/fault-functions.php
+No syntax errors detected in tests/php/guard.php
+No syntax errors detected in tests/php/integration39d.php
+No syntax errors detected in tests/php/interrupt-worker.php
+No syntax errors detected in tests/php/mission39b.php
+No syntax errors detected in tests/php/mission39d.php
+No syntax errors detected in tests/php/run.php
+No syntax errors detected in tests/php/slow-worker.php
+No syntax errors detected in tests/php/suite.php
+No syntax errors detected in tests/php/worker.php
+15 / 15 valid
