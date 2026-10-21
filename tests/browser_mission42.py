@@ -106,14 +106,14 @@ const originalOpen = caches.open.bind(caches), originalDelete = caches.delete.bi
 let attempts = 0;
 caches.open = async name => {
  const cache = await originalOpen(name);
- if (name.startsWith('mamourart-v8')) {
+ if (name.startsWith('mamourart-v9')) {
   const put = cache.put.bind(cache);
   cache.put = async (...args) => {if (++attempts === 2) throw Error('synthetic put failure'); return put(...args);};
   TOTAL_FAILURE
  }
  return cache;
 };
-caches.delete = async name => {if (name.startsWith('mamourart-v8')) throw Error('synthetic storage delete failure'); return originalDelete(name);};
+caches.delete = async name => {if (name.startsWith('mamourart-v9')) throw Error('synthetic storage delete failure'); return originalDelete(name);};
 """.replace("TOTAL_FAILURE", "cache.delete = async () => {throw Error('synthetic entry delete failure');};" if fixture.scenario == "storage-total-failure" else "")
                     data = injection.encode() + data
                 if name in ("index.html", "en.html") and fixture.fallback:
@@ -266,9 +266,9 @@ def rejected_installs(browser, report):
             outcome = install(page, fixture)
             assert outcome == {"state": "redundant", "active": False}, (scenario, outcome)
             state = page.evaluate("async () => ({names:await caches.keys(), old:await (await (await caches.open('mamourart-v6')).match('/old-sentinel')).text(), third:await (await (await caches.open('other-app')).match('/sentinel')).text()})")
-            assert "mamourart-v8" not in state["names"], (scenario, state)
+            assert "mamourart-v9" not in state["names"], (scenario, state)
             assert state["old"] == "old-valid" and state["third"] == "unrelated", state
-            assert cached_legal(page, "mamourart-v8") is None
+            assert cached_legal(page, "mamourart-v9") is None
             report["rejected_installs"].append({"scenario": scenario, **outcome, **state})
             assert not errors and not unexpected, (scenario, errors, unexpected)
         finally:
@@ -291,7 +291,7 @@ def update_and_offline(browser, report):
             expected = "activated" if scenario == "normal" else "redundant"
             assert outcome["state"] == expected, (scenario, outcome)
             assert "other-app" in names
-            assert ("mamourart-v8" in names) == (scenario == "normal"), (scenario, names)
+            assert ("mamourart-v9" in names) == (scenario == "normal"), (scenario, names)
             assert ("mamourart-v6" in names) == (scenario != "normal"), (scenario, names)
             if scenario != "normal":
                 context.set_offline(True)
@@ -302,7 +302,7 @@ def update_and_offline(browser, report):
                 for path in ("index.html", "en.html", "legal.html?lang=en", "gps-ai-demo.html?lang=en", "fret-alerts-demo.html?lang=en"):
                     response = page.goto(fixture.origin + "/" + path)
                     assert response.status == 200, (path, response.status)
-                page.evaluate("caches.open('mamourart-v8').then(cache => cache.delete(location.origin + '/gps-ai-demo.html'))")
+                page.evaluate("caches.open('mamourart-v9').then(cache => cache.delete(location.origin + '/gps-ai-demo.html'))")
                 response = page.goto(fixture.origin + "/gps-ai-demo.html?lang=en")
                 assert response.status == 503 and "unavailable offline" in page.locator("h1").inner_text()
                 context.set_offline(False)
@@ -356,7 +356,7 @@ def responsive_and_fallback(browser, report):
                 assert f"/banner.{selected}" in fixture.requests and f"/banner.{'webp' if selected == 'png' else 'png'}" not in fixture.requests, fixture.requests
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
                 assert page.evaluate("window.mamourartOfflineReady")
-                cached = page.evaluate("async format => !!(await (await caches.open(format === 'png' ? 'mamourart-v8-png-logo-png' : 'mamourart-v8')).match(location.origin+'/banner.' + format))", selected)
+                cached = page.evaluate("async format => !!(await (await caches.open(format === 'png' ? 'mamourart-v9-png-logo-png' : 'mamourart-v9')).match(location.origin+'/banner.' + format))", selected)
                 assert cached, "The selected banner format must be cached before offline use"
                 context.set_offline(True)
                 page.reload()

@@ -1,0 +1,342 @@
+{
+  "baseline_precache": [],
+  "baseline_banner": [],
+  "rejected_installs": [
+    {
+      "scenario": "no-store",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "private",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "vary",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "redirect",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-301",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-302",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-307",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-308",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-404",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-500",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "status-503",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    },
+    {
+      "scenario": "network",
+      "state": "redundant",
+      "active": false,
+      "names": [
+        "mamourart-v6",
+        "other-app"
+      ],
+      "old": "old-valid",
+      "third": "unrelated"
+    }
+  ],
+  "updates": [
+    {
+      "scenario": "normal",
+      "outcome": {
+        "state": "activated",
+        "active": true
+      },
+      "caches": [
+        "other-app",
+        "mamourart-v9"
+      ]
+    },
+    {
+      "scenario": "no-store",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "caches": [
+        "mamourart-v6",
+        "other-app"
+      ]
+    },
+    {
+      "scenario": "private",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "caches": [
+        "mamourart-v6",
+        "other-app"
+      ]
+    },
+    {
+      "scenario": "redirect",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "caches": [
+        "mamourart-v6",
+        "other-app"
+      ]
+    }
+  ],
+  "responsive": [
+    {
+      "page": "index.html",
+      "width": 320,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "en.html",
+      "width": 320,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "index.html",
+      "width": 390,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "en.html",
+      "width": 390,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "index.html",
+      "width": 768,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "en.html",
+      "width": 768,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "index.html",
+      "width": 1440,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    },
+    {
+      "page": "en.html",
+      "width": 1440,
+      "requests": [
+        "/banner.webp"
+      ],
+      "bytes": 76404,
+      "css": "none"
+    }
+  ],
+  "fallback_simulations": [
+    {
+      "page": "index.html",
+      "simulation": "unsupported-webp",
+      "online_and_offline": true,
+      "format": "png",
+      "dimensions": [
+        2560,
+        1440
+      ],
+      "selected_bytes": 953545
+    },
+    {
+      "page": "en.html",
+      "simulation": "unsupported-webp",
+      "online_and_offline": true,
+      "format": "png",
+      "dimensions": [
+        2560,
+        1440
+      ],
+      "selected_bytes": 953545
+    },
+    {
+      "page": "index.html",
+      "simulation": "no-image-set",
+      "online_and_offline": true,
+      "format": "webp",
+      "dimensions": [
+        2560,
+        1440
+      ],
+      "selected_bytes": 76404
+    },
+    {
+      "page": "en.html",
+      "simulation": "no-image-set",
+      "online_and_offline": true,
+      "format": "webp",
+      "dimensions": [
+        2560,
+        1440
+      ],
+      "selected_bytes": 76404
+    }
+  ],
+  "mobile_offline": [
+    {
+      "page": "index.html",
+      "width": 320,
+      "offline_webp_dimensions": [
+        2560,
+        1440
+      ],
+      "reonline": true
+    },
+    {
+      "page": "en.html",
+      "width": 320,
+      "offline_webp_dimensions": [
+        2560,
+        1440
+      ],
+      "reonline": true
+    },
+    {
+      "page": "index.html",
+      "width": 390,
+      "offline_webp_dimensions": [
+        2560,
+        1440
+      ],
+      "reonline": true
+    },
+    {
+      "page": "en.html",
+      "width": 390,
+      "offline_webp_dimensions": [
+        2560,
+        1440
+      ],
+      "reonline": true
+    }
+  ]
+}

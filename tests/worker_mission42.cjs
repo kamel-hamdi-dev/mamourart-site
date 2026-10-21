@@ -39,8 +39,10 @@ function makeResponse(url, options = {}) {
   const networkURL = new URL(url); networkURL.hash = '';
   const metadata = {url: options.url ?? networkURL.href, type: options.type ?? 'basic',
     redirected: options.redirected ?? false, status: options.status ?? 200};
+  const responseHeaders = new Headers({'Content-Type': mimeFor(url)});
+  for (const [key, value] of Object.entries(options.headers ?? {})) responseHeaders.set(key, value);
   const response = new Response(Object.hasOwn(options, 'body') ? options.body : resource(url),
-    {status: metadata.status >= 200 ? metadata.status : 200, headers: {'Content-Type': mimeFor(url), ...options.headers}});
+    {status: metadata.status >= 200 ? metadata.status : 200, headers: responseHeaders});
   function decorate(value) {
     Object.defineProperties(value, {
       url: {value: metadata.url}, type: {value: metadata.type}, redirected: {value: metadata.redirected},
@@ -118,7 +120,7 @@ function cacheFor(name) {
           type:response.type, redirected:response.redirected, status:response.status,
           headers:Object.fromEntries(response.headers)})];
       }));
-      for (const [url, response] of candidates) { entries.set(url, response.clone()); writes.push({url, response}); }
+      for (const [url, response] of candidates) { entries.set(url, response.clone()); writes.push({url, response, body: Buffer.from(body)}); }
     },
     async put(request, response) {
       if (failPut || (failPutAt && ++putAttempts === failPutAt)) throw Error('cache write failed');
@@ -128,7 +130,10 @@ function cacheFor(name) {
       const body = await response.arrayBuffer();
       entries.set(url, makeResponse(url, {body, url: response.url, type: response.type,
         redirected: response.redirected, status: response.status, headers: Object.fromEntries(response.headers)}));
-      writes.push({url, response});
+      writes.push({url, response, body: Buffer.from(body)});
+      if (scenario === 'stored-corruption' && new URL(url).pathname === '/legal.html') {
+        entries.set(url, makeResponse(url, {body: 'corrupt stored bytes'}));
+      }
     },
     async keys() { return [...entries.keys()]; },
     async delete(request) { return failEntryDelete ? Promise.reject(Error('entry cleanup failed')) : entries.delete(requestURL(request)); },
@@ -174,8 +179,10 @@ vm.createContext(context);
 vm.runInContext(source, context);
 
 async function lifecycle(name) {
-  let completion;
-  events[name]({waitUntil: promise => completion = promise});
+  let completion, calls = 0;
+  assert.equal(typeof events[name], 'function');
+  events[name]({waitUntil: promise => { calls++; completion = promise; }});
+  assert.equal(calls, 1, name + ' must register exactly one lifetime promise');
   assert.ok(completion, name + ' must extend its lifetime');
   return completion;
 }
@@ -188,7 +195,9 @@ async function request(path, method = 'GET', mode = 'navigate') {
 
 function previousPreserved() {
   assert.ok(stores.has(previous), 'failed installation must preserve the previously valid cache');
+  assert.equal(stores.get(previous).size, 1);
   assert.ok(stores.get(previous).has(ORIGIN + '/index.html'));
+  assert.equal(stores.get(previous).get(ORIGIN + '/index.html').bodyUsed, false);
   for (const name of ['other-app', 'mamourart-vx', 'mamourart-v5-extra']) assert.ok(stores.has(name), name);
 }
 
@@ -197,7 +206,7 @@ async function installScenario() {
   if (scenario === 'cache-write') failPutAt = 2;
   if (['cleanup-failure', 'cleanup-total-failure'].includes(scenario)) { failPutAt = 2; failDelete = true; }
   if (scenario === 'cleanup-total-failure') failEntryDelete = true;
-  if (scenario === 'safe' || scenario === 'transition' || pngVariant) {
+  if (scenario === 'safe' || scenario === 'transition' || scenario === 'activation-corruption' || pngVariant) {
     await lifecycle('install');
     assert.equal(skipWaiting, 1); assert.equal(claimed, 0);
     previousPreserved();
@@ -206,6 +215,13 @@ async function installScenario() {
       const response = stores.get(current).get(ORIGIN + path).clone();
       assert.equal(response.url, ORIGIN + path); assert.equal(response.type, 'basic');
       assert.equal(response.status, 200); assert.equal(await response.text(), expectedText(path));
+    }
+    if (scenario === 'activation-corruption') {
+      stores.get(current).set(ORIGIN + '/legal.html', makeResponse(ORIGIN + '/legal.html', {body: 'corrupt storage'}));
+      await assert.rejects(lifecycle('activate'), /Invalid stored precache response/);
+      assert.equal(claimed, 0); previousPreserved();
+      assert.ok(!removed.includes(previous));
+      return;
     }
     await lifecycle('activate');
     assert.equal(claimed, 1); assert.ok(!stores.has(previous));
@@ -219,18 +235,41 @@ async function installScenario() {
     assert.equal((await request('/index.html')).status, 200);
     return;
   }
-  await assert.rejects(lifecycle('install'), undefined, scenario + ' must abort installation');
+  const expectedError = injection[scenario] ? /^Invalid public precache URL$/ :
+    scenario === 'network' ? /^network unavailable$/ :
+    scenario === 'stored-corruption' ? /^Invalid stored precache response$/ :
+    scenario === 'cache-open' ? /^cache unavailable$/ :
+    ['cache-write', 'cleanup-failure', 'cleanup-total-failure'].includes(scenario) ? /^cache write failed$/ : /^Unsafe precache response$/;
+  await assert.rejects(lifecycle('install'), error => {
+    assert.match(error.message, expectedError, scenario + ' must fail for its intended cause');
+    return true;
+  });
   assert.equal(skipWaiting, 0, 'failed install must never request activation');
   assert.equal(claimed, 0); previousPreserved();
   if (scenario === 'cleanup-total-failure') {
     assert.equal(stores.get(current)?.size, 1, 'failed cleanup may leave only an unactivated safe partial cache');
+    const residue = stores.get(current);
+    await assert.rejects(lifecycle('activate'), /Incomplete precache candidate/);
+    assert.equal(claimed, 0); previousPreserved();
+    failPutAt = 0;
+    await assert.rejects(lifecycle('install'), /entry cleanup failed/);
+    assert.equal(stores.get(current), residue); assert.equal(skipWaiting, 0); previousPreserved();
+    failDelete = false; failEntryDelete = false;
+    await lifecycle('install');
+    assert.equal(skipWaiting, 1);
+    assert.deepEqual([...stores.get(current).keys()].sort(), PRECACHE.map(path => ORIGIN + path).sort());
+    for (const path of PRECACHE) assert.deepEqual(Buffer.from(await stores.get(current).get(ORIGIN + path).clone().arrayBuffer()), resource(path));
+    previousPreserved();
+    await lifecycle('activate'); assert.equal(claimed, 1);
+
   } else {
     assert.ok(!stores.has(current) || stores.get(current).size === 0,
       'failed installation must not leave a partial current-version cache');
   }
-  if (!['cache-write', 'cleanup-failure', 'cleanup-total-failure'].includes(scenario))
+  if (!['cache-write', 'cleanup-failure', 'cleanup-total-failure', 'stored-corruption'].includes(scenario))
     assert.equal(writes.length, 0, 'validate all candidate responses before any cache insertion');
-  for (const {url, response} of writes) {
+  for (const {url, response, body} of writes) {
+    assert.deepEqual(body, resource(url), "only complete official fixture bodies may be stored");
     assert.equal(response.status, 200); assert.equal(response.type, 'basic'); assert.equal(response.redirected, false);
     assert.equal(response.url, url); assert.doesNotMatch(response.headers.get('Cache-Control') ?? '', /private|no-store/i);
   }

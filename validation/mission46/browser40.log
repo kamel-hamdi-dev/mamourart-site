@@ -1,0 +1,2 @@
+PASS Chromium Mission 40: {'result_matrix': 32, 'language_and_back_cycles': 32, 'keyboard_forms': 16, 'legacy_urls': 16}
+All requests intercepted from local files; service workers blocked in this harness; no PHP request, submission, external request or mail.

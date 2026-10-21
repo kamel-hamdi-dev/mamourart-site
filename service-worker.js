@@ -2,7 +2,7 @@
 // Separate format variants so a failed replacement cannot delete an active cache.
 const PNG_BANNER = new URL(self.location.href).searchParams.get("banner") === "png";
 const PNG_LOGO = new URL(self.location.href).searchParams.get("logo") === "png";
-const CACHE_NAME = "mamourart-v8" + (PNG_BANNER ? "-png" : "") + (PNG_LOGO ? "-logo-png" : "");
+const CACHE_NAME = "mamourart-v9" + (PNG_BANNER ? "-png" : "") + (PNG_LOGO ? "-logo-png" : "");
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",
@@ -113,6 +113,17 @@ async function discardCandidate(cache) {
   }
   try { await caches.delete(CACHE_NAME); } catch (_) {}
 }
+async function verifyCandidate(cache) {
+  const keys = await cache.keys();
+  const expected = FILES_TO_CACHE.map(path => new URL(path, self.location.origin).href);
+  if (keys.length !== expected.length || keys.some(key => !expected.includes(typeof key === "string" ? key : key.url))) {
+    throw new Error("Incomplete precache candidate");
+  }
+  for (const url of expected) {
+    const response = await cache.match(url);
+    if (!response || !await hasValidContent(response, new URL(url))) throw new Error("Invalid stored precache response");
+  }
+}
 async function installPrecache() {
   // Validate the complete essential set before any write. A failed candidate
   // rejects installation, leaving the active worker and its old cache intact.
@@ -133,8 +144,13 @@ async function installPrecache() {
   let cache;
   try {
     cache = await caches.open(CACHE_NAME);
+    // Recover residues from an earlier failed attempt. Never write into a
+    // candidate whose old entries cannot be removed and verified absent.
+    for (const request of await cache.keys()) await cache.delete(request);
+    if ((await cache.keys()).length) throw new Error("Candidate cleanup incomplete");
     // Sequential writes ensure none can outlive failure cleanup.
     for (const [url, response] of candidates) await cache.put(url, response);
+    await verifyCandidate(cache);
   } catch (error) {
     await discardCandidate(cache);
     throw error;
@@ -145,9 +161,14 @@ self.addEventListener("install", event => {
   event.waitUntil(installPrecache());
 });
 self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(names => Promise.all(names
-    .filter(name => /^mamourart-v\d+(?:-png)?(?:-logo-png)?$/.test(name) && name !== CACHE_NAME)
-    .map(name => caches.delete(name)))).then(() => self.clients.claim()));
+  event.waitUntil((async () => {
+    // Check stored bytes before deleting any previously usable cache or claiming.
+    await verifyCandidate(await caches.open(CACHE_NAME));
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => /^mamourart-v\d+(?:-png)?(?:-logo-png)?$/.test(name) && name !== CACHE_NAME)
+      .map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
 self.addEventListener("fetch", event => {
   const request = event.request;

@@ -41,7 +41,7 @@ def banner_state(page):
     }""")
 
 
-def cache_snapshot(page, cache="mamourart-v8"):
+def cache_snapshot(page, cache="mamourart-v9"):
     return page.evaluate("""async name => {
       if (!(await caches.has(name))) return null;
       const cache = await caches.open(name), entries = {};
@@ -72,7 +72,7 @@ def first_visits(browser, report, output):
                     assert state["src"] == "/banner." + selected, (scenario, state)
                     assert (state["width"], state["height"], state["fit"]) == (2560, 1440, "cover")
                     assert state["position"] == ("72% 50%" if width <= 760 else "100% 50%"), state
-                    cache_name = "mamourart-v8-png-logo-png" if scenario == "unsupported-webp" else "mamourart-v8-png" if selected == "png" else "mamourart-v8"
+                    cache_name = "mamourart-v9-png-logo-png" if scenario == "unsupported-webp" else "mamourart-v9-png" if selected == "png" else "mamourart-v9"
                     snapshot = cache_snapshot(page, cache_name)
                     if scenario == "unsupported-webp":
                         assert "/logo.png" in snapshot and "/logo.webp" not in snapshot
@@ -141,6 +141,19 @@ def rejected_updates(browser, report):
             assert page.goto(fixture.origin + "/legal.html").status == 200
             assert "Mentions" in page.content()
             assert not errors and not unexpected, (errors, unexpected)
+            if scenario == "storage-total-failure":
+                # A later valid worker must remove even unexpected stale entries.
+                context.set_offline(False)
+                page.evaluate("async () => {const c = await caches.open('mamourart-v9'); await c.put('/unexpected-residue', new Response('stale'));}")
+                fixture.scenario = "normal"
+                recovered = install(page, fixture, update=True)
+                assert recovered["state"] == "activated", recovered
+                fresh = cache_snapshot(page)
+                assert fresh and len(fresh) == 12 and "/unexpected-residue" not in fresh
+                assert cache_snapshot(page, "mamourart-v7") is None
+                context.set_offline(True)
+                assert page.goto(fixture.origin + "/en.html").status == 200
+                report["residue_recovery"] = {"activated": True, "entries": len(fresh), "offline_en": True}
             report["rejected_updates"].append({"scenario": scenario, "outcome": outcome,
                 "v7_unchanged": True, "candidate_entries": len(candidate or {}), "old_offline_document": True})
         finally:

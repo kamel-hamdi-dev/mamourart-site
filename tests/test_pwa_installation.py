@@ -7,7 +7,7 @@ from tests.checks import ROOT
 
 
 @pytest.mark.parametrize("scenario", [
-    "safe", "png-variant", "no-store", "private", "vary-star", "redirected",
+    "safe", "activation-corruption", "stored-corruption", "png-variant", "no-store", "private", "vary-star", "redirected",
     "http-301", "http-302", "http-307", "http-308", "http-404", "http-500", "http-503",
     "opaque", "cors", "default", "error", "foreign-origin", "wrong-path", "private-result-url", "empty-url", "body-used", "null-body",
     "network", "cache-open", "cache-write", "cleanup-failure", "transition",

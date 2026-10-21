@@ -30,7 +30,7 @@ with sync_playwright() as p:
  for path in ['index.html','en.html','legal.html?lang=en','gps-ai-demo.html?lang=en','fret-alerts-demo.html?lang=en']:
   response=page.goto(origin+'/'+path);assert response.status==200,(path,response.status)
   assert page.locator('html').get_attribute('lang')==('fr' if path=='index.html' else 'en')
- page.evaluate("caches.open('mamourart-v8').then(c=>c.delete(location.origin+'/gps-ai-demo.html'))")
+ page.evaluate("caches.open('mamourart-v9').then(c=>c.delete(location.origin+'/gps-ai-demo.html'))")
  response=page.goto(origin+'/gps-ai-demo.html?lang=en');assert response.status==503
  assert 'unavailable offline' in page.locator('h1').inner_text()
  context.set_offline(False)
