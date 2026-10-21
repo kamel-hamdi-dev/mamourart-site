@@ -974,12 +974,8 @@
       window.location.href = (lang === "en" ? "en.html" : "./") + window.location.search + window.location.hash;
     }
     let initialLanguage = document.documentElement.lang;
-    if (new URLSearchParams(window.location.search).has("contact_status")) {
-      try {
-        const saved = localStorage.getItem("mamourart-language-v2");
-        if (saved === "en" || saved === "fr") initialLanguage = saved;
-      } catch (_) {}
-    }
+    // The static destination of the POST redirect determines the response language.
+    // Do not let an unavailable or stale storage preference override this page.
     setLanguage(initialLanguage);
 
     // Bring the final status into view on the post-submit redirect.

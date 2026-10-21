@@ -471,7 +471,7 @@ test('GET is rejected without storage or mail', static function (): void {
     check(in_array(['Allow: POST', true, 0], $result['headers'], true), 'Missing Allow header');
 });
 test('Unsafe direct suite or worker invocation cannot reach application code', static function (): void {
-    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php', 'mission39b.php', 'mission39d.php', 'slow-worker.php'] as $script) {
+    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php', 'mission39b.php', 'mission39d.php', 'slow-worker.php', 'integration39d.php'] as $script) {
         $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=', __DIR__ . '/' . $script],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         check(is_resource($process), 'Cannot start guard test'); fclose($pipes[0]);
@@ -483,5 +483,6 @@ test('Unsafe direct suite or worker invocation cannot reach application code', s
 require __DIR__ . '/mission39b.php';
 require __DIR__ . '/mission39d.php';
 
+require __DIR__ . '/integration39d.php';
 echo "RESULT $passed passed, $failed failed; native mail disabled, isolated temporary state only.\n";
 exit($failed === 0 ? 0 : 1);

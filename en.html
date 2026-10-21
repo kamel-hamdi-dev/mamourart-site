@@ -590,9 +590,9 @@
         <div class="quote-wrap">
           <h3 data-i18n="quoteTitle">Tell us about your needs</h3>
           <p class="quote-lead" data-i18n="quoteIntro">Tell us about your business needs. We will reply by email.</p>
-          <form class="quote-form" method="post" action="contact-submit.php" accept-charset="UTF-8">
+          <form class="quote-form" method="post" action="contact-submit.php?lang=en" accept-charset="UTF-8">
             <div class="quote-fields">
-              <label><span data-i18n="quoteName">Your name *</span><input name="name" autocomplete="name" maxlength="120" required></label>
+              <label><span data-i18n="quoteName">Your name *</span><input name="name" autocomplete="name" minlength="2" maxlength="120" required></label>
               <label><span data-i18n="quoteCompany">Company (optional)</span><input name="company" autocomplete="organization" maxlength="120"></label>
               <label><span data-i18n="quoteEmail">Business email *</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
               <label><span data-i18n="quoteService">Service requested *</span>
@@ -974,12 +974,8 @@
       window.location.href = (lang === "en" ? "en.html" : "./") + window.location.search + window.location.hash;
     }
     let initialLanguage = document.documentElement.lang;
-    if (new URLSearchParams(window.location.search).has("contact_status")) {
-      try {
-        const saved = localStorage.getItem("mamourart-language-v2");
-        if (saved === "en" || saved === "fr") initialLanguage = saved;
-      } catch (_) {}
-    }
+    // The static destination of the POST redirect determines the response language.
+    // Do not let an unavailable or stale storage preference override this page.
     setLanguage(initialLanguage);
 
     // Bring the final status into view on the post-submit redirect.

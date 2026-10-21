@@ -1,5 +1,5 @@
 // Bump this version whenever a public resource changes.
-const CACHE_NAME = "mamourart-v5";
+const CACHE_NAME = "mamourart-v6";
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",

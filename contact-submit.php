@@ -23,10 +23,12 @@ function form_length(string $value): int {
 
 function back(string $status): never {
     // When running in the password-protected test folder, return to its test form.
-    // The destination is determined exclusively from a local file, never user input.
+    // Only fixed local targets are allowed; the exact lang=en value selects English.
     $destination = is_file(__DIR__ . '/mamourart-form-test.html')
         ? 'mamourart-form-test.html?contact_status=' . $status
-        : '/?contact_status=' . $status . '#quoteResult';
+        : (($_GET['lang'] ?? '') === 'en' && is_file(__DIR__ . '/en.html')
+            ? '/en.html?contact_status=' . $status . '#quoteResult'
+            : '/?contact_status=' . $status . '#quoteResult');
     header('Location: ' . $destination, true, 303);
     exit;
 }

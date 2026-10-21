@@ -13,6 +13,7 @@ namespace {
     $GLOBALS['contact_mails'] = [];
     $_SERVER = $GLOBALS['contact_case']['server'];
     if (array_key_exists('CONTENT_LENGTH', $_SERVER) && $_SERVER['CONTENT_LENGTH'] === null) unset($_SERVER['CONTENT_LENGTH']);
+    $_GET = $GLOBALS['contact_case']['get'] ?? [];
     $_FILES = $GLOBALS['contact_case']['files'] ?? [];
     if (($GLOBALS['contact_case']['sapi'] ?? '') === 'fpm-fcgi') define('MamourartContactTests\\PHP_SAPI', 'fpm-fcgi');
     // Base64 transports deliberately malformed UTF-8 through the JSON harness
