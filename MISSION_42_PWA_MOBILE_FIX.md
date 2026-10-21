@@ -246,11 +246,32 @@ Simulation locale du plan d'inventaire réussie, aucun transfert ni accès OVH.
 
 ## GitHub Actions et état final
 
-Les résultats des workflows sur la nouvelle livraison restent à constater après
-push dans cette révision initiale du rapport. Les journaux réels seront lus,
-indépendamment des seuls badges/étapes, et leurs liens consignés ici et dans #27.
-La PR reste ouverte, non fusionnée et sans auto-merge. Seule sa branche est autorisée
-au push ; `main` et les deux PR sources doivent conserver les SHA ci-dessus.
+Première livraison complète code et rapport :
+`481c275600e4d6266f6928c5a1c6b9640c7d41ae`.
+Les métadonnées des runs attestent ce SHA exact. **Journaux réels des trois jobs
+lus**, indépendamment des seuls badges ou noms d'étapes :
+
+| Workflow / job | Lien | Résultat extrait du journal |
+|---|---|---|
+| Site checks / Python site checks | [39588999696](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39588999696) | 163 passed, Python 3.12.15, Node 22.23.3 |
+| Site checks / External link checks | [39588999696](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39588999696) | 1 passed, 163 deselected ; périmètre externe existant inchangé |
+| PHP 8.2 syntax check | [39588999843](https://github.com/kamel-hamdi-dev/mamourart-site/actions/runs/39588999843) | PHP 8.2.34 ; lint des dix fichiers explicitement énumérés ; RESULT 176 passed, 0 failed |
+
+Le test PHP des seize requêtes concurrentes est explicitement PASS dans le journal
+CI. Écarts d'environnement : Python local 3.12.14 contre CI 3.12.15 ; Node local
+24.19.0 contre CI 22.23.3 ; mêmes résultats de suite requise. Le lint complet local
+couvre quinze PHP contre dix explicitement listés dans le workflow inchangé.
+Chromium reste une validation locale exécutée, pas un job ajouté à la CI.
+Extraits de journaux : `/tmp/mission42-validation/ci-first-delivery-excerpts.txt`.
+
+Cette actualisation ne change que le rapport. Les contrôles du dernier SHA sont
+consultables dans les [checks de #27](https://github.com/kamel-hamdi-dev/mamourart-site/pull/27/checks) ;
+son SHA exact et les runs définitifs sont inscrits dans le corps de la PR et le
+compte rendu final après vérification de leurs journaux.
+
+Recontrôle GitHub après la première CI : main et les deux têtes sources identiques
+aux SHA initiaux, #25/#26 toujours ouvertes et non fusionnées. La PR #27 reste
+ouverte, non fusionnée et sans auto-merge. Seule sa branche a été poussée.
 
 ## Risques résiduels, limites et problèmes non traités
 
@@ -279,8 +300,9 @@ appareil physique, Safari/iOS, Lighthouse/CWV ou publication vérifiés.
 
 ## Verdict
 
-**GO conditionnel pour une nouvelle revue indépendante**, sous réserve de CI
-verte sur la livraison finale et de l'acceptation des limites documentées.
+**GO conditionnel pour une nouvelle revue indépendante** : validations locales
+et première CI intégrée vertes ; contrôler aussi les checks de la tête finale
+après cette actualisation documentaire et accepter les limites documentées.
 Les deux anomalies moyennes sont reproduites avant correction et leurs chemins
 corrigés sont validés localement. Aucune autorisation de fusion/publication.
 Après livraison, attente d'une décision humaine GO/NO-GO.
