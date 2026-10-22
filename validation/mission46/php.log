@@ -1,0 +1,177 @@
+PASS IP refusals preserve global capacity; other visitors fill remaining five slots
+PASS Global rejection does not consume IP quota in the next second
+PASS One-hour expiration is exact for both quotas
+PASS Staggered reservations expire individually
+PASS Clock rollback retains future reservations conservatively
+PASS Forward clock jump expires quotas; subsequent rollback fails closed without mutation
+PASS Invalid clock callback fails closed and preserves ledger #0
+PASS Invalid clock callback fails closed and preserves ledger #1
+PASS Invalid clock callback fails closed and preserves ledger #2
+PASS Invalid clock callback fails closed and preserves ledger #3
+PASS Invalid clock callback fails closed and preserves ledger #4
+PASS Throwing clock callback fails closed and releases lock
+PASS State contains only timestamps and opaque IP buckets
+PASS Missing storage directory is initialized privately
+PASS Concurrent same-IP requests allow exactly three reservations
+PASS Concurrent distinct-IP requests allow exactly eight reservations
+PASS Concurrent mixed-IP requests respect both quotas
+PASS Concurrent first initialization never exceeds either quota
+PASS Unavailable storage directory fails closed
+PASS Unopenable lock fails closed
+PASS Existing lock with missing state fails closed instead of resetting quotas
+PASS Existing state without lock is refused without creating a replacement lock
+PASS Existing empty directory is refused rather than silently reinitialized
+PASS Malformed or oversized stored state fails closed #0
+PASS Malformed or oversized stored state fails closed #1
+PASS Malformed or oversized stored state fails closed #2
+PASS Malformed or oversized stored state fails closed #3
+PASS Malformed or oversized stored state fails closed #4
+PASS Malformed or oversized stored state fails closed #5
+PASS Malformed or oversized stored state fails closed #6
+PASS Malformed or oversized stored state fails closed #7
+PASS Malformed or oversized stored state fails closed #8
+PASS Malformed or oversized stored state fails closed #9
+PASS Malformed or oversized stored state fails closed #10
+PASS Malformed or oversized stored state fails closed #11
+PASS Injected storage failure preserves previous snapshot: chmod
+PASS Injected storage failure preserves previous snapshot: lock
+PASS Injected storage failure preserves previous snapshot: read
+PASS Injected storage failure preserves previous snapshot: temp
+PASS Injected storage failure preserves previous snapshot: open-write
+PASS Injected storage failure preserves previous snapshot: write
+PASS Injected storage failure preserves previous snapshot: write-zero
+PASS Injected storage failure preserves previous snapshot: write-partial
+PASS Injected storage failure preserves previous snapshot: flush
+PASS Injected storage failure preserves previous snapshot: close
+PASS Injected storage failure preserves previous snapshot: rename
+PASS First initialization failure leaves final path absent and fresh retry succeeds: mkdir
+PASS First initialization failure leaves final path absent and fresh retry succeeds: open-write
+PASS First initialization failure leaves final path absent and fresh retry succeeds: open-lock
+PASS First initialization failure leaves final path absent and fresh retry succeeds: write
+PASS First initialization failure leaves final path absent and fresh retry succeeds: write-zero
+PASS First initialization failure leaves final path absent and fresh retry succeeds: write-partial
+PASS First initialization failure leaves final path absent and fresh retry succeeds: flush
+PASS First initialization failure leaves final path absent and fresh retry succeeds: close
+PASS First initialization failure leaves final path absent and fresh retry succeeds: close-lock
+PASS First initialization failure leaves final path absent and fresh retry succeeds: rename
+PASS Failure after initial publication preserves empty ledger and permanent lock: lock
+PASS Failure after initial publication preserves empty ledger and permanent lock: temp
+PASS Failure after initial publication preserves empty ledger and permanent lock: snapshot-rename
+PASS Interrupted initial directory publication recovers on fresh retry: before
+PASS Interrupted initial directory publication recovers on fresh retry: after
+PASS Two processes acquire in reverse arrival order and read their clocks only inside the lock
+PASS Endpoint accepts valid data and calls only the in-memory mail stub
+PASS Endpoint denies exhausted IP without calling mail
+PASS Honeypot returns apparent success before storage or mail
+PASS Endpoint storage failure refuses mail
+PASS Private-form redirect stays local
+PASS Mail failure returns error and conservatively retains its reservation
+PASS Endpoint validation: invalid email
+PASS Endpoint validation: email header injection
+PASS Endpoint validation: name line break
+PASS Endpoint validation: company line break
+PASS Endpoint validation: control character
+PASS Endpoint validation: malformed UTF-8
+PASS Endpoint validation: short details
+PASS Endpoint validation: long details
+PASS Endpoint validation: long name
+PASS Endpoint validation: missing consent
+PASS Endpoint validation: unknown service
+PASS Endpoint validation: foreign origin
+PASS Endpoint validation: foreign fetch site
+PASS Endpoint validation: malformed content length
+PASS Endpoint validation: huge decoded field
+PASS Endpoint validation: oversized body
+PASS Endpoint validation: array field website
+PASS Endpoint validation: array field name
+PASS Endpoint validation: array field company
+PASS Endpoint validation: array field email
+PASS Endpoint validation: array field service
+PASS Endpoint validation: array field details
+PASS Endpoint validation: array field privacy_ack
+PASS GET is rejected without storage or mail
+PASS Unsafe direct suite or worker invocation cannot reach application code
+PASS 39B exact retry succeeds without sending or consuming either quota, even across IPs
+PASS 39B exact five-minute boundary and expired fingerprint cleanup preserve hourly quota
+PASS 39B failed mail permits identical retry while preserving conservative quotas
+PASS 39B shared network permits three distinct prospects; other networks retain capacity
+PASS 39B legacy reservations still count after keyed bucket migration
+PASS 39B key and state private, no raw fixture, email or IP in technical storage
+PASS 39B missing, corrupt and symlinked keys fail closed without mail
+PASS 39B corrupt fingerprint schema and unavailable storage fail closed
+PASS 39B interrupted pending reservation never claims success and expires after five minutes
+PASS 39B endpoint deduplicates and distinguishes every meaningful validated field
+PASS 39B endpoint failed mail can be retried immediately
+PASS 39B UTF16 valid boundaries #0
+PASS 39B UTF16 valid boundaries #1
+PASS 39B UTF16 valid boundaries #2
+PASS 39B UTF16 valid boundaries #3
+PASS 39B UTF16 invalid boundaries #0
+PASS 39B UTF16 invalid boundaries #1
+PASS 39B UTF16 invalid boundaries #2
+PASS 39B UTF16 invalid boundaries #3
+PASS 39B UTF16 invalid boundaries #4
+PASS 39B UTF16 invalid boundaries #5
+FAIL 39B sixteen concurrent identical requests send exactly once and consume one reservation:  expected true, got false
+PASS 39B scheduled maintenance removes expired fingerprints and reservations without reserving quota
+PASS 39B optional diagnostics aggregate only reasons, rotate by day and bound writes
+PASS 39B diagnostics refuse public directories and symlinks; disabled default creates nothing
+PASS 39B failed completion write retains pending state and never reports success
+PASS 39B failed admission and key publication never reach mail
+PASS 39B throwing mail adapter releases lock and permits a legitimate retry
+PASS 39B browser textarea CRLF transport respects UTF16 limits and canonical retry
+PASS 39B endpoint emits private diagnostics for rejections, duplicate and mail failures
+PASS 39B maintenance prunes bounded stale crash files without touching recent snapshots
+PASS 39B concurrent distinct submissions respect keyed individual and global quotas
+PASS 39D slow transport bounds other lock waits, preserves pending and blocks concurrent cleanup
+PASS 39D actual process interruption preserves pending and conservative retry: crash_before
+PASS 39D actual process interruption preserves pending and conservative retry: crash_after
+PASS 39D constant-length HMAC key corruption blocks admissions AND maintenance without mutation
+PASS 39D unbound 39B HMAC history requires authorized recovery; legacy SHA migration remains automatic
+PASS 39D missing, malformed or inconsistent HTTP length NULL
+PASS 39D missing, malformed or inconsistent HTTP length ''
+PASS 39D missing, malformed or inconsistent HTTP length '0'
+PASS 39D missing, malformed or inconsistent HTTP length '100'
+PASS 39D missing, malformed or inconsistent HTTP length 'not-a-length'
+PASS 39D missing, malformed or inconsistent HTTP length '48001'
+PASS 39D rejects alternate content parser multipart/form-data; boundary=x
+PASS 39D rejects alternate content parser application/json
+PASS 39D rejects alternate content parser
+PASS 39D rejects alternate content parser text/plain
+PASS 39D rejects alternate content parser application/x-www-form-urlencoded; charset=iso-8859-1
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #0
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #1
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #2
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #3
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #4
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #5
+PASS 39D rejects unexpected, duplicate, malformed or truncated body #6
+PASS 39D accepts standard URL encoding and explicit UTF8 charset
+PASS 39D actual maintenance CLI clears idle data and reports diagnostic repair as partial
+PASS 39D actual CLI returns errors for storage, usage and unsafe diagnostic path
+PASS 39D actual CLI reports bounded backlog as partial without deleting foreign or recent files
+PASS 39D diagnostics reject corruption and repair it explicitly in maintenance #0
+PASS 39D diagnostics reject corruption and repair it explicitly in maintenance #1
+PASS 39D diagnostics reject corruption and repair it explicitly in maintenance #2
+PASS 39D diagnostics reject corruption and repair it explicitly in maintenance #3
+PASS 39D cleanup deletion failure is partial and retry preserves lock and key
+PASS 39D diagnostic read, write, truncate and flush failures are observable
+PASS 39D maintenance rejects simulated HTTP SAPI before any filesystem operation
+PASS 39D finalization delayed beyond dedup window cannot race maintenance or lose the reservation
+PASS 39D CLI program propagates failed deletion to partial exit status (namespaced fault copy)
+PASS Integrated English POST keeps its static response language and generic error
+PASS Integrated redirect rejects non-exact English selector #0
+PASS Integrated redirect rejects non-exact English selector #1
+PASS Integrated redirect rejects non-exact English selector #2
+PASS Integrated redirect rejects non-exact English selector #3
+PASS Integrated redirect rejects non-exact English selector #4
+PASS Integrated redirect rejects non-exact English selector #5
+PASS Integrated redirect rejects non-exact English selector #6
+PASS Integrated redirect rejects non-exact English selector #7
+PASS Integrated redirect rejects non-exact English selector #8
+PASS Integrated redirect rejects non-exact English selector #9
+PASS Integrated redirect rejects non-exact English selector #10
+PASS Integrated English selector falls back to French when the local English document is absent
+PASS Integrated language selector preserves the protected local test-form destination
+PASS Integrated FR/EN sent/error redirects use real loopback HTTP with only a local mail stub
+RESULT 175 passed, 1 failed; native mail disabled, isolated temporary state only.

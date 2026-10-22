@@ -1,0 +1,54 @@
+PASS audited-SHA reproductions: broken WebP, first-visit PNG offline miss, independent image-set/preload double transfer
+RUN update empty-body
+RUN update wrong-mime
+RUN update invalid-html
+RUN update invalid-utf8
+RUN update truncated-stream
+RUN update invalid-json
+RUN update invalid-manifest
+RUN update image-invalid
+RUN update storage-cleanup-failure
+RUN update storage-total-failure
+PASS 10 invalid-content updates with real Cache Storage; v7 unchanged
+PASS invalid runtime bodies never overwrite validated offline resources
+RUN normal 320 index.html
+RUN normal 320 en.html
+RUN normal 390 index.html
+RUN normal 390 en.html
+RUN normal 768 index.html
+RUN normal 768 en.html
+RUN normal 1440 index.html
+RUN normal 1440 en.html
+RUN unsupported-webp 320 index.html
+RUN unsupported-webp 320 en.html
+RUN unsupported-webp 390 index.html
+RUN unsupported-webp 390 en.html
+RUN unsupported-webp 768 index.html
+RUN unsupported-webp 768 en.html
+RUN unsupported-webp 1440 index.html
+RUN unsupported-webp 1440 en.html
+RUN webp-404 320 index.html
+RUN webp-404 320 en.html
+RUN webp-404 390 index.html
+RUN webp-404 390 en.html
+RUN webp-404 768 index.html
+RUN webp-404 768 en.html
+RUN webp-404 1440 index.html
+RUN webp-404 1440 en.html
+RUN webp-invalid 320 index.html
+RUN webp-invalid 320 en.html
+RUN webp-invalid 390 index.html
+RUN webp-invalid 390 en.html
+RUN webp-invalid 768 index.html
+RUN webp-invalid 768 en.html
+RUN webp-invalid 1440 index.html
+RUN webp-invalid 1440 en.html
+RUN no-image-set 320 index.html
+RUN no-image-set 320 en.html
+RUN no-image-set 390 index.html
+RUN no-image-set 390 en.html
+RUN no-image-set 768 index.html
+RUN no-image-set 768 en.html
+RUN no-image-set 1440 index.html
+RUN no-image-set 1440 en.html
+PASS 40 first-visit FR/EN/viewport cases, explicit WebP failures and offline decode

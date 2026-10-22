@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = Path("/tmp/mission42-validation")
 BASELINE = "fade5c0a72867506d72c09019640233ba3d33e11"
 PUBLIC = set(json.loads((ROOT / "deploy-manifest.json").read_text())["files"])
+AUDITED = "9d6ea125337c8c608858af053c3678f0f1ff1ff9"
+AUDITED_FILES = {name: subprocess.check_output(["git", "show", f"{AUDITED}:{name}"], cwd=ROOT) for name in PUBLIC}
 BASELINE_FILES = {
     name: subprocess.check_output(["git", "show", f"{BASELINE}:{name}"], cwd=ROOT)
     for name in PUBLIC
@@ -32,6 +34,7 @@ class FixtureServer:
         self.scenario = scenario
         self.fallback = fallback
         self.requests = []
+        self.transfers = []
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -49,7 +52,9 @@ class FixtureServer:
                     return self.reply(200, b"<!doctype html><title>Local SW fixture</title><p>Local synthetic fixture</p>", "text/html")
                 if path == "/redirect-target.html":
                     return self.reply(200, b"<!doctype html><title>Redirect target</title><p>SYNTHETIC REDIRECT</p>", "text/html")
-                if path == "/legal.html" and fixture.scenario != "normal":
+                if path == "/legal.html" and fixture.scenario not in (
+                        "normal", "webp-404", "webp-invalid", "image-invalid", "invalid-json", "invalid-manifest",
+                        "storage-cleanup-failure", "storage-total-failure"):
                     if fixture.scenario == "network":
                         self.close_connection = True
                         self.connection.close()
@@ -62,12 +67,55 @@ class FixtureServer:
                         self.send_header("Content-Length", "0")
                         self.end_headers()
                         return
+                    if fixture.scenario in ("empty-body", "wrong-mime", "invalid-html", "invalid-utf8", "truncated-stream"):
+                        data, mime = {
+                            "empty-body": (b"", "text/html"),
+                            "wrong-mime": (b"not HTML", "image/png"),
+                            "invalid-html": (b"garbage", "text/html"),
+                            "invalid-utf8": (b"\xff\xfe", "text/html"),
+                            "truncated-stream": (b"<!doctype html>", "text/html"),
+                        }[fixture.scenario]
+                        if fixture.scenario == "truncated-stream":
+                            self.send_response(200); self.send_header("Content-Type", mime)
+                            self.send_header("Content-Length", "99999"); self.end_headers()
+                            self.wfile.write(data); self.wfile.flush(); self.close_connection = True
+                            self.connection.close(); return
+                        return self.reply(200, data, mime)
                     headers = {"Vary": "*"} if fixture.scenario == "vary" else {"Cache-Control": fixture.scenario}
                     return self.reply(200, b"<!doctype html><title>Private synthetic fixture</title><p>SYNTHETIC PRIVATE</p>", "text/html", headers)
                 name = path.lstrip("/") or "index.html"
                 if name not in PUBLIC or name.endswith(".php"):
                     return self.reply(404, b"missing local fixture", "text/plain")
-                data = BASELINE_FILES[name] if fixture.version == "baseline" else (ROOT / name).read_bytes()
+                data = (BASELINE_FILES[name] if fixture.version == "baseline" else
+                        AUDITED_FILES[name] if fixture.version == "audited" else (ROOT / name).read_bytes())
+                if name == "banner.webp" and fixture.scenario == "webp-404":
+                    return self.reply(404, b"missing WebP", "text/plain")
+                if name == "banner.webp" and fixture.scenario in ("webp-invalid", "image-invalid"):
+                    return self.reply(200, b"invalid WebP", "image/webp")
+                if name == "icon-192.png" and fixture.scenario == "image-invalid":
+                    return self.reply(200, b"invalid PNG", "image/png")
+                if name == "manifest.json" and fixture.scenario in ("invalid-json", "invalid-manifest"):
+                    return self.reply(200, b"{bad json" if fixture.scenario == "invalid-json" else b'{"name":"Wrong","icons":[]}', "application/json")
+                if name == "service-worker.js" and fixture.fallback == "unsupported-webp":
+                    # Also model a decoder that genuinely cannot read WebP; PNG
+                    # decoding remains native. MIME selection alone was weaker.
+                    data = b"const nativeDecode = createImageBitmap; self.createImageBitmap = blob => blob.type === 'image/webp' ? Promise.reject(Error('simulated unsupported WebP decoder')) : nativeDecode(blob);\n" + data
+                if name == "service-worker.js" and fixture.scenario in ("storage-cleanup-failure", "storage-total-failure"):
+                    injection = """
+const originalOpen = caches.open.bind(caches), originalDelete = caches.delete.bind(caches);
+let attempts = 0;
+caches.open = async name => {
+ const cache = await originalOpen(name);
+ if (name.startsWith('mamourart-v9')) {
+  const put = cache.put.bind(cache);
+  cache.put = async (...args) => {if (++attempts === 2) throw Error('synthetic put failure'); return put(...args);};
+  TOTAL_FAILURE
+ }
+ return cache;
+};
+caches.delete = async name => {if (name.startsWith('mamourart-v9')) throw Error('synthetic storage delete failure'); return originalDelete(name);};
+""".replace("TOTAL_FAILURE", "cache.delete = async () => {throw Error('synthetic entry delete failure');};" if fixture.scenario == "storage-total-failure" else "")
+                    data = injection.encode() + data
                 if name in ("index.html", "en.html") and fixture.fallback:
                     html = data.decode()
                     if fixture.fallback == "unsupported-webp":
@@ -76,15 +124,18 @@ class FixtureServer:
                     elif fixture.fallback == "no-image-set":
                         # Keep the production fallback declarations verbatim.
                         html = re.sub(r'\s*background-image:[^;]*image-set\([^;]*;', '', html)
-                        html = re.sub(r'<link[^>]+rel="preload"[^>]+href="banner.webp"[^>]*>', '', html)
+                        # Keep preload untouched: CSS support and preload are independent.
+                        # Mission 43 found that deleting both hid a real double transfer.
                     data = html.encode()
                 content_type = {
                     ".html": "text/html; charset=utf-8", ".js": "text/javascript",
-                    ".json": "application/json", ".webp": "image/webp", ".png": "image/png",
+                    ".json": "application/json", ".ico": "image/x-icon", ".webp": "image/webp", ".png": "image/png",
                 }.get(Path(name).suffix, "application/octet-stream")
-                self.reply(200, data, content_type, {"Cache-Control": "no-store"} if name == "service-worker.js" else {})
+                self.reply(200, data, content_type, {"Cache-Control": "no-store"} if name == "service-worker.js" else
+                    {"Cache-Control": "public, max-age=3600"} if name.endswith((".webp", ".png", ".ico")) else {})
 
             def reply(self, status, body, content_type, headers=None):
+                fixture.transfers.append({"path": urlsplit(self.path).path, "status": status, "bytes": len(body)})
                 self.send_response(status)
                 self.send_header("Content-Type", content_type)
                 self.send_header("Content-Length", str(len(body)))
@@ -125,17 +176,17 @@ def context_for(browser, fixture, width=390, service_workers="allow"):
     return context, page, errors, unexpected
 
 
-def install(page, fixture, update=False):
+def install(page, fixture, update=False, script="/service-worker.js"):
     if not update:
         page.goto(fixture.origin + "/harness.html")
-    return page.evaluate("""async update => {
+    return page.evaluate("""async ({update, script}) => {
       let registration = await navigator.serviceWorker.getRegistration();
       let worker;
       if (update) {
         const found = new Promise(resolve => registration.addEventListener('updatefound', () => resolve(registration.installing), {once:true}));
         await registration.update(); worker = registration.installing || await found;
       } else {
-        registration = await navigator.serviceWorker.register('/service-worker.js');
+        registration = await navigator.serviceWorker.register(script);
         worker = registration.installing || registration.waiting || registration.active;
       }
       const state = await new Promise((resolve, reject) => {
@@ -144,7 +195,7 @@ def install(page, fixture, update=False):
         worker.addEventListener('statechange', check); check();
       });
       return {state, active: registration.active !== null};
-    }""", update)
+    }""", {"update": update, "script": script})
 
 
 def cached_legal(page, cache):
@@ -215,15 +266,15 @@ def rejected_installs(browser, report):
             outcome = install(page, fixture)
             assert outcome == {"state": "redundant", "active": False}, (scenario, outcome)
             state = page.evaluate("async () => ({names:await caches.keys(), old:await (await (await caches.open('mamourart-v6')).match('/old-sentinel')).text(), third:await (await (await caches.open('other-app')).match('/sentinel')).text()})")
-            assert "mamourart-v7" not in state["names"], (scenario, state)
+            assert "mamourart-v9" not in state["names"], (scenario, state)
             assert state["old"] == "old-valid" and state["third"] == "unrelated", state
-            assert cached_legal(page, "mamourart-v7") is None
+            assert cached_legal(page, "mamourart-v9") is None
             report["rejected_installs"].append({"scenario": scenario, **outcome, **state})
             assert not errors and not unexpected, (scenario, errors, unexpected)
         finally:
             context.close()
             fixture.close()
-    print(f"PASS {len(scenarios)} real Chromium unsafe/network install cases: v7 never activated/cached; old6 and third-party caches preserved", flush=True)
+    print(f"PASS {len(scenarios)} real Chromium unsafe/network install cases: v8 never activated/cached; old6 and third-party caches preserved", flush=True)
 
 
 def update_and_offline(browser, report):
@@ -240,7 +291,7 @@ def update_and_offline(browser, report):
             expected = "activated" if scenario == "normal" else "redundant"
             assert outcome["state"] == expected, (scenario, outcome)
             assert "other-app" in names
-            assert ("mamourart-v7" in names) == (scenario == "normal"), (scenario, names)
+            assert ("mamourart-v9" in names) == (scenario == "normal"), (scenario, names)
             assert ("mamourart-v6" in names) == (scenario != "normal"), (scenario, names)
             if scenario != "normal":
                 context.set_offline(True)
@@ -251,7 +302,7 @@ def update_and_offline(browser, report):
                 for path in ("index.html", "en.html", "legal.html?lang=en", "gps-ai-demo.html?lang=en", "fret-alerts-demo.html?lang=en"):
                     response = page.goto(fixture.origin + "/" + path)
                     assert response.status == 200, (path, response.status)
-                page.evaluate("caches.open('mamourart-v7').then(cache => cache.delete(location.origin + '/gps-ai-demo.html'))")
+                page.evaluate("caches.open('mamourart-v9').then(cache => cache.delete(location.origin + '/gps-ai-demo.html'))")
                 response = page.goto(fixture.origin + "/gps-ai-demo.html?lang=en")
                 assert response.status == 503 and "unavailable offline" in page.locator("h1").inner_text()
                 context.set_offline(False)
@@ -262,7 +313,7 @@ def update_and_offline(browser, report):
         finally:
             context.close()
             fixture.close()
-    print("PASS v6 -> v7 safe update/offline503/reonline; three failed updates retain active v6 and its valid offline documents", flush=True)
+    print("PASS v6 -> v8 safe update/offline503/reonline; three failed updates retain active v6 and its valid offline documents", flush=True)
 
 
 def responsive_and_fallback(browser, report):
@@ -277,7 +328,7 @@ def responsive_and_fallback(browser, report):
                 css = page.locator(".hero").evaluate("e => getComputedStyle(e).backgroundImage")
                 requested = [path for path in fixture.requests if path.startswith("/banner.")]
                 assert requested == ["/banner.webp"], (name, width, requested)
-                assert "image-set" in css and "banner.webp" in css and "banner.png?v=" not in css, css
+                assert page.locator("#heroBanner").evaluate("e => e.currentSrc.endsWith('/banner.webp') && e.complete && e.naturalWidth === 2560")
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
                 image = page.evaluate("""async () => {const i=new Image(); i.src='/banner.webp'; await i.decode(); return [i.naturalWidth,i.naturalHeight];}""")
                 assert image == [2560, 1440], image
@@ -295,25 +346,28 @@ def responsive_and_fallback(browser, report):
             fixture = FixtureServer(fallback=fallback)
             context, page, errors, unexpected = context_for(browser, fixture, 390)
             try:
-                assert install(page, fixture)["state"] == "activated"
+                script = "/service-worker.js?banner=png&logo=png" if fallback == "unsupported-webp" else "/service-worker.js"
+                assert install(page, fixture, script=script)["state"] == "activated"
                 fixture.requests.clear()
                 page.goto(fixture.origin + "/" + name)
                 css = page.locator(".hero").evaluate("e => getComputedStyle(e).backgroundImage")
-                assert "banner.png" in css
-                assert "/banner.png" in fixture.requests and "/banner.webp" not in fixture.requests, fixture.requests
+                selected = "png" if fallback == "unsupported-webp" else "webp"
+                assert page.locator("#heroBanner").evaluate("(e, format) => e.currentSrc.endsWith('/banner.' + format)", selected)
+                assert f"/banner.{selected}" in fixture.requests and f"/banner.{'webp' if selected == 'png' else 'png'}" not in fixture.requests, fixture.requests
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
-                cached = page.evaluate("async () => !!(await (await caches.open('mamourart-v7')).match(location.origin+'/banner.png'))")
-                assert cached, "PNG fallback should be runtime-cached after its online use"
+                assert page.evaluate("window.mamourartOfflineReady")
+                cached = page.evaluate("async format => !!(await (await caches.open(format === 'png' ? 'mamourart-v9-png-logo-png' : 'mamourart-v9')).match(location.origin+'/banner.' + format))", selected)
+                assert cached, "The selected banner format must be cached before offline use"
                 context.set_offline(True)
                 page.reload()
-                image = page.evaluate("""async () => {const i=new Image(); i.src='/banner.png'; await i.decode(); return [i.naturalWidth,i.naturalHeight];}""")
+                image = page.evaluate("""async () => {const i=new Image(); i.src=document.getElementById('heroBanner').currentSrc; await i.decode(); return [i.naturalWidth,i.naturalHeight];}""")
                 assert image == [2560, 1440], image
-                report["fallback_simulations"].append({"page": name, "simulation": fallback, "online_and_offline_png": True, "dimensions": image, "png_bytes": (ROOT / "banner.png").stat().st_size})
+                report["fallback_simulations"].append({"page": name, "simulation": fallback, "online_and_offline": True, "format": selected, "dimensions": image, "selected_bytes": (ROOT / ("banner." + selected)).stat().st_size})
                 assert not errors and not unexpected, (errors, unexpected)
             finally:
                 context.close()
                 fixture.close()
-    print("PASS eight FR/EN viewport banner cases: WebP only, 76,404 bytes; four explicit PNG fallback simulations with online runtime cache and offline decode", flush=True)
+    print("PASS eight FR/EN viewport banner cases: WebP only, 76,404 bytes; four independent format/CSS-support simulations with offline decode", flush=True)
 
 
 def clean_mobile_offline(browser, report):
@@ -329,7 +383,7 @@ def clean_mobile_offline(browser, report):
                 response = page.reload()
                 assert response.status == 200
                 css = page.locator(".hero").evaluate("e => getComputedStyle(e).backgroundImage")
-                assert "image-set" in css and "banner.webp" in css
+                assert page.locator("#heroBanner").evaluate("e => e.currentSrc.endsWith('/banner.webp') && e.naturalWidth === 2560")
                 image = page.evaluate("""async () => {const i=new Image(); i.src='/banner.webp'; await i.decode(); return [i.naturalWidth,i.naturalHeight];}""")
                 assert image == [2560, 1440]
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
