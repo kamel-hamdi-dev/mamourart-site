@@ -117,14 +117,14 @@
     for(const r of arr){const b=document.createElement('button');b.type='button';b.className='offer'+(r.id===selected?' active':'');b.setAttribute('aria-pressed',String(r.id===selected));b.innerHTML=`<div class="offer-head"><span class="route">${escapeHTML(r.from)} <span>→</span> ${escapeHTML(r.to)}</span><span class="match">${r.score}%</span></div><div class="offer-sub">${escapeHTML(translatedVehicle(r.type))} · ${r.km} km · ${escapeHTML(d[lang].matching)}</div><div class="offer-footer"><span class="offer-price">${currency.format(r.price)} <small>${(r.price/r.km).toFixed(2).replace('.',',')} €/km</small></span><span class="offer-date">${escapeHTML(d[lang].date)} ${r.date.slice(8)}/${r.date.slice(5,7)}</span></div>`;b.addEventListener('click',()=>{selected=r.id;showOffers()});container.append(b)}
     showSelected();
   }
-  function setLanguage(next){lang=next;document.documentElement.lang=next;for(const node of document.querySelectorAll('[data-t]')){const key=node.dataset.t;node.innerHTML=d[lang][key]||''}el('fr').setAttribute('aria-pressed',String(next==='fr'));el('en').setAttribute('aria-pressed',String(next==='en'));buildOptions();showOffers();el('toast').classList.remove('show')}
+  function setLanguage(next){document.querySelectorAll('a[href^="index.html"],a[href^="en.html"]').forEach(a=>{a.href=(next==='en'?'en.html':'index.html')+'#projects'});lang=next;document.documentElement.lang=next;for(const node of document.querySelectorAll('[data-t]')){const key=node.dataset.t;node.innerHTML=d[lang][key]||''}el('fr').setAttribute('aria-pressed',String(next==='fr'));el('en').setAttribute('aria-pressed',String(next==='en'));buildOptions();showOffers();el('toast').classList.remove('show')}
   for(const id of ['origin','destination','vehicle','minRate'])el(id).addEventListener('change',()=>{showOffers();el('toast').classList.remove('show')});
   el('reset').addEventListener('click',()=>{for(const id of ['origin','destination','vehicle','minRate'])el(id).selectedIndex=0;showOffers();el('toast').classList.remove('show')});
   el('fr').addEventListener('click',()=>setLanguage('fr'));el('en').addEventListener('click',()=>setLanguage('en'));
   function toast(s){el('toast').textContent=s;el('toast').classList.add('show')}
   el('notify').addEventListener('click',()=>{const r=routes.find(x=>x.id===selected);if(r)toast(`${d[lang].demoNotice} ${r.from} → ${r.to}.`)});
   el('createAlert').addEventListener('click',()=>toast(d[lang].created));
-  setLanguage('fr');
+  setLanguage(new URLSearchParams(location.search).get('lang')==='en'?'en':'fr');
   </script>
 </body>
 </html>

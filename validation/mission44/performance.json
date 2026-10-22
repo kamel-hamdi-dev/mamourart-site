@@ -1,0 +1,32 @@
+{
+  "normal": {
+    "cases": 8,
+    "downloaded_banner_body_bytes": [
+      76404
+    ]
+  },
+  "unsupported-webp": {
+    "cases": 8,
+    "downloaded_banner_body_bytes": [
+      953545
+    ]
+  },
+  "webp-404": {
+    "cases": 8,
+    "downloaded_banner_body_bytes": [
+      953557
+    ]
+  },
+  "webp-invalid": {
+    "cases": 8,
+    "downloaded_banner_body_bytes": [
+      953557
+    ]
+  },
+  "no-image-set": {
+    "cases": 8,
+    "downloaded_banner_body_bytes": [
+      76404
+    ]
+  }
+}

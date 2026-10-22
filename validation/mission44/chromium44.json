@@ -1,0 +1,1225 @@
+{
+  "audited_reproductions": [
+    {
+      "scenario": "webp-404",
+      "png_recovery": false,
+      "transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        }
+      ]
+    },
+    {
+      "scenario": "webp-invalid",
+      "png_recovery": false,
+      "transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        }
+      ]
+    },
+    {
+      "scenario": "normal",
+      "transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        },
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "bytes": 152808,
+      "png_in_cache": false
+    },
+    {
+      "scenario": "no-image-set",
+      "transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        },
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "bytes": 1106353,
+      "png_in_cache": false
+    },
+    {
+      "scenario": "unsupported-webp",
+      "transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        },
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "bytes": 1029949,
+      "png_in_cache": false
+    }
+  ],
+  "first_visits": [
+    {
+      "scenario": "normal",
+      "page": "index.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "en.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "index.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "en.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "index.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "en.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "index.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "normal",
+      "page": "en.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "index.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "en.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "index.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "en.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "index.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "en.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "index.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "unsupported-webp",
+      "page": "en.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png-logo-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "index.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "en.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "index.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "en.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "index.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "en.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "index.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-404",
+      "page": "en.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 404,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "index.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "en.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "index.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "en.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "index.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "en.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "index.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "webp-invalid",
+      "page": "en.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.png",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8-png",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 12
+        },
+        {
+          "path": "/banner.png",
+          "status": 200,
+          "bytes": 953545
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "index.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "en.html",
+      "width": 320,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "index.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "en.html",
+      "width": 390,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "72% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "index.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "en.html",
+      "width": 768,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "index.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    },
+    {
+      "scenario": "no-image-set",
+      "page": "en.html",
+      "width": 1440,
+      "uncontrolled_start": true,
+      "selected": {
+        "src": "/banner.webp",
+        "width": 2560,
+        "height": 1440,
+        "fit": "cover",
+        "position": "100% 50%"
+      },
+      "cache": "mamourart-v8",
+      "banner_transfers": [
+        {
+          "path": "/banner.webp",
+          "status": 200,
+          "bytes": 76404
+        }
+      ],
+      "offline_without_http_cache": true,
+      "reonline": true
+    }
+  ],
+  "rejected_updates": [
+    {
+      "scenario": "empty-body",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "wrong-mime",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "invalid-html",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "invalid-utf8",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "truncated-stream",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "invalid-json",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "invalid-manifest",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "image-invalid",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "storage-cleanup-failure",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 0,
+      "old_offline_document": true
+    },
+    {
+      "scenario": "storage-total-failure",
+      "outcome": {
+        "state": "redundant",
+        "active": true
+      },
+      "v7_unchanged": true,
+      "candidate_entries": 1,
+      "old_offline_document": true
+    }
+  ],
+  "runtime_rejection": [
+    {
+      "scenario": "empty-body",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "wrong-mime",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "invalid-html",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "invalid-utf8",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "truncated-stream",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "invalid-json",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "invalid-manifest",
+      "cache_unchanged": true
+    },
+    {
+      "scenario": "image-invalid",
+      "cache_unchanged": true
+    }
+  ]
+}

@@ -89,7 +89,8 @@ def test_mes_heures_copy_exists_in_french_and_english():
 
 def test_logo_and_favicon_references_stay():
     html = read_text("index.html")
-    assert '<img src="logo.png" alt="Mamourart">' in html
+    assert re.search(r'<img src="logo\.png" alt="Mamourart"[^>]*width="1254" height="1254"', html)
+    assert '<source srcset="logo.webp" type="image/webp">' in html
     assert '<link rel="icon" href="favicon.ico" sizes="any">' in html
     assert 'href="favicon-32x32.png"' in html
     assert 'href="apple-touch-icon.png"' in html

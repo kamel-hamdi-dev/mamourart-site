@@ -18,6 +18,9 @@
   <meta property="og:image" content="https://mamourart.com/logo.png">
   <meta property="og:image:alt" content="Mamourart">
   <meta name="twitter:card" content="summary">
+  <link rel="alternate" hreflang="fr" href="https://mamourart.com/">
+  <link rel="alternate" hreflang="en" href="https://mamourart.com/en.html">
+  <link rel="alternate" hreflang="x-default" href="https://mamourart.com/">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -125,13 +128,12 @@
       min-height:650px;
       padding:96px 0 88px;
       background-color:#07111f;
-      background-image:
-        linear-gradient(90deg,rgba(7,17,31,.95) 0%,rgba(7,17,31,.9) 72%,rgba(7,17,31,.38) 86%,rgba(7,17,31,.1) 100%),
-        url("banner.png?v=4");
-      background-position:center,right center;
-      background-size:cover,cover;
-      background-repeat:no-repeat
+      isolation:isolate
     }
+    .hero-banner{position:absolute;inset:0;z-index:-2;pointer-events:none}
+    .hero-banner img{display:block;width:100%;height:100%;object-fit:cover;object-position:right center}
+    .hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+      background:linear-gradient(90deg,rgba(7,17,31,.95) 0%,rgba(7,17,31,.9) 72%,rgba(7,17,31,.38) 86%,rgba(7,17,31,.1) 100%)}
     .hero-inner{animation:enter .55s ease both;color:#f5f7fa}
     .hero .eyebrow{color:#8fd0ff}
     .eyebrow{
@@ -309,11 +311,9 @@
       section{padding:64px 0}
       .hero{
         min-height:0;align-items:flex-start;padding:36px 0 48px;
-        background-image:
-          linear-gradient(180deg,rgba(7,17,31,.9) 0%,rgba(7,17,31,.78) 48%,rgba(7,17,31,.7) 100%),
-          url("banner.png?v=4");
-        background-position:center,72% center
       }
+      .hero-banner img{object-position:72% center}
+      .hero::before{background:linear-gradient(180deg,rgba(7,17,31,.9) 0%,rgba(7,17,31,.78) 48%,rgba(7,17,31,.7) 100%)}
       .hero h1{font-size:clamp(2rem,10vw,2.7rem)}
       .hero-actions{flex-direction:column}
       .hero-actions .button,.contact-actions .button{width:100%}
@@ -355,7 +355,7 @@
   <header class="site-header">
     <div class="container header-bar">
       <a class="brand" href="#top">
-        <img src="logo.png" alt="Mamourart">
+        <picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" width="1254" height="1254"></picture>
       </a>
       <div class="header-tools">
         <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu">
@@ -369,8 +369,8 @@
           <a href="#contact" data-i18n="navContact">Contact</a>
         </nav>
         <div class="lang" role="group" aria-label="Langue" data-i18n-aria="langLabel">
-          <button id="frButton" class="active" type="button" aria-pressed="true" onclick="setLanguage('fr')">FR</button>
-          <button id="enButton" type="button" aria-pressed="false" onclick="setLanguage('en')">EN</button>
+          <button id="frButton" class="active" type="button" aria-pressed="true" onclick="navigateLanguage('fr')">FR</button>
+          <button id="enButton" type="button" aria-pressed="false" onclick="navigateLanguage('en')">EN</button>
         </div>
       </div>
     </div>
@@ -378,6 +378,10 @@
 
   <main id="content">
     <header class="hero" id="top">
+      <picture class="hero-banner" aria-hidden="true">
+        <source srcset="banner.webp" type="image/webp">
+        <img id="heroBanner" src="banner.png" alt="" width="2560" height="1440" fetchpriority="high" decoding="async">
+      </picture>
       <div class="container hero-inner">
         <p class="eyebrow" data-i18n="heroEyebrow">Studio de développement logiciel B2B</p>
         <h1 data-i18n="heroTitle">Des logiciels sur mesure pour vos opérations métier.</h1>
@@ -449,7 +453,7 @@
               </div>
             </div>
             <div class="preview">
-              <img src="dashboard.png" alt="Tableau de bord du prototype Mamourart Transport Automation" data-i18n-alt="transportAlt" width="1278" height="731" loading="lazy">
+              <picture><source srcset="dashboard.webp" type="image/webp"><img src="dashboard.png" alt="Tableau de bord du prototype Mamourart Transport Automation" data-i18n-alt="transportAlt" width="1278" height="731" loading="lazy"></picture>
             </div>
           </article>
           <article class="project-card featured">
@@ -467,7 +471,7 @@
               <a class="text-link" href="https://www.mamourart.com/" target="_blank" rel="noopener noreferrer"><span data-i18n="visitSite">Visiter le site →</span><span class="sr-only" data-i18n="newTab"> (nouvel onglet)</span></a>
             </div>
             </div>
-            <div class="website-mark"><img src="logo.png" alt="Mamourart" loading="lazy"></div>
+            <div class="website-mark"><picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" loading="lazy" width="1254" height="1254"></picture></div>
           </article>
           <article class="project-card">
             <div class="status prep"><span class="dot" aria-hidden="true"></span><span data-i18n="gpsStatus">Prototype d’interface · données fictives</span></div>
@@ -587,7 +591,7 @@
           <p class="quote-lead" data-i18n="quoteIntro">Présentez votre besoin professionnel. Nous vous répondrons par e-mail.</p>
           <form class="quote-form" method="post" action="contact-submit.php" accept-charset="UTF-8">
             <div class="quote-fields">
-              <label><span data-i18n="quoteName">Votre nom *</span><input name="name" autocomplete="name" maxlength="120" required></label>
+              <label><span data-i18n="quoteName">Votre nom *</span><input name="name" autocomplete="name" minlength="2" maxlength="120" required></label>
               <label><span data-i18n="quoteCompany">Entreprise (facultatif)</span><input name="company" autocomplete="organization" maxlength="120"></label>
               <label><span data-i18n="quoteEmail">E-mail professionnel *</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
               <label><span data-i18n="quoteService">Service recherché *</span>
@@ -918,6 +922,9 @@
         const key = el.dataset.i18nAlt;
         if(translations[lang][key]) el.setAttribute("alt", translations[lang][key]);
       });
+      document.querySelectorAll('a[href*="-demo.html"]').forEach(link=>{
+        link.href = link.getAttribute("href").split("?")[0] + "?lang=" + lang;
+      });
       document.documentElement.lang = lang;
       document.title = translations[lang].metaTitle;
       const description = document.querySelector('meta[name="description"]');
@@ -932,7 +939,7 @@
       document.getElementById("enButton").classList.toggle("active", lang === "en");
       document.getElementById("frButton").setAttribute("aria-pressed", lang === "fr" ? "true" : "false");
       document.getElementById("enButton").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
-      localStorage.setItem("mamourart-language-v2", lang);
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
       updateMenuLabel();
     }
 
@@ -961,9 +968,14 @@
       if(window.innerWidth > 980) setMenu(false);
     });
 
-    const saved = localStorage.getItem("mamourart-language-v2");
-    if(saved === "fr" || saved === "en") setLanguage(saved);
-    else setLanguage(navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en");
+    function navigateLanguage(lang){
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
+      window.location.href = (lang === "en" ? "en.html" : "./") + window.location.search + window.location.hash;
+    }
+    let initialLanguage = document.documentElement.lang;
+    // The static destination of the POST redirect determines the response language.
+    // Do not let an unavailable or stale storage preference override this page.
+    setLanguage(initialLanguage);
 
     // Bring the final status into view on the post-submit redirect.
     // This runs once after loading, not whenever the visitor changes language.
@@ -978,11 +990,44 @@
       }, {once: true});
     }
 
-    if("serviceWorker" in navigator){
-      window.addEventListener("load", ()=>{
-        navigator.serviceWorker.register("/service-worker.js").catch(()=>{});
-      });
+    // picture handles unsupported formats; a selected but broken WebP needs
+    // explicit recovery. Keep one request in the successful WebP path.
+    const banner = document.getElementById("heroBanner");
+    async function prepareBanner() {
+      try {
+        await banner.decode();
+      } catch (_) {
+        banner.parentElement.querySelectorAll("source").forEach(source => source.remove());
+        banner.src = "banner.png";
+        await banner.decode();
+      }
+      return new URL(banner.currentSrc || banner.src).pathname;
     }
+    // Expose readiness for diagnostics: ready alone only means SW activation.
+    // Installation includes the format decoded on the first uncontrolled visit.
+    const bannerReady = banner ? prepareBanner() : Promise.resolve("/banner.webp");
+    const logo = document.querySelector(".brand img");
+    const logoReady = logo ? logo.decode().then(() => new URL(logo.currentSrc || logo.src).pathname) : Promise.resolve("/logo.webp");
+    window.mamourartOfflineReady = Promise.all([bannerReady, logoReady]).then(async ([path, logoPath]) => {
+      if (!("serviceWorker" in navigator)) return false;
+      const formats = new URLSearchParams();
+      if (path === "/banner.png") formats.set("banner", "png");
+      if (logoPath === "/logo.png") formats.set("logo", "png");
+      const script = "/service-worker.js" + (formats.size ? "?" + formats : "");
+      const registration = await navigator.serviceWorker.register(script);
+      const worker = registration.installing || registration.waiting || registration.active;
+      if (!worker) throw new Error("Offline worker unavailable");
+      if (worker.state !== "activated") await new Promise((resolve, reject) => {
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "activated") resolve();
+          if (worker.state === "redundant") reject(new Error("Offline installation failed"));
+        });
+        if (worker.state === "activated") resolve();
+        if (worker.state === "redundant") reject(new Error("Offline installation failed"));
+      });
+      await navigator.serviceWorker.ready;
+      return true;
+    }).catch(() => false);
   </script>
 </body>
 </html>

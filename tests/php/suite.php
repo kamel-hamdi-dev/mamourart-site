@@ -57,11 +57,13 @@ function runChild(string $script, array $arguments = [], ?string $input = null, 
     same($errors, '', 'Unexpected child stderr');
     return $output;
 }
-function concurrent(string $directory, array $ips): array {
+function concurrent(string $directory, array $ips, ?array $contents = null): array {
     $workers = [];
-    foreach ($ips as $ip) {
+    foreach ($ips as $i => $ip) {
         $configuration = fresh() . '/worker.json';
-        file_put_contents($configuration, json_encode(['directory' => $directory, 'ip' => $ip, 'now' => CLOCK], JSON_THROW_ON_ERROR));
+        $config = ['directory' => $directory, 'ip' => $ip, 'now' => CLOCK];
+        if ($contents !== null) $config['content'] = $contents[$i];
+        file_put_contents($configuration, json_encode($config, JSON_THROW_ON_ERROR));
         $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=mail', '-d', 'allow_url_fopen=0', __DIR__ . '/worker.php', $configuration],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         check(is_resource($process), 'Cannot start concurrent worker');
@@ -77,6 +79,7 @@ function concurrent(string $directory, array $ips): array {
         fclose($pipes[1]); fclose($pipes[2]);
         same(proc_close($process), 0, 'Concurrent worker failed: ' . $errors);
         same($errors, '', 'Concurrent worker stderr');
+        if ($contents !== null) $output = json_decode($output, true)[0] ? "1\n" : "0\n";
         check(in_array($output, ["0\n", "1\n"], true), 'Invalid worker result: ' . $output);
         if ($output === "1\n") $allowed[] = $ips[$index];
     }
@@ -376,7 +379,7 @@ function endpoint(array $overrides = []): array {
     global $fixtures;
     $case = [
         'endpoint' => $fixtures['public'] . '/contact-submit.php', 'temp' => fresh(), 'now' => CLOCK,
-        'server' => ['REQUEST_METHOD' => 'POST', 'CONTENT_LENGTH' => '200', 'HTTP_ORIGIN' => 'https://mamourart.com',
+        'server' => ['REQUEST_METHOD' => 'POST', 'CONTENT_TYPE' => 'application/x-www-form-urlencoded', 'HTTP_ORIGIN' => 'https://mamourart.com',
             'HTTP_SEC_FETCH_SITE' => 'same-origin', 'REMOTE_ADDR' => '192.0.2.1'],
         'post' => ['website' => '', 'name' => 'Alice Example', 'company' => 'Example', 'email' => 'alice@example.test',
             'service' => 'web', 'details' => 'A valid request with at least twenty characters.', 'privacy_ack' => 'yes'],
@@ -384,7 +387,10 @@ function endpoint(array $overrides = []): array {
     foreach ($overrides as $key => $value) {
         $case[$key] = in_array($key, ['server', 'post'], true) ? array_replace($case[$key], $value) : $value;
     }
+    $case['body'] = $overrides['body'] ?? http_build_query($case['post'], '', '&', PHP_QUERY_RFC1738);
+    if (!array_key_exists('CONTENT_LENGTH', $overrides['server'] ?? [])) $case['server']['CONTENT_LENGTH'] = (string)strlen($case['body']);
     $wire = $case;
+    $wire['body'] = base64_encode($case['body']);
     $wire['post'] = array_map(static fn(mixed $value): mixed => is_string($value) ? base64_encode($value) : $value, $case['post']);
     $result = json_decode(runChild(__DIR__ . '/endpoint-worker.php', [], json_encode($wire, JSON_THROW_ON_ERROR)), true, 512, JSON_THROW_ON_ERROR);
     $result['temp'] = $case['temp'];
@@ -404,9 +410,9 @@ test('Endpoint accepts valid data and calls only the in-memory mail stub', stati
 });
 test('Endpoint denies exhausted IP without calling mail', static function (): void {
     $temp = fresh();
-    for ($i = 0; $i < 3; ++$i) { $result = endpoint(['temp' => $temp]); redirect($result, 'sent'); }
+    for ($i = 0; $i < 3; ++$i) { $result = endpoint(['temp' => $temp, 'post' => ['company' => 'Company ' . $i]]); redirect($result, 'sent'); }
     $path = glob($temp . '/*/state.json')[0]; $snapshot = file_get_contents($path);
-    for ($i = 0; $i < 5; ++$i) { $result = endpoint(['temp' => $temp]); redirect($result, 'error'); same($result['mails'], []); }
+    for ($i = 0; $i < 5; ++$i) { $result = endpoint(['temp' => $temp, 'post' => ['company' => 'New company']]); redirect($result, 'error'); same($result['mails'], []); }
     same(file_get_contents($path), $snapshot);
     $result = endpoint(['temp' => $temp, 'server' => ['REMOTE_ADDR' => '192.0.2.2']]);
     redirect($result, 'sent'); same(count($result['mails']), 1);
@@ -441,7 +447,9 @@ $invalidCases = [
     'unknown service' => ['post' => ['service' => 'unknown']],
     'foreign origin' => ['server' => ['HTTP_ORIGIN' => 'https://attacker.invalid']],
     'foreign fetch site' => ['server' => ['HTTP_SEC_FETCH_SITE' => 'cross-site']],
-    'oversized body' => ['server' => ['CONTENT_LENGTH' => '12001']],
+    'malformed content length' => ['server' => ['CONTENT_LENGTH' => '-1']],
+    'huge decoded field' => ['post' => ['details' => str_repeat('x', 14001)]],
+    'oversized body' => ['server' => ['CONTENT_LENGTH' => '48001']],
 ];
 foreach (['website', 'name', 'company', 'email', 'service', 'details', 'privacy_ack'] as $field) $invalidCases['array field ' . $field] = ['post' => [$field => ['injected']]];
 foreach ($invalidCases as $name => $overrides) {
@@ -463,7 +471,7 @@ test('GET is rejected without storage or mail', static function (): void {
     check(in_array(['Allow: POST', true, 0], $result['headers'], true), 'Missing Allow header');
 });
 test('Unsafe direct suite or worker invocation cannot reach application code', static function (): void {
-    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php'] as $script) {
+    foreach (['suite.php', 'worker.php', 'endpoint-worker.php', 'clock-worker.php', 'interrupt-worker.php', 'mission39b.php', 'mission39d.php', 'slow-worker.php', 'integration39d.php'] as $script) {
         $process = proc_open([PHP_BINARY, '-n', '-d', 'disable_functions=', __DIR__ . '/' . $script],
             [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         check(is_resource($process), 'Cannot start guard test'); fclose($pipes[0]);
@@ -472,5 +480,9 @@ test('Unsafe direct suite or worker invocation cannot reach application code', s
         check(str_contains($errors, 'Unsafe test runtime'), 'Missing mandatory mail guard');
     }
 });
+require __DIR__ . '/mission39b.php';
+require __DIR__ . '/mission39d.php';
+
+require __DIR__ . '/integration39d.php';
 echo "RESULT $passed passed, $failed failed; native mail disabled, isolated temporary state only.\n";
 exit($failed === 0 ? 0 : 1);

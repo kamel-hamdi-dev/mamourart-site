@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mamourart | Custom Software Solutions for Businesses</title>
+  <meta name="description" content="Mamourart designs applications, automates business processes and develops digital solutions tailored to professional needs.">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://mamourart.com/en.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Mamourart">
+  <meta property="og:title" content="Mamourart | Custom Software Solutions for Businesses">
+  <meta property="og:description" content="Mamourart designs applications, automates business processes and develops digital solutions tailored to professional needs.">
+  <meta property="og:url" content="https://mamourart.com/en.html">
+  <meta property="og:image" content="https://mamourart.com/logo.png">
+  <meta property="og:image:alt" content="Mamourart">
+  <meta name="twitter:card" content="summary">
+  <link rel="alternate" hreflang="fr" href="https://mamourart.com/">
+  <link rel="alternate" hreflang="en" href="https://mamourart.com/en.html">
+  <link rel="alternate" hreflang="x-default" href="https://mamourart.com/">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Mamourart",
+    "url": "https://mamourart.com/",
+    "inLanguage": ["fr", "en"],
+    "description": "Mamourart designs applications, automates business processes and develops digital solutions tailored to professional needs.",
+    "publisher": {
+      "@type": "Brand",
+      "name": "Mamourart",
+      "url": "https://mamourart.com/",
+      "logo": "https://mamourart.com/logo.png"
+    }
+  }
+  </script>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --bg-2:#f5f7fa;
+      --surface:#ffffff;
+      --surface-2:#f5f7fa;
+      --text:#152233;
+      --muted:#4b5c70;
+      --soft:#d7e6f4;
+      --line:#dce3eb;
+      --cyan:#1565b0;
+      --blue:#1565b0;
+      --blue-hover:#1874c4;
+      --max:1200px;
+      --header:96px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    img{max-width:100%;height:auto}
+    a{color:inherit}
+    button,summary{font:inherit}
+    :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .skip{
+      position:absolute;left:12px;top:-48px;z-index:80;
+      background:#fff;color:#07111f;padding:10px 14px;border-radius:8px;font-weight:700
+    }
+    .skip:focus{top:12px}
+    .sr-only{
+      position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+      clip:rect(0,0,0,0);white-space:nowrap;border:0
+    }
+    .container{width:min(var(--max),calc(100% - 48px));margin:auto}
+    .site-header{
+      position:sticky;top:0;z-index:40;background:#07111f;
+      border-bottom:1px solid #203147
+    }
+    .header-bar{
+      position:relative;min-height:var(--header);
+      display:flex;align-items:center;justify-content:space-between;gap:20px
+    }
+    .brand{display:flex;align-items:center;flex:0 0 auto}
+    .brand img{display:block;height:80px;width:auto}
+    .header-tools{display:flex;align-items:center;gap:22px}
+    .nav-links{display:flex;align-items:center;gap:22px}
+    .nav-links a{
+      color:#e7f3ff;text-decoration:none;font-weight:650;font-size:.95rem
+    }
+    .nav-links a:hover{color:#8fd0ff}
+    .menu-toggle{
+      display:none;align-items:center;justify-content:center;
+      width:44px;height:44px;padding:0;border-radius:10px;cursor:pointer;
+      border:1px solid var(--line);background:transparent;color:var(--text)
+    }
+    .menu-icon,.menu-icon::before,.menu-icon::after{
+      display:block;width:18px;height:2px;border-radius:2px;background:#e7f3ff;position:relative
+    }
+    .menu-icon::before,.menu-icon::after{content:"";position:absolute;left:0}
+    .menu-icon::before{top:-6px}
+    .menu-icon::after{top:6px}
+    .menu-toggle[aria-expanded="true"] .menu-icon{background:transparent}
+    .menu-toggle[aria-expanded="true"] .menu-icon::before{top:0;transform:rotate(45deg)}
+    .menu-toggle[aria-expanded="true"] .menu-icon::after{top:0;transform:rotate(-45deg)}
+    .lang{
+      display:flex;padding:3px;border:1px solid rgba(143,208,255,.4);
+      border-radius:999px;background:rgba(8,22,38,.8)
+    }
+    .lang button{
+      min-width:42px;min-height:36px;border:0;border-radius:999px;cursor:pointer;
+      background:transparent;color:#d5e8f8;font-weight:750
+    }
+    .lang button.active{background:var(--blue);color:#fff}
+    .hero{
+      position:relative;
+      display:flex;align-items:center;
+      min-height:650px;
+      padding:96px 0 88px;
+      background-color:#07111f;
+      isolation:isolate
+    }
+    .hero-banner{position:absolute;inset:0;z-index:-2;pointer-events:none}
+    .hero-banner img{display:block;width:100%;height:100%;object-fit:cover;object-position:right center}
+    .hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+      background:linear-gradient(90deg,rgba(7,17,31,.95) 0%,rgba(7,17,31,.9) 72%,rgba(7,17,31,.38) 86%,rgba(7,17,31,.1) 100%)}
+    .hero-inner{animation:enter .55s ease both;color:#f5f7fa}
+    .hero .eyebrow{color:#8fd0ff}
+    .eyebrow{
+      margin:0 0 14px;color:var(--cyan);font-weight:750;
+      letter-spacing:.14em;text-transform:uppercase;font-size:.75rem
+    }
+    h1,h2,h3{font-weight:720;letter-spacing:-.03em;line-height:1.12}
+    .hero h1{
+      margin:0;font-size:clamp(2.4rem,5.1vw,4.6rem);
+      max-width:14em;line-height:1.06
+    }
+    .hero-copy{margin:26px 0 0;max-width:42rem;color:var(--soft);font-size:1.12rem}
+    .hero-actions,.contact-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .hero-actions{margin-top:28px}
+    .button{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:50px;padding:12px 22px;border-radius:7px;font-weight:700;
+      text-decoration:none;border:1px solid transparent
+    }
+    .primary{background:var(--blue);color:#fff}
+    .primary:hover{background:var(--blue-hover)}
+    .secondary{
+      color:#f5f9fc;background:rgba(8,24,42,.55);
+      border-color:rgba(143,208,255,.55)
+    }
+    .secondary:hover{border-color:var(--cyan);background:rgba(16,42,68,.75)}
+    .ghost{
+      color:#e7f3ff;background:transparent;border-color:var(--line)
+    }
+    .ghost:hover{border-color:var(--cyan);color:#fff}
+    .hero-proof{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:0;list-style:none}
+    .hero-proof li{
+      padding:7px 12px;border:1px solid var(--line);border-radius:999px;
+      color:#d5e8f8;background:rgba(7,17,31,.45);font-size:.86rem;font-weight:650
+    }
+    section{padding:104px 0}
+    #services,#projects,#approach,#about,#contact{scroll-margin-top:108px}
+    .band{background:var(--bg-2)}
+    .section-title{margin:0 0 12px;font-size:clamp(1.8rem,3vw,2.6rem)}
+    .section-copy{margin:0;max-width:46rem;color:var(--muted);font-size:1.05rem}
+    .service-grid,.project-grid,.steps,.about-grid{
+      display:grid;gap:16px;margin-top:36px
+    }
+    .service-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .service,.project-card,.step,.about-panel,.contact-panel{
+      border:1px solid var(--line);border-radius:12px;background:var(--surface)
+    }
+    .service,.step{padding:24px}
+    .service{position:relative;overflow:hidden}
+    .service::before,.project-card::before{
+      content:"";position:absolute;left:0;right:0;top:0;height:3px;
+      background:#1565b0
+    }
+    .service-num,.step b{
+      display:block;color:var(--cyan);font-size:.78rem;letter-spacing:.08em;margin-bottom:18px
+    }
+    .service h3,.step h3{margin:0 0 10px;font-size:1.16rem}
+    .service p,.step p,.project-card p{margin:0;color:var(--muted)}
+    .projects-head{max-width:760px}
+    .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .project-card{
+      position:relative;overflow:hidden;padding:24px;
+      display:flex;flex-direction:column;gap:12px;min-width:0
+    }
+    .project-card.featured{grid-column:1 / -1}
+    .project-body{display:flex;flex-direction:column;gap:12px;min-width:0}
+    .project-card h3{margin:0;font-size:1.45rem}
+    .status{
+      display:inline-flex;align-items:center;gap:8px;width:fit-content;max-width:100%;
+      padding:6px 10px;border-radius:999px;font-size:.78rem;font-weight:750;
+      color:#275b49;border:1px solid #bbd9cd;background:#edf6f1
+    }
+    .status.dev{color:#73561a;border-color:#dfd0a9;background:#faf5e7}
+    .status.live{color:#15558e;border-color:#bbd3ea;background:#edf4fb}
+    .status.prep{color:#54427b;border-color:#d7cee8;background:#f5f1fa}
+    .dot{width:7px;height:7px;flex:none;border-radius:50%;background:currentColor}
+    .tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{
+      font-size:.78rem;padding:5px 9px;border-radius:999px;
+      background:#edf2f7;color:#43566d
+    }
+    .project-grid{align-items:start}
+    .project-links,.project-note{padding-top:8px}
+    .project-note{color:#43566d;font-weight:600}
+    .text-link{color:#1565b0;font-weight:700;text-underline-offset:4px}
+    .text-link:hover{color:#07111f}
+    .preview{background:#eef3f8;border-radius:14px;padding:8px}
+    .preview img{display:block;width:100%;border-radius:8px}
+    .steps{grid-template-columns:repeat(5,minmax(0,1fr));padding:0;list-style:none}
+    .about-grid{grid-template-columns:1.2fr .8fr;align-items:start}
+    .about-copy p{margin:0 0 14px;color:var(--muted);font-size:1.05rem}
+    .principles{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+    .principles li{
+      padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)
+    }
+    .contact-panel{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:28px;
+      padding:36px;color:#f5f7fa;background:
+        radial-gradient(circle at 100% 0%,rgba(21,101,176,.28),transparent 42%),
+        #07111f
+    }
+    .contact-actions{flex-direction:column;align-items:stretch}
+    .contact-note{margin:16px 0 0;color:var(--muted);font-size:.95rem}
+    .contact-panel .eyebrow{color:#8fd0ff}
+    .contact-panel .section-copy,.contact-panel .contact-note{color:#c5d6e8}
+    .contact-panel .ghost{border-color:#51657b}
+    .menu-toggle{color:#f5f7fa;border-color:#51657b}
+    .lang{border-color:#51657b}
+    .hero .secondary:hover{border-color:#8fd0ff}
+    .service{min-height:265px}
+    .service-num{font-size:.9rem;margin-bottom:32px}
+    .service::before,.project-card::before{height:2px}
+    .projects-head{max-width:800px}
+    .project-card{padding:30px;gap:16px}
+    .project-body{gap:16px}
+    .project-card .preview{margin-top:auto}
+    .website-mark{display:grid;place-items:center;min-height:200px;background:#07111f;border-radius:8px;padding:32px}
+    .website-mark img{width:220px;max-width:100%;height:auto}
+    .secondary-heading{border-top:1px solid var(--line);margin-top:56px;padding-top:32px}
+    .secondary-heading h3{font-size:1.35rem;margin:0 0 8px}
+    .secondary-heading p{color:var(--muted);margin:0}
+    .secondary-projects{margin-top:24px}
+    .secondary-projects .project-card{background:#f5f7fa}
+    .step{border:0;border-top:1px solid #cbd7e3;border-radius:0;background:transparent;padding:24px 0}
+    .step b{font-size:1.4rem;margin-bottom:24px}
+    .principles li{background:#f5f7fa}
+    .about-copy .section-title{max-width:18em}
+    .project-card h3,.service h3,.step h3{overflow-wrap:anywhere}
+    .header-tools :focus-visible,footer :focus-visible,.hero :focus-visible,.contact :focus-visible{outline-color:#8fd0ff}
+    footer{
+      border-top:1px solid var(--line);padding:28px 0;background:#050b14;color:#b7c8da
+    }
+    .footer-inner{display:flex;justify-content:space-between;gap:18px;align-items:center}
+    .footer-inner p{margin:0}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:16px}
+    .footer-nav a{color:#d5e6f5;text-underline-offset:3px}
+    @keyframes enter{
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:none}
+    }
+    @media(min-width:861px){
+      .project-card.featured{
+        display:grid;grid-template-columns:minmax(0,1.05fr) minmax(260px,.9fr);
+        gap:28px;align-items:center
+      }
+      .project-card.featured .preview{margin:0}
+    }
+    @media(max-width:1100px){
+      .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:980px){
+      .menu-toggle{display:inline-flex}
+      .header-tools{gap:10px}
+      .nav-links{
+        display:none;position:absolute;top:calc(100% + 8px);right:0;
+        width:min(320px,100%);flex-direction:column;align-items:stretch;
+        gap:4px;padding:10px;border:1px solid var(--line);border-radius:16px;
+        background:#0c1a2c;box-shadow:0 18px 40px rgba(0,0,0,.35)
+      }
+      .nav-links.is-open{display:flex}
+      .nav-links a{
+        min-height:44px;display:flex;align-items:center;padding:0 12px;border-radius:10px
+      }
+      .nav-links a:hover{background:rgba(143,208,255,.08)}
+      .lang button{min-height:44px}
+      .about-grid,.contact-panel{grid-template-columns:1fr}
+      .project-grid{grid-template-columns:1fr 1fr}
+      .project-card.featured{grid-column:1 / -1}
+    }
+    @media(max-width:760px){
+      .container{width:min(100% - 32px,var(--max))}
+      .brand img{height:64px}
+      .site-header{--header:76px}
+      section{padding:64px 0}
+      .hero{
+        min-height:0;align-items:flex-start;padding:36px 0 48px;
+      }
+      .hero-banner img{object-position:72% center}
+      .hero::before{background:linear-gradient(180deg,rgba(7,17,31,.9) 0%,rgba(7,17,31,.78) 48%,rgba(7,17,31,.7) 100%)}
+      .hero h1{font-size:clamp(2rem,10vw,2.7rem)}
+      .hero-actions{flex-direction:column}
+      .hero-actions .button,.contact-actions .button{width:100%}
+      .service-grid,.project-grid,.steps{grid-template-columns:1fr}
+      .service{min-height:0}
+      .project-card{padding:22px}
+      .hero-proof{gap:8px}
+      .project-card.featured{grid-column:auto}
+      .footer-inner{flex-direction:column;align-items:flex-start}
+      .contact-panel{padding:24px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation:none !important;transition:none !important}
+      .menu-toggle[aria-expanded="true"] .menu-icon::before,
+      .menu-toggle[aria-expanded="true"] .menu-icon::after{transition:none}
+    }
+
+    /* Mission 24: Bilingual contact form; no external libraries. */
+    .quote-wrap{margin-top:24px;padding:clamp(20px,3vw,32px);border:1px solid rgba(134,192,237,.26);border-radius:20px;background:linear-gradient(145deg,#0d2135,#0a192a);color:#eaf4fe}
+    .quote-wrap h3{margin:0 0 6px;font-size:clamp(1.35rem,2.2vw,1.75rem)}
+    .quote-lead{color:#b6ccdf;margin:0 0 22px}
+    .quote-form{display:grid;gap:17px}.quote-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .quote-form label{display:grid;gap:8px;font-weight:650;font-size:.9rem;color:#dcecfb}
+    .quote-form input:not([type=checkbox]),.quote-form select,.quote-form textarea{width:100%;min-width:0;box-sizing:border-box;background:#102a42;border:1px solid #47708e;color:#fff;border-radius:10px;padding:12px 13px;font:inherit;font-weight:400}
+    .quote-form input:focus-visible,.quote-form select:focus-visible,.quote-form textarea:focus-visible{outline:2px solid #8bd6ff;outline-offset:2px}
+    .quote-form textarea{resize:vertical}.quote-form .quote-policy{display:flex;align-items:flex-start;gap:10px;font-weight:500}
+    .quote-policy input{margin-top:4px;accent-color:#368de7;width:18px;height:18px;flex:none}
+    .quote-privacy,.quote-fallback{font-size:.82rem;color:#b5cade;line-height:1.6;margin:0}
+    .quote-result{margin:0;font-weight:650;min-height:0;color:#a0eac7;scroll-margin-top:calc(var(--header) + 28px)}.quote-result.error{color:#ffcf98}
+    .quote-trap{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+    @media(max-width:680px){.quote-fields{grid-template-columns:1fr}.quote-wrap{padding:19px}}
+
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content" data-i18n="skip">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-bar">
+      <a class="brand" href="#top">
+        <picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" width="1254" height="1254"></picture>
+      </a>
+      <div class="header-tools">
+        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Ouvrir le menu">
+          <span class="menu-icon" aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="navLinks" aria-label="Main navigation" data-i18n-aria="navLabel">
+          <a href="#services" data-i18n="navServices">Services</a>
+          <a href="#projects" data-i18n="navProjects">Projects</a>
+          <a href="#approach" data-i18n="navApproach">Approach</a>
+          <a href="#about" data-i18n="navAbout">About</a>
+          <a href="#contact" data-i18n="navContact">Contact</a>
+        </nav>
+        <div class="lang" role="group" aria-label="Language" data-i18n-aria="langLabel">
+          <button id="frButton" type="button" aria-pressed="false" onclick="navigateLanguage('fr')">FR</button>
+          <button id="enButton" class="active" type="button" aria-pressed="true" onclick="navigateLanguage('en')">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <header class="hero" id="top">
+      <picture class="hero-banner" aria-hidden="true">
+        <source srcset="banner.webp" type="image/webp">
+        <img id="heroBanner" src="banner.png" alt="" width="2560" height="1440" fetchpriority="high" decoding="async">
+      </picture>
+      <div class="container hero-inner">
+        <p class="eyebrow" data-i18n="heroEyebrow">B2B software development studio</p>
+        <h1 data-i18n="heroTitle">Custom software for your business operations.</h1>
+        <p class="hero-copy" data-i18n="heroText">Business applications, web interfaces and automation designed around your workflows, from initial scoping to early demonstrations.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#contact" data-i18n="ctaProject">Discuss your needs</a>
+          <a class="button secondary" href="#projects" data-i18n="ctaServices">Explore the projects</a>
+        </div>
+        <ul class="hero-proof">
+          <li data-i18n="proof1">Custom software</li>
+          <li data-i18n="proof2">Web and mobile</li>
+          <li data-i18n="proof3">Supervised automation</li>
+          <li data-i18n="proof4">Systems integration</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="services band" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <p class="eyebrow" data-i18n="servicesLabel">Services</p>
+        <h2 class="section-title" id="services-title" data-i18n="servicesTitle">Four areas of work.</h2>
+        <p class="section-copy" data-i18n="servicesCopy">Applications, interfaces, automation and connections between tools, defined from the professional need.</p>
+        <div class="service-grid">
+          <article class="service">
+            <span class="service-num">01</span>
+            <h3 data-i18n="service1Title">Business applications</h3>
+            <p data-i18n="service1Text">Centralize records, track operations and prepare approvals in a tool designed around your activity.</p>
+          </article>
+          <article class="service">
+            <span class="service-num">02</span>
+            <h3 data-i18n="service2Title">Web and mobile interfaces</h3>
+            <p data-i18n="service2Text">Give teams clear access to useful information and actions, at the office and on the move.</p>
+          </article>
+          <article class="service">
+            <span class="service-num">03</span>
+            <h3 data-i18n="service3Title">Supervised automation</h3>
+            <p data-i18n="service3Text">Prepare repetitive tasks and decisions for review, keeping human approval for the selected actions.</p>
+          </article>
+          <article class="service">
+            <span class="service-num">04</span>
+            <h3 data-i18n="service4Title">Connecting tools, APIs and databases</h3>
+            <p data-i18n="service4Text">Move information between your tools to reduce duplicate entry and make data usable.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="projects" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="projects-head">
+          <p class="eyebrow">Portfolio</p>
+          <h2 class="section-title" id="projects-title" data-i18n="projectsTitle">From business needs to prototypes.</h2>
+          <p class="section-copy" data-i18n="projectsCopy">Internal work and software explorations: each project is shown with its stage of progress, without promising an operational service.</p>
+        </div>
+        <div class="project-grid">
+          <article class="project-card featured">
+            <div class="project-body">
+              <div class="status"><span class="dot" aria-hidden="true"></span><span data-i18n="transportStatus">Software prototype in development</span></div>
+              <h3>Mamourart Transport Automation</h3>
+              <p data-i18n="transportText">Transport mission management prototype: driver selection, distance calculation and human approval. Development is ongoing.</p>
+              <div class="tags">
+                <span class="tag">Python</span>
+                <span class="tag">PostgreSQL</span>
+                <span class="tag" data-i18n="tagApproval">Human Approval</span>
+                <span class="tag" data-i18n="tagAutomation">Automation</span>
+              </div>
+              <div class="project-links">
+                <a class="text-link" href="https://github.com/kamel-hamdi-dev/mamourart-transport-automation" target="_blank" rel="noopener noreferrer"><span data-i18n="githubLink">View on GitHub →</span><span class="sr-only" data-i18n="newTab"> (new tab)</span></a>
+              </div>
+            </div>
+            <div class="preview">
+              <picture><source srcset="dashboard.webp" type="image/webp"><img src="dashboard.png" alt="Mamourart Transport Automation prototype dashboard" data-i18n-alt="Mamourart Transport Automation prototype dashboard" width="1278" height="731" loading="lazy"></picture>
+            </div>
+          </article>
+          <article class="project-card featured">
+            <div class="project-body">
+            <div class="status live"><span class="dot" aria-hidden="true"></span><span data-i18n="websiteStatus">Internal project</span></div>
+            <h3>Mamourart Website</h3>
+            <p data-i18n="websiteText">The Mamourart website: a responsive bilingual interface presenting areas of work, prototypes and contact information.</p>
+            <div class="tags">
+              <span class="tag">Responsive</span>
+              <span class="tag">FR / EN</span>
+              <span class="tag">SEO</span>
+              <span class="tag">PWA</span>
+            </div>
+            <div class="project-links">
+              <a class="text-link" href="https://www.mamourart.com/" target="_blank" rel="noopener noreferrer"><span data-i18n="visitSite">Visit website →</span><span class="sr-only" data-i18n="newTab"> (new tab)</span></a>
+            </div>
+            </div>
+            <div class="website-mark"><picture><source srcset="logo.webp" type="image/webp"><img src="logo.png" alt="Mamourart" loading="lazy" width="1254" height="1254"></picture></div>
+          </article>
+          <article class="project-card">
+            <div class="status prep"><span class="dot" aria-hidden="true"></span><span data-i18n="gpsStatus">Interface prototype · fictional data</span></div>
+            <h3>Mamourart GPS AI</h3>
+            <p data-i18n="gpsText">Exploring a navigation and fleet management interface. The vehicles and information shown are fictional.</p>
+            <div class="tags">
+              <span class="tag">GPS</span>
+              <span class="tag">Fleet Management</span>
+              <span class="tag">AI</span>
+            </div>
+            <p class="project-note" data-i18n="gpsNote">Interactive demonstration with fictional data and no real GPS connection.</p>
+            <div class="project-links">
+              <a class="text-link" href="gps-ai-demo.html?lang=en"><span data-i18n="gpsDemoLink">Explore the prototype →</span></a>
+            </div>
+            <div class="preview" style="background:#09192b">
+              <img src="gps-ai-preview.webp" alt="Mamourart GPS AI concept showing a fictional fleet map and vehicles" data-i18n-alt="Mamourart GPS AI concept showing a fictional fleet map and vehicles" width="954" height="650" loading="lazy">
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="status prep"><span class="dot" aria-hidden="true"></span><span data-i18n="fretStatus">Interactive prototype · fictional data</span></div>
+            <h3>Mamourart Fret Alerts</h3>
+            <p data-i18n="fretText">Exploring a freight monitoring interface: filter fictional listings by route and vehicle to illustrate a browsing workflow.</p>
+            <div class="tags">
+              <span class="tag" data-i18n="fretTagAlerts">Freight alerts</span>
+              <span class="tag">B2B</span>
+              <span class="tag" data-i18n="fretTagSubscription">Subscription planned</span>
+            </div>
+            <p class="project-note" data-i18n="fretNote">Simulation using fictional freight listings. No real freight feed, transport negotiation or booking.</p>
+            <div class="project-links">
+              <a class="text-link" href="fret-alerts-demo.html?lang=en"><span data-i18n="fretDemoLink">Explore the prototype →</span></a>
+            </div>
+            <div class="preview" style="background:#09192b">
+              <img src="fret-alerts-preview.webp" alt="Mamourart Fret Alerts concept dashboard showing fictional freight listings" data-i18n-alt="Mamourart Fret Alerts concept dashboard showing fictional freight listings" width="954" height="650" loading="lazy">
+            </div>
+          </article>
+        </div>
+        <div class="secondary-heading">
+          <h3 data-i18n="nextProjects">Further projects in preparation</h3>
+          <p data-i18n="nextProjectsCopy">Work in development, with no demonstration available at this stage.</p>
+        </div>
+        <div class="project-grid secondary-projects">
+          <article class="project-card">
+            <div class="status dev"><span class="dot" aria-hidden="true"></span><span data-i18n="desktopStatus">In development</span></div>
+            <h3>Mamourart Desktop Agent</h3>
+            <p data-i18n="desktopText">Agent-oriented software assistant designed to understand context, explain errors, propose fixes and prepare user-controlled actions.</p>
+            <div class="tags">
+              <span class="tag">VS Code</span>
+              <span class="tag" data-i18n="tagAgents">AI Agents</span>
+              <span class="tag" data-i18n="tagDesktop">Desktop</span>
+              <span class="tag" data-i18n="tagApproval">Human Approval</span>
+            </div>
+            <p class="project-note" data-i18n="comingSoon">Project page coming soon</p>
+          </article>
+          <article class="project-card">
+            <div class="status prep"><span class="dot" aria-hidden="true"></span><span data-i18n="hoursStatus">In preparation</span></div>
+            <h3>Mamourart Mes Heures</h3>
+            <p data-i18n="hoursText">Android application for tracking working hours, schedules and estimated pay, designed for employees in France.</p>
+            <p class="planned" data-i18n="hoursFeatures">Planned features: time tracking, work schedules, pay estimates and a worker rights information module.</p>
+            <div class="tags">
+              <span class="tag">Android</span>
+            </div>
+            <p class="project-note" data-i18n="hoursNote">Not yet published</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="approach band" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <p class="eyebrow" data-i18n="approachLabel">Approach</p>
+        <h2 class="section-title" id="approach-title" data-i18n="approachTitle">A clear framework at every step.</h2>
+        <p class="section-copy" data-i18n="approachCopy">From the first conversation to validation, work within a defined scope and concrete use cases.</p>
+        <ol class="steps">
+          <li class="step"><b>01</b><h3 data-i18n="step1Title">Scope the need</h3><p data-i18n="step1Text">Clarify the context, the users and the expected result.</p></li>
+          <li class="step"><b>02</b><h3 data-i18n="step2Title">Design the workflow</h3><p data-i18n="step2Text">Organize screens, data and steps with future usage in mind.</p></li>
+          <li class="step"><b>03</b><h3 data-i18n="step3Title">Develop the agreed scope</h3><p data-i18n="step3Text">Build the agreed functions and connections, then demonstrate them progressively.</p></li>
+          <li class="step"><b>04</b><h3 data-i18n="step4Title">Test and validate</h3><p data-i18n="step4Text">Check the behavior against concrete cases.</p></li>
+          <li class="step"><b>05</b><h3 data-i18n="step5Title">Prepare delivery</h3><p data-i18n="step5Text">Gather what is needed for handover and agree on the next steps.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div class="about-copy">
+          <p class="eyebrow" data-i18n="aboutLabel">About</p>
+          <h2 class="section-title" id="about-title" data-i18n="aboutTitle">A studio taking shape, a practical approach.</h2>
+          <p data-i18n="aboutText">Mamourart is a brand and a software studio project led by its founder, Kamel Hamdi. It explores business applications, interfaces and automation for professional use.</p>
+          <p data-i18n="aboutText2">Work starts from the stated need, then moves through a defined solution, design, testing and delivery. When automation prepares a decision, human validation stays part of the method.</p>
+        </div>
+        <ul class="principles">
+          <li data-i18n="principle1">The professional need guides the scope.</li>
+          <li data-i18n="principle2">The solution follows the process to be supported.</li>
+          <li data-i18n="principle3">Automation that prepares a decision stays supervised.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="contact band" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow" data-i18n="contactLabel">Contact</p>
+            <h2 class="section-title" id="contact-title" data-i18n="contactTitle">Discuss your needs</h2>
+            <p class="section-copy" data-i18n="contactCopy">For an information request or to talk about a project, contact Mamourart by email, LinkedIn or GitHub.</p>
+            <p class="contact-note" data-i18n="contactNote">You can email us directly or use the form below. Requests are not stored in a website database.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="button primary" href="mailto:contact@mamourart.com">contact@mamourart.com</a>
+            <a class="button ghost" href="https://www.linkedin.com/in/kamel-hamdi-dev/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only" data-i18n="newTab"> (new tab)</span></a>
+            <a class="button ghost" href="https://github.com/kamel-hamdi-dev" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only" data-i18n="newTab"> (new tab)</span></a>
+          </div>
+        </div>
+
+        <div class="quote-wrap">
+          <h3 data-i18n="quoteTitle">Tell us about your needs</h3>
+          <p class="quote-lead" data-i18n="quoteIntro">Tell us about your business needs. We will reply by email.</p>
+          <form class="quote-form" method="post" action="contact-submit.php?lang=en" accept-charset="UTF-8">
+            <div class="quote-fields">
+              <label><span data-i18n="quoteName">Your name *</span><input name="name" autocomplete="name" minlength="2" maxlength="120" required></label>
+              <label><span data-i18n="quoteCompany">Company (optional)</span><input name="company" autocomplete="organization" maxlength="120"></label>
+              <label><span data-i18n="quoteEmail">Business email *</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+              <label><span data-i18n="quoteService">Service requested *</span>
+                <select name="service" required>
+                  <option value="" data-i18n="quoteChoose">Choose a service</option>
+                  <option value="software" data-i18n="quoteSoftware">Custom software</option>
+                  <option value="web" data-i18n="quoteWeb">Web or mobile development</option>
+                  <option value="automation" data-i18n="quoteAutomation">Automation and AI</option>
+                  <option value="transport" data-i18n="quoteTransport">Transport and logistics solutions</option>
+                  <option value="other" data-i18n="quoteOther">Other project</option>
+                </select>
+              </label>
+            </div>
+            <label><span data-i18n="quoteDetails">Describe your project *</span>
+              <textarea name="details" rows="5" minlength="20" maxlength="3500" required></textarea>
+            </label>
+            <label class="quote-policy"><input name="privacy_ack" type="checkbox" value="yes" required><span data-i18n="quotePrivacy">I have read the information below about my data.</span></label>
+            <p class="quote-privacy" data-i18n="quotePrivacyInfo">Information is used only to handle your request. Controller: Kamel Hamdi. Enquiries without a contract are kept for 12 months after the last exchange in the email inbox, with no website database. Do not send sensitive data.</p>
+            <p class="quote-privacy"><a href="legal.html?lang=en#privacy-en" data-legal-link="privacy" data-i18n="quotePolicyLink">Privacy notice</a></p>
+            <div class="quote-trap" aria-hidden="true"><label>Site web <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+            <button class="button primary" type="submit" data-i18n="quoteSend">Send my request</button>
+            <p class="quote-result" id="quoteResult" role="status" aria-live="polite" tabindex="-1"></p>
+            <p class="quote-fallback" data-i18n="quoteFallback">If the form does not work, email contact@mamourart.com directly.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <p data-i18n="footer">© 2026 Mamourart. Software development studio.</p>
+      <nav class="footer-nav" aria-label="Footer" data-i18n-aria="footerNavLabel">
+        <a href="#services" data-i18n="navServices">Services</a>
+        <a href="#projects" data-i18n="navProjects">Projects</a>
+        <a href="#approach" data-i18n="navApproach">Approach</a>
+        <a href="#about" data-i18n="navAbout">About</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+        <a href="legal.html?lang=en#legal-en" data-legal-link="legal" data-i18n="legalNotices">Legal notice</a>
+        <a href="legal.html?lang=en#privacy-en" data-legal-link="privacy" data-i18n="privacyPolicy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <noscript>
+    <style>
+      @media(max-width:980px){
+        .nav-links{display:flex;position:static;width:auto;flex-direction:column;background:transparent;box-shadow:none;padding:0}
+        .menu-toggle{display:none}
+      }
+    </style>
+  </noscript>
+
+  <script>
+    const translations = {
+      fr:{
+        nextProjects:"Autres projets en préparation",
+        nextProjectsCopy:"Des pistes en développement, sans démonstration disponible à ce stade.",
+        metaTitle:"Mamourart | Logiciels sur mesure pour les entreprises",
+        metaDescription:"Mamourart conçoit des applications, automatise les processus métier et développe des solutions numériques adaptées aux besoins professionnels.",
+        skip:"Aller au contenu",
+        navLabel:"Navigation principale",
+        footerNavLabel:"Pied de page",
+        langLabel:"Langue",
+        menuOpen:"Ouvrir le menu",
+        menuClose:"Fermer le menu",
+        newTab:" (nouvel onglet)",
+        navServices:"Services",
+        navProjects:"Projets",
+        navApproach:"Approche",
+        navAbout:"À propos",
+        navContact:"Contact",
+        heroEyebrow:"Studio de développement logiciel B2B",
+        heroTitle:"Des logiciels sur mesure pour vos opérations métier.",
+        heroText:"Applications métier, interfaces web et automatisations : des solutions pensées autour de vos processus, du cadrage aux premières démonstrations.",
+        ctaServices:"Explorer les projets",
+        ctaProject:"Parler de votre besoin",
+        proof1:"Logiciels sur mesure",
+        proof2:"Web et mobile",
+        proof3:"Automatisation supervisée",
+        proof4:"Intégration de systèmes",
+        servicesLabel:"Services",
+        servicesTitle:"Quatre domaines d'intervention.",
+        servicesCopy:"Applications, interfaces, automatisation et connexions entre outils, définies à partir du besoin professionnel.",
+        service1Title:"Applications métier",
+        service1Text:"Centraliser les dossiers, suivre les opérations et préparer les validations dans un outil adapté à votre activité.",
+        service2Title:"Interfaces web et mobiles",
+        service2Text:"Donner aux équipes un accès clair aux informations et aux actions utiles, au bureau comme en déplacement.",
+        service3Title:"Automatisation supervisée",
+        service3Text:"Préparer les tâches répétitives et les décisions à vérifier, en gardant une validation humaine sur les actions retenues.",
+        service4Title:"Connexion d’outils, API et bases de données",
+        service4Text:"Faire circuler les informations entre vos outils pour limiter les ressaisies et rendre les données utilisables.",
+        projectsTitle:"Du besoin métier au prototype.",
+        projectsCopy:"Réalisations internes et explorations logicielles : chaque projet est présenté avec son niveau d’avancement, sans promesse de service opérationnel.",
+        transportStatus:"Prototype logiciel en développement",
+        transportText:"Prototype de gestion des missions de transport : sélection du chauffeur, calcul de distance et validation humaine. Le développement se poursuit.",
+        transportAlt:"Tableau de bord du prototype Mamourart Transport Automation",
+        gpsStatus:"Prototype d’interface · données fictives",
+        gpsText:"Exploration d’une interface de navigation et de gestion de flotte. Les véhicules et les informations affichés sont fictifs.",
+        gpsNote:"Démonstration interactive sur données fictives, sans connexion GPS réelle.",
+        gpsDemoLink:"Explorer le prototype →",
+        gpsPreviewAlt:"Maquette Mamourart GPS AI avec carte de flotte et véhicules fictifs",
+        fretStatus:"Prototype interactif · données fictives",
+        fretText:"Exploration d’une interface de veille fret : filtrer des offres fictives par trajet et véhicule pour illustrer un parcours de consultation.",
+        fretTagAlerts:"Alertes fret",
+        fretTagSubscription:"Abonnement envisagé",
+        fretNote:"Simulation avec des offres fictives. Aucun flux de fret réel, aucune négociation ni réservation de transport.",
+        fretDemoLink:"Explorer le prototype →",
+        fretPreviewAlt:"Tableau de bord conceptuel Mamourart Fret Alerts avec offres de fret fictives",
+        tagApproval:"Validation humaine",
+        tagAutomation:"Automatisation",
+        tagAgents:"Agents IA",
+        tagDesktop:"Bureau",
+        githubLink:"Voir sur GitHub →",
+        desktopStatus:"En développement",
+        desktopText:"Assistant logiciel orienté agent : comprendre le contexte, expliquer les erreurs, proposer des corrections et préparer des actions contrôlées par l'utilisateur.",
+        comingSoon:"Présentation bientôt disponible",
+        websiteStatus:"Réalisation interne",
+        websiteText:"La vitrine Mamourart : une interface responsive bilingue pour présenter les domaines de travail, les prototypes et le contact.",
+        visitSite:"Visiter le site →",
+        hoursStatus:"En préparation",
+        hoursText:"Application Android de suivi des heures de travail, des plannings et d'estimation du salaire, destinée aux salariés en France.",
+        hoursFeatures:"Fonctionnalités prévues : suivi des heures, planning, estimation du salaire et module d'information « Mes droits ».",
+        hoursNote:"Pas encore publié",
+        approachLabel:"Approche",
+        approachTitle:"Un cadre clair, à chaque étape.",
+        approachCopy:"Du premier échange aux validations, avancer sur un périmètre défini et des cas d’usage concrets.",
+        step1Title:"Cadrer le besoin",
+        step1Text:"Clarifier le contexte, les utilisateurs et le résultat attendu.",
+        step2Title:"Concevoir le parcours",
+        step2Text:"Organiser les écrans, les données et les étapes avec les futurs usages en tête.",
+        step3Title:"Développer le périmètre retenu",
+        step3Text:"Construire les fonctions et les connexions convenues, puis les montrer progressivement.",
+        step4Title:"Tester et valider",
+        step4Text:"Vérifier le comportement sur des cas concrets.",
+        step5Title:"Préparer la livraison",
+        step5Text:"Rassembler les éléments nécessaires à la prise en main et convenir des prochaines étapes.",
+        aboutLabel:"À propos",
+        aboutTitle:"Un studio en construction, une démarche concrète.",
+        aboutText:"Mamourart est une marque et un projet de studio logiciel porté par son fondateur, Kamel Hamdi. Il explore des applications métier, des interfaces et des automatisations pour des usages professionnels.",
+        aboutText2:"Le travail part du besoin exprimé, puis passe par une solution définie, la conception, les tests et la mise à disposition. Lorsqu'une automatisation prépare une décision, une validation humaine reste prévue.",
+        principle1:"Le besoin professionnel guide le périmètre.",
+        principle2:"La solution suit le processus à outiller.",
+        principle3:"L'automatisation qui prépare une décision reste supervisée.",
+        contactLabel:"Contact",
+        contactTitle:"Parler de votre besoin",
+        contactCopy:"Pour une demande d'information ou pour échanger sur un projet, contactez Mamourart par courriel, LinkedIn ou GitHub.",
+        contactNote:"Vous pouvez nous écrire directement ou utiliser le formulaire ci-dessous. Les demandes ne sont pas stockées dans une base de données du site.",
+        quoteTitle:"Présentez votre besoin",
+        quoteIntro:"Présentez votre besoin professionnel. Nous vous répondrons par e-mail.",
+        quoteName:"Votre nom *",
+        quoteCompany:"Entreprise (facultatif)",
+        quoteEmail:"E-mail professionnel *",
+        quoteService:"Service recherché *",
+        quoteChoose:"Choisir un service",
+        quoteSoftware:"Logiciel sur mesure",
+        quoteWeb:"Développement web ou mobile",
+        quoteAutomation:"Automatisation et IA",
+        quoteTransport:"Solutions transport et logistique",
+        quoteOther:"Autre projet",
+        quoteDetails:"Décrivez votre projet *",
+        quotePrivacy:"J'ai lu les informations ci-dessous concernant mes données.",
+        quotePrivacyInfo:"Les informations servent uniquement à traiter votre demande. Responsable : Kamel Hamdi. Les demandes sans contrat sont conservées 12 mois après le dernier échange dans la messagerie, sans base de données du site. Ne transmettez pas de données sensibles.",
+        quotePolicyLink:"Politique de confidentialité",
+        legalNotices:"Mentions légales",
+        privacyPolicy:"Confidentialité",
+        quoteSend:"Envoyer ma demande",
+        quoteFallback:"En cas de problème avec le formulaire, écrivez directement à contact@mamourart.com.",
+        quoteSuccess:"Votre demande a été envoyée. Nous vous répondrons par e-mail.",
+        quoteError:"L'envoi n'a pas abouti. Merci d'écrire à contact@mamourart.com.",
+        footer:"© 2026 Mamourart. Studio de développement logiciel."
+      },
+      en:{
+        nextProjects:"Further projects in preparation",
+        nextProjectsCopy:"Work in development, with no demonstration available at this stage.",
+        metaTitle:"Mamourart | Custom Software Solutions for Businesses",
+        metaDescription:"Mamourart designs applications, automates business processes and develops digital solutions tailored to professional needs.",
+        skip:"Skip to content",
+        navLabel:"Main navigation",
+        footerNavLabel:"Footer",
+        langLabel:"Language",
+        menuOpen:"Open menu",
+        menuClose:"Close menu",
+        newTab:" (new tab)",
+        navServices:"Services",
+        navProjects:"Projects",
+        navApproach:"Approach",
+        navAbout:"About",
+        navContact:"Contact",
+        heroEyebrow:"B2B software development studio",
+        heroTitle:"Custom software for your business operations.",
+        heroText:"Business applications, web interfaces and automation designed around your workflows, from initial scoping to early demonstrations.",
+        ctaServices:"Explore the projects",
+        ctaProject:"Discuss your needs",
+        proof1:"Custom software",
+        proof2:"Web and mobile",
+        proof3:"Supervised automation",
+        proof4:"Systems integration",
+        servicesLabel:"Services",
+        servicesTitle:"Four areas of work.",
+        servicesCopy:"Applications, interfaces, automation and connections between tools, defined from the professional need.",
+        service1Title:"Business applications",
+        service1Text:"Centralize records, track operations and prepare approvals in a tool designed around your activity.",
+        service2Title:"Web and mobile interfaces",
+        service2Text:"Give teams clear access to useful information and actions, at the office and on the move.",
+        service3Title:"Supervised automation",
+        service3Text:"Prepare repetitive tasks and decisions for review, keeping human approval for the selected actions.",
+        service4Title:"Connecting tools, APIs and databases",
+        service4Text:"Move information between your tools to reduce duplicate entry and make data usable.",
+        projectsTitle:"From business needs to prototypes.",
+        projectsCopy:"Internal work and software explorations: each project is shown with its stage of progress, without promising an operational service.",
+        transportStatus:"Software prototype in development",
+        transportText:"Transport mission management prototype: driver selection, distance calculation and human approval. Development is ongoing.",
+        transportAlt:"Mamourart Transport Automation prototype dashboard",
+        gpsStatus:"Interface prototype · fictional data",
+        gpsText:"Exploring a navigation and fleet management interface. The vehicles and information shown are fictional.",
+        gpsNote:"Interactive demonstration with fictional data and no real GPS connection.",
+        gpsDemoLink:"Explore the prototype →",
+        gpsPreviewAlt:"Mamourart GPS AI concept showing a fictional fleet map and vehicles",
+        fretStatus:"Interactive prototype · fictional data",
+        fretText:"Exploring a freight monitoring interface: filter fictional listings by route and vehicle to illustrate a browsing workflow.",
+        fretTagAlerts:"Freight alerts",
+        fretTagSubscription:"Subscription planned",
+        fretNote:"Simulation using fictional freight listings. No real freight feed, transport negotiation or booking.",
+        fretDemoLink:"Explore the prototype →",
+        fretPreviewAlt:"Mamourart Fret Alerts concept dashboard showing fictional freight listings",
+        tagApproval:"Human Approval",
+        tagAutomation:"Automation",
+        tagAgents:"AI Agents",
+        tagDesktop:"Desktop",
+        githubLink:"View on GitHub →",
+        desktopStatus:"In development",
+        desktopText:"Agent-oriented software assistant designed to understand context, explain errors, propose fixes and prepare user-controlled actions.",
+        comingSoon:"Project page coming soon",
+        websiteStatus:"Internal project",
+        websiteText:"The Mamourart website: a responsive bilingual interface presenting areas of work, prototypes and contact information.",
+        visitSite:"Visit website →",
+        hoursStatus:"In preparation",
+        hoursText:"Android application for tracking working hours, schedules and estimated pay, designed for employees in France.",
+        hoursFeatures:"Planned features: time tracking, work schedules, pay estimates and a worker rights information module.",
+        hoursNote:"Not yet published",
+        approachLabel:"Approach",
+        approachTitle:"A clear framework at every step.",
+        approachCopy:"From the first conversation to validation, work within a defined scope and concrete use cases.",
+        step1Title:"Scope the need",
+        step1Text:"Clarify the context, the users and the expected result.",
+        step2Title:"Design the workflow",
+        step2Text:"Organize screens, data and steps with future usage in mind.",
+        step3Title:"Develop the agreed scope",
+        step3Text:"Build the agreed functions and connections, then demonstrate them progressively.",
+        step4Title:"Test and validate",
+        step4Text:"Check the behavior against concrete cases.",
+        step5Title:"Prepare delivery",
+        step5Text:"Gather what is needed for handover and agree on the next steps.",
+        aboutLabel:"About",
+        aboutTitle:"A studio taking shape, a practical approach.",
+        aboutText:"Mamourart is a brand and a software studio project led by its founder, Kamel Hamdi. It explores business applications, interfaces and automation for professional use.",
+        aboutText2:"Work starts from the stated need, then moves through a defined solution, design, testing and delivery. When automation prepares a decision, human validation stays part of the method.",
+        principle1:"The professional need guides the scope.",
+        principle2:"The solution follows the process to be supported.",
+        principle3:"Automation that prepares a decision stays supervised.",
+        contactLabel:"Contact",
+        contactTitle:"Discuss your needs",
+        contactCopy:"For an information request or to talk about a project, contact Mamourart by email, LinkedIn or GitHub.",
+        contactNote:"You can email us directly or use the form below. Requests are not stored in a website database.",
+        quoteTitle:"Tell us about your needs",
+        quoteIntro:"Tell us about your business needs. We will reply by email.",
+        quoteName:"Your name *",
+        quoteCompany:"Company (optional)",
+        quoteEmail:"Business email *",
+        quoteService:"Service requested *",
+        quoteChoose:"Choose a service",
+        quoteSoftware:"Custom software",
+        quoteWeb:"Web or mobile development",
+        quoteAutomation:"Automation and AI",
+        quoteTransport:"Transport and logistics solutions",
+        quoteOther:"Other project",
+        quoteDetails:"Describe your project *",
+        quotePrivacy:"I have read the information below about my data.",
+        quotePrivacyInfo:"Information is used only to handle your request. Controller: Kamel Hamdi. Enquiries without a contract are kept for 12 months after the last exchange in the email inbox, with no website database. Do not send sensitive data.",
+        quotePolicyLink:"Privacy notice",
+        legalNotices:"Legal notice",
+        privacyPolicy:"Privacy",
+        quoteSend:"Send my request",
+        quoteFallback:"If the form does not work, email contact@mamourart.com directly.",
+        quoteSuccess:"Your request was sent. We will reply by email.",
+        quoteError:"Your message could not be sent. Please email contact@mamourart.com.",
+        footer:"© 2026 Mamourart. Software development studio."
+      }
+    };
+
+    function updateMenuLabel(){
+      const button = document.getElementById("menuToggle");
+      const open = button.getAttribute("aria-expanded") === "true";
+      const lang = document.documentElement.lang === "en" ? "en" : "fr";
+      button.setAttribute("aria-label", translations[lang][open ? "menuClose" : "menuOpen"]);
+    }
+
+    function setMenu(open){
+      const links = document.getElementById("navLinks");
+      const button = document.getElementById("menuToggle");
+      links.classList.toggle("is-open", open);
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+      updateMenuLabel();
+    }
+
+    function setLanguage(lang){
+
+      const contactStatus = new URLSearchParams(window.location.search).get("contact_status");
+      const quoteResult = document.getElementById("quoteResult");
+      if (quoteResult && (contactStatus === "sent" || contactStatus === "error")) {
+        quoteResult.textContent = translations[lang][contactStatus === "sent" ? "quoteSuccess" : "quoteError"];
+        quoteResult.classList.toggle("error", contactStatus === "error");
+      }
+      document.querySelectorAll("[data-legal-link]").forEach(link=>{
+        const kind = link.dataset.legalLink === "legal" ? "legal" : "privacy";
+        link.href = "legal.html?lang=" + lang + "#" + kind + "-" + lang;
+      });
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const key = el.dataset.i18n;
+        if(translations[lang][key]) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(el=>{
+        const key = el.dataset.i18nAria;
+        if(translations[lang][key]) el.setAttribute("aria-label", translations[lang][key]);
+      });
+      document.querySelectorAll("[data-i18n-alt]").forEach(el=>{
+        const key = el.dataset.i18nAlt;
+        if(translations[lang][key]) el.setAttribute("alt", translations[lang][key]);
+      });
+      document.querySelectorAll('a[href*="-demo.html"]').forEach(link=>{
+        link.href = link.getAttribute("href").split("?")[0] + "?lang=" + lang;
+      });
+      document.documentElement.lang = lang;
+      document.title = translations[lang].metaTitle;
+      const description = document.querySelector('meta[name="description"]');
+      if(description) description.setAttribute("content", translations[lang].metaDescription);
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogLocale = document.querySelector('meta[property="og:locale"]');
+      if(ogTitle) ogTitle.setAttribute("content", translations[lang].metaTitle);
+      if(ogDescription) ogDescription.setAttribute("content", translations[lang].metaDescription);
+      if(ogLocale) ogLocale.setAttribute("content", lang === "fr" ? "fr_FR" : "en_US");
+      document.getElementById("frButton").classList.toggle("active", lang === "fr");
+      document.getElementById("enButton").classList.toggle("active", lang === "en");
+      document.getElementById("frButton").setAttribute("aria-pressed", lang === "fr" ? "true" : "false");
+      document.getElementById("enButton").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
+      updateMenuLabel();
+    }
+
+    document.getElementById("menuToggle").addEventListener("click", ()=>{
+      const open = document.getElementById("menuToggle").getAttribute("aria-expanded") === "true";
+      setMenu(!open);
+    });
+    document.getElementById("navLinks").querySelectorAll("a").forEach(link=>{
+      link.addEventListener("click", ()=>setMenu(false));
+    });
+    document.addEventListener("keydown", event=>{
+      const button = document.getElementById("menuToggle");
+      if(event.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+        setMenu(false);
+        button.focus();
+      }
+    });
+    document.addEventListener("click", event=>{
+      const links = document.getElementById("navLinks");
+      const button = document.getElementById("menuToggle");
+      if(!links.classList.contains("is-open")) return;
+      if(links.contains(event.target) || button.contains(event.target)) return;
+      setMenu(false);
+    });
+    window.addEventListener("resize", ()=>{
+      if(window.innerWidth > 980) setMenu(false);
+    });
+
+    function navigateLanguage(lang){
+      try { localStorage.setItem("mamourart-language-v2", lang); } catch (_) {}
+      window.location.href = (lang === "en" ? "en.html" : "./") + window.location.search + window.location.hash;
+    }
+    let initialLanguage = document.documentElement.lang;
+    // The static destination of the POST redirect determines the response language.
+    // Do not let an unavailable or stale storage preference override this page.
+    setLanguage(initialLanguage);
+
+    // Bring the final status into view on the post-submit redirect.
+    // This runs once after loading, not whenever the visitor changes language.
+    const submittedStatus = new URLSearchParams(window.location.search).get("contact_status");
+    if ((submittedStatus === "sent" || submittedStatus === "error") && window.location.hash === "#quoteResult") {
+      window.addEventListener("load", () => {
+        const result = document.getElementById("quoteResult");
+        if (result) {
+          result.scrollIntoView({block: "center", behavior: "auto"});
+          result.focus({preventScroll: true});
+        }
+      }, {once: true});
+    }
+
+    // picture handles unsupported formats; a selected but broken WebP needs
+    // explicit recovery. Keep one request in the successful WebP path.
+    const banner = document.getElementById("heroBanner");
+    async function prepareBanner() {
+      try {
+        await banner.decode();
+      } catch (_) {
+        banner.parentElement.querySelectorAll("source").forEach(source => source.remove());
+        banner.src = "banner.png";
+        await banner.decode();
+      }
+      return new URL(banner.currentSrc || banner.src).pathname;
+    }
+    // Expose readiness for diagnostics: ready alone only means SW activation.
+    // Installation includes the format decoded on the first uncontrolled visit.
+    const bannerReady = banner ? prepareBanner() : Promise.resolve("/banner.webp");
+    const logo = document.querySelector(".brand img");
+    const logoReady = logo ? logo.decode().then(() => new URL(logo.currentSrc || logo.src).pathname) : Promise.resolve("/logo.webp");
+    window.mamourartOfflineReady = Promise.all([bannerReady, logoReady]).then(async ([path, logoPath]) => {
+      if (!("serviceWorker" in navigator)) return false;
+      const formats = new URLSearchParams();
+      if (path === "/banner.png") formats.set("banner", "png");
+      if (logoPath === "/logo.png") formats.set("logo", "png");
+      const script = "/service-worker.js" + (formats.size ? "?" + formats : "");
+      const registration = await navigator.serviceWorker.register(script);
+      const worker = registration.installing || registration.waiting || registration.active;
+      if (!worker) throw new Error("Offline worker unavailable");
+      if (worker.state !== "activated") await new Promise((resolve, reject) => {
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "activated") resolve();
+          if (worker.state === "redundant") reject(new Error("Offline installation failed"));
+        });
+        if (worker.state === "activated") resolve();
+        if (worker.state === "redundant") reject(new Error("Offline installation failed"));
+      });
+      await navigator.serviceWorker.ready;
+      return true;
+    }).catch(() => false);
+  </script>
+</body>
+</html>
