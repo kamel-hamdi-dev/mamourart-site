@@ -2,4 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://mamourart.com/</loc><xhtml:link rel="alternate" hreflang="fr" href="https://mamourart.com/"/><xhtml:link rel="alternate" hreflang="en" href="https://mamourart.com/en.html"/></url>
   <url><loc>https://mamourart.com/en.html</loc><xhtml:link rel="alternate" hreflang="fr" href="https://mamourart.com/"/><xhtml:link rel="alternate" hreflang="en" href="https://mamourart.com/en.html"/></url>
+  <url><loc>https://mamourart.com/ai-agent-orchestrator.html</loc><xhtml:link rel="alternate" hreflang="fr" href="https://mamourart.com/ai-agent-orchestrator.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mamourart.com/ai-agent-orchestrator-en.html"/></url>
+  <url><loc>https://mamourart.com/ai-agent-orchestrator-en.html</loc><xhtml:link rel="alternate" hreflang="fr" href="https://mamourart.com/ai-agent-orchestrator.html"/><xhtml:link rel="alternate" hreflang="en" href="https://mamourart.com/ai-agent-orchestrator-en.html"/></url>
 </urlset>

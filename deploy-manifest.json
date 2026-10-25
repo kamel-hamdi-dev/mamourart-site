@@ -2,6 +2,8 @@
   "version": 1,
   "purpose": "Liste explicite des fichiers publics autorises pour un futur deploiement OVH. Aucun deploiement dans cette phase.",
   "files": [
+    "ai-agent-orchestrator-en.html",
+    "ai-agent-orchestrator.html",
     "apple-touch-icon.png",
     "banner.png",
     "banner.webp",

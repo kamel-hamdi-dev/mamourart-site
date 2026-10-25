@@ -37,7 +37,7 @@ HOURS_COPY = {
 
 
 def _articles(html: str) -> list[str]:
-    return re.findall(r"<article class=\"project-card(?: featured)?\">(.*?)</article>", html, re.S)
+    return re.findall(r"<article class=\"project-card(?: featured)?(?: orchestrator-card)?\">(.*?)</article>", html, re.S)
 
 
 def _hours_card(html: str) -> str:
@@ -59,6 +59,7 @@ def test_existing_portfolio_projects_remain():
         "Mamourart Website",
         "Mamourart GPS AI",
         "Mamourart Fret Alerts",
+        "Mamourart AI Agent Orchestrator",
         "Mamourart Desktop Agent",
         "Mamourart Mes Heures",
     ]

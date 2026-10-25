@@ -13,7 +13,7 @@ function mimeFor(url) {
 
 const ORIGIN = 'https://mamourart.test';
 const PRECACHE = ['/', '/index.html', '/en.html', '/legal.html', '/gps-ai-demo.html',
-  '/fret-alerts-demo.html', '/logo.webp', '/banner.webp', '/manifest.json',
+  '/fret-alerts-demo.html', '/ai-agent-orchestrator.html', '/ai-agent-orchestrator-en.html', '/logo.webp', '/banner.webp', '/manifest.json',
   '/icon-192.png', '/icon-512.png', '/favicon.ico'];
 const [workerPath, scenario = 'runtime'] = process.argv.slice(2);
 let source = fs.readFileSync(workerPath, 'utf8');
@@ -290,7 +290,7 @@ async function runtimeScenario() {
   const data = stores.get(current);
   assert.deepEqual([...data.keys()].sort(), PRECACHE.map(path => ORIGIN + path).sort());
   online = false;
-  for (const path of ['/', '/index.html', '/en.html', '/legal.html', '/gps-ai-demo.html', '/fret-alerts-demo.html']) {
+  for (const path of ['/', '/index.html', '/en.html', '/legal.html', '/gps-ai-demo.html', '/fret-alerts-demo.html', '/ai-agent-orchestrator.html', '/ai-agent-orchestrator-en.html']) {
     assert.equal(await (await request(path)).text(), expectedText(path));
     data.delete(ORIGIN + path);
     const missing = await request(path); assert.equal(missing.status, 503);
@@ -299,6 +299,8 @@ async function runtimeScenario() {
   }
   assert.equal((await request('/missing.html')).status, 503);
   assert.match(await (await request('/en.html')).text(), /lang="en"/);
+  assert.match(await (await request('/ai-agent-orchestrator-en.html')).text(), /lang="en"/);
+  assert.match(await (await request('/ai-agent-orchestrator.html')).text(), /lang="fr"/);
   assert.match(await (await request('/legal.html?lang=en')).text(), /lang="en"/);
   assert.match(await (await request('/legal.html?lang=fr')).text(), /lang="fr"/);
   const beforeBypass = fetched.length;
