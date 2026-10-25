@@ -2,10 +2,11 @@
 // Separate format variants so a failed replacement cannot delete an active cache.
 const PNG_BANNER = new URL(self.location.href).searchParams.get("banner") === "png";
 const PNG_LOGO = new URL(self.location.href).searchParams.get("logo") === "png";
-const CACHE_NAME = "mamourart-v9" + (PNG_BANNER ? "-png" : "") + (PNG_LOGO ? "-logo-png" : "");
+const CACHE_NAME = "mamourart-v12" + (PNG_BANNER ? "-png" : "") + (PNG_LOGO ? "-logo-png" : "");
 const FILES_TO_CACHE = [
   "/", "/index.html", "/en.html", "/legal.html",
   "/gps-ai-demo.html", "/fret-alerts-demo.html",
+  "/ai-agent-orchestrator.html", "/ai-agent-orchestrator-en.html",
   "/manifest.json",
   "/icon-192.png", "/icon-512.png", "/favicon.ico"
 ];
@@ -196,7 +197,7 @@ self.addEventListener("fetch", event => {
       const cached = cache ? await cache.match(key).catch(() => undefined) : undefined;
       if (cached) return cached;
       if (request.mode === "navigate") {
-        const english = url.pathname === "/en.html" || url.searchParams.get("lang") === "en";
+        const english = ["/en.html", "/ai-agent-orchestrator-en.html"].includes(url.pathname) || url.searchParams.get("lang") === "en";
         return new Response(english
           ? '<!doctype html><html lang="en"><meta name="viewport" content="width=device-width"><title>Offline — Mamourart</title><h1>This page is unavailable offline</h1><p>Reconnect and try again.</p><a href="/en.html">Home</a></html>'
           : '<!doctype html><html lang="fr"><meta name="viewport" content="width=device-width"><title>Hors ligne — Mamourart</title><h1>Cette page est indisponible hors ligne</h1><p>Reconnectez-vous puis réessayez.</p><a href="/">Accueil</a></html>',
